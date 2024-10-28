@@ -5,6 +5,7 @@ import Docs from "./Page/Docs";
 import SignupPage from "./Page/SignupPage";
 import LoginPage from "./Page/LoginPage";
 import TopNav from "./Component/TopNav";
+import FlowList from './Page/FlowList';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/docs" element={<Docs />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/flowList" element={<FlowList />} />
       </Routes>
     </div>
   );
