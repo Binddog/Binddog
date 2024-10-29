@@ -4,9 +4,8 @@ import theme from "./styles/theme"; // 경로 확인
 import { Route, Routes } from "react-router-dom";
 import Home from "./Page/Home";
 import Docs from "./Page/Docs";
-import SignupPage from "./Page/SignupPage";
-import LoginPage from "./Page/LoginPage";
 import TopNav from "./Component/TopNav";
+import FlowList from './Page/FlowList';
 
 function App() {
   return (
