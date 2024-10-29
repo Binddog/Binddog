@@ -8,8 +8,6 @@ function TopNav() {
       <div className='navbar'>
         <Link className='navbarMenu' to={'/home'}>Home</Link>
         <Link className='navbarMenu' to={'/docs'}>Docs</Link>
-        <Link className='navbarMenu' to={'/signup'}>SignUp</Link>
-        <Link className='navbarMenu' to={'/login'}>Login</Link>
         <Link className='navbarMenu' to={'/flowList'}>FlowList</Link>
       </div>
     </div>
