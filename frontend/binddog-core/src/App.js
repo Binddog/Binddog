@@ -1,6 +1,6 @@
 import "./App.css";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "./styles/theme"; // 경로 확인
+import theme from "./styles/theme";
 import { Route, Routes } from "react-router-dom";
 import Home from "./Page/Home";
 import Docs from "./Page/Docs";
