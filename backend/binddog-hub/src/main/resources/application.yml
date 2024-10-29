@@ -13,3 +13,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+server:
+  port: ${HUB_PORT}
+  servlet:
+    context-path: /api
