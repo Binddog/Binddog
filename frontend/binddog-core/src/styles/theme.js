@@ -29,6 +29,13 @@ const theme = createTheme({
     fontStyle: "normal",
   },
 
+  menu: {
+    fontFamily: "KOTRA_GOTHIC",
+    fontSize: 20,
+    fontWeight: 700,
+    fontStyle: "normal",
+  },
+
   typography: {
     fontFamily: "KOTRA_GOTHIC",
     fontSize: 16,

@@ -1,10 +1,25 @@
 import React from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from "@mui/material/styles";
 import { Box, Typography } from '@mui/material';
+import { round } from './../../node_modules/@popperjs/core/dist/esm/utils/math';
 
 function TopNav() {
   const theme = useTheme();
+
+  const navigate = useNavigate();
+
+  const goToHome = () => {
+    navigate("/home");
+  }
+
+  const goToDocs = () => {
+    navigate("/docs");
+  }
+
+  const goToFlowList = () => {
+    navigate("/flowList");
+  }
 
   return (
     <Box
@@ -28,21 +43,24 @@ function TopNav() {
           gap: 3,
         }}
       >
-        <Link to={'/home'}>
-          <Typography component="div" sx={theme.subtitle}>
-            Home
-          </Typography>
-        </Link>
-        <Link to={'/docs'}>
-          <Typography component="div" sx={theme.subtitle}>
-            Docs
-          </Typography>
-        </Link>
-        <Link to={'/flowList'}>
-          <Typography component="div" sx={theme.subtitle}>
-            FlowList
-          </Typography>
-        </Link>
+        <Typography component="button" onClick={goToHome} sx={[theme.menu, {padding:'10px', borderRadius: '10px', border:'none', bgcolor:theme.palette.primary.main, cursor: 'pointer',
+              '&:hover': {
+                bgcolor: theme.palette.primary.dark,
+              }}]}>
+          Home
+        </Typography>
+        <Typography component="button" onClick={goToDocs} sx={[theme.menu, {padding:'10px', borderRadius: '10px', border:'none', bgcolor:theme.palette.primary.main, cursor: 'pointer',
+              '&:hover': {
+                bgcolor: theme.palette.primary.dark,
+              }}]}>
+          Docs
+        </Typography>
+        <Typography component="button" onClick={goToFlowList} sx={[theme.menu, {padding:'10px', borderRadius: '10px', border:'none', bgcolor:theme.palette.primary.main, cursor: 'pointer',
+              '&:hover': {
+                bgcolor: theme.palette.primary.dark,
+              }}]}>
+          FlowList
+        </Typography>
       </Box>
     </Box>
   );

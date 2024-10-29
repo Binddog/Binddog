@@ -13,7 +13,7 @@ function SideNav({li}) {
         bgcolor: theme.palette.primary.dark,
         display: 'flex',
         flexDirection: 'column',
-        padding: '30px',
+        padding: '50px',
         alignItems: 'flex-start',
         gap: 3,
       }}
