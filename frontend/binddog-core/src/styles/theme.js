@@ -1,6 +1,5 @@
 import createTheme from "@mui/material/styles/createTheme";
 import "./font.css";
-import { colors } from "@mui/material";
 
 const theme = createTheme({
   fontSize: {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import SideNav from '../Component/SideNav';
-import { Box, Card } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
 
 function FlowList() {
@@ -13,8 +13,7 @@ function FlowList() {
     <Box
       sx={{
         display: 'flex',
-        height: '100vh',
-        // bgcolor: 'skyblue',
+        flexGrow: 1,
       }}
     >
       <SideNav
@@ -26,6 +25,7 @@ function FlowList() {
           flexDirection: 'column',
           flexGrow: 1,
           height: '100%',
+          padding: '30px'
         }}
       >
         <Box
@@ -33,10 +33,10 @@ function FlowList() {
             textAlign: 'center',
           }}
         >
-          <h1>플로우 확인 페이지(플로우 리스트)</h1>
-          {/* <p>영역 확인용으로 색 채워둠... 나중에 지울 예정</p> */}
+          <Typography sx={theme.title}>
+            플로우 확인 페이지(플로우 리스트)
+          </Typography>
         </Box>
-        <Card></Card>
       </Box>
     </Box>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useTheme } from "@mui/material/styles";
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 function TopNav() {
   const theme = useTheme();
@@ -12,22 +12,37 @@ function TopNav() {
         width: '100%',
         height: '80px',
         bgcolor: theme.palette.primary.main,
-        padding: '15px 0px',
-        fontSize: '30px',
+        padding: '15px 10px',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
       }}
     >
       <Box
         sx={{
           color: theme.palette.text.primary,
-          margin: '8px',
+          margin: '30px',
           display: 'flex',
-          justifyContent: 'flex-end',
+          // justifyContent: 'flex-end',
+          // alignItems: 'center',
           gap: 3,
         }}
       >
-        <Link to={'/home'}>Home</Link>
-        <Link to={'/docs'}>Docs</Link>
-        <Link to={'/flowList'}>FlowList</Link>
+        <Link to={'/home'}>
+          <Typography component="div" sx={theme.subtitle}>
+            Home
+          </Typography>
+        </Link>
+        <Link to={'/docs'}>
+          <Typography component="div" sx={theme.subtitle}>
+            Docs
+          </Typography>
+        </Link>
+        <Link to={'/flowList'}>
+          <Typography component="div" sx={theme.subtitle}>
+            FlowList
+          </Typography>
+        </Link>
       </Box>
     </Box>
   );
