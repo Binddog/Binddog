@@ -1,4 +1,6 @@
 import createTheme from "@mui/material/styles/createTheme";
+import "./font.css";
+import { colors } from "@mui/material";
 
 const theme = createTheme({
   fontSize: {
@@ -14,6 +16,38 @@ const theme = createTheme({
     heavy: 900,
   },
 
+  title: {
+    fontFamily: "KOTRA_GOTHIC",
+    fontSize: 48,
+    fontWeight: 700,
+    fontStyle: "normal",
+  },
+
+  subtitle: {
+    fontFamily: "KOTRA_GOTHIC",
+    fontSize: 24,
+    fontWeight: 700,
+    fontStyle: "normal",
+  },
+
+  typography: {
+    fontFamily: "KOTRA_GOTHIC",
+    fontSize: 16,
+    fontWeight: 400,
+
+    method: {
+      fontSize: 14,
+      fontWeight: 700,
+      fontFamily: "ChosunGu",
+    },
+    api: {
+      fontSize: 14,
+      fontWeight: 700,
+      fontFamily: "ChosunGu",
+      color: "#282828",
+    },
+  },
+
   // 색상 관련 스타일 정의
   palette: {
     // 주 테마 색상 정의
@@ -23,10 +57,10 @@ const theme = createTheme({
       light: "#FDFBE9",
     },
     block: {
-      get: "#253567",
-      post: "",
-      delete: "",
-      put: "",
+      GET: "#273B77",
+      POST: "#187A23",
+      DELETE: "#C40000",
+      PUT: "#E7872E",
     },
 
     // 텍스트 색상 정의

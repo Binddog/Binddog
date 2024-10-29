@@ -2,7 +2,7 @@ import * as React from "react";
 import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-export default function Block({ width = "200px", height = "auto" }) {
+export default function Block({ method, apiName }) {
   const theme = useTheme();
 
   return (
@@ -10,21 +10,23 @@ export default function Block({ width = "200px", height = "auto" }) {
       sx={{
         display: "flex",
         alignItems: "center",
-        bgcolor: theme.palette.block.get,
+        bgcolor: theme.palette.block[method],
         padding: "8px 10px",
         borderRadius: "8px",
-        width: width,
-        height: height,
+        width: "200px",
+        height: "auto",
       }}
     >
       <Typography
         sx={{
-          fontWeight: "bold",
-          marginRight: "8px",
+          ...theme.typography.method,
           color: theme.palette.common.white,
+          marginRight: "12px",
+          width: "50px",
+          textAlign: "center",
         }}
       >
-        METHOD
+        {method}
       </Typography>
       <Box
         sx={{
@@ -37,7 +39,7 @@ export default function Block({ width = "200px", height = "auto" }) {
           flexGrow: 1,
         }}
       >
-        <Typography>회원가입회원가입회원</Typography>
+        <Typography sx={theme.typography.api}>{apiName}</Typography>
       </Box>
     </Card>
   );
