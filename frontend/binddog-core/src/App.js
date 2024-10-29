@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./Page/Home";
 import Docs from "./Page/Docs";
 import TopNav from "./Component/TopNav";
-import FlowList from './Page/FlowList';
+import FlowList from "./Page/FlowList";
 
 function App() {
   return (
@@ -16,8 +16,6 @@ function App() {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/docs" element={<Docs />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </div>
     </ThemeProvider>
