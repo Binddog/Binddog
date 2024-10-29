@@ -1,6 +1,5 @@
 import createTheme from "@mui/material/styles/createTheme";
 import "./font.css";
-import { colors } from "@mui/material";
 
 const theme = createTheme({
   fontSize: {
@@ -26,6 +25,13 @@ const theme = createTheme({
   subtitle: {
     fontFamily: "KOTRA_GOTHIC",
     fontSize: 24,
+    fontWeight: 700,
+    fontStyle: "normal",
+  },
+
+  menu: {
+    fontFamily: "KOTRA_GOTHIC",
+    fontSize: 20,
     fontWeight: 700,
     fontStyle: "normal",
   },
