@@ -16,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/docs" element={<Docs />} />
+          <Route path="/flowList" element={<FlowList />} />
         </Routes>
       </div>
     </ThemeProvider>
