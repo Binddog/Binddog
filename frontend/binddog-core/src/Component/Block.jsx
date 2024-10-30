@@ -2,44 +2,74 @@ import * as React from "react";
 import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-export default function Block({ method, apiName }) {
+export default function Block({ method, apiName, endpoint }) {
   const theme = useTheme();
 
   return (
     <Card
       sx={{
-        display: "flex",
-        alignItems: "center",
         bgcolor: theme.palette.block[method],
-        padding: "8px 10px",
         borderRadius: "8px",
-        width: "200px",
-        height: "auto",
+        width: "220px",
+        padding: "8px 8px 2px",
       }}
     >
-      <Typography
-        sx={{
-          ...theme.typography.method,
-          color: theme.palette.common.white,
-          marginRight: "12px",
-          width: "50px",
-          textAlign: "center",
-        }}
-      >
-        {method}
-      </Typography>
       <Box
         sx={{
-          bgcolor: "white",
-          color: "black",
-          borderRadius: "4px",
-          padding: "8px 16px",
           display: "flex",
           alignItems: "center",
-          flexGrow: 1,
+          justifyContent: "space-between",
+          gap: 1,
         }}
       >
-        <Typography sx={theme.typography.api}>{apiName}</Typography>
+        <Typography
+          sx={{
+            ...theme.method,
+          }}
+        >
+          {method}
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            flexGrow: 1,
+          }}
+        >
+          <Box
+            sx={{
+              bgcolor: "white",
+              padding: "8px 2px",
+              borderRadius: "4px",
+              width: "165px",
+              mb: "2px",
+              display: "flex",
+              justifyContent: "center",
+              wordBreak: "keep-all",
+              overflowWrap: "break-word",
+            }}
+          >
+            <Typography
+              sx={{
+                ...theme.api,
+              }}
+            >
+              {apiName}
+            </Typography>
+          </Box>
+          <Typography
+            sx={{
+              ...theme.endpoint,
+              wordBreak: "keep-all",
+              overflowWrap: "break-word",
+              padding: "5px",
+            }}
+          >
+            {endpoint}
+          </Typography>
+        </Box>
       </Box>
     </Card>
   );
