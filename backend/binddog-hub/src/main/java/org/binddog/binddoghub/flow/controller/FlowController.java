@@ -13,7 +13,7 @@ import static org.binddog.binddoghub.global.enums.SuccessCode.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/projects/")
+@RequestMapping("/projects/")
 public class FlowController {
 
     @GetMapping("/{projectId}/flows/{flowId}")
