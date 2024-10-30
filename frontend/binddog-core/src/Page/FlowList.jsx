@@ -64,11 +64,6 @@ function FlowList() {
             ))}
 
           </Box>
-
-          {/* <Block method="GET" apiName="GET" />
-          <Block method="POST" apiName="POST" />
-          <Block method="DELETE" apiName="DELETE" />
-          <Block method="PUT" apiName="PUT" /> */}
         </Box>
       </Box>
     </Box>
