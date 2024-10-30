@@ -17,3 +17,9 @@ server:
   port: ${HUB_PORT}
   servlet:
     context-path: /api
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
