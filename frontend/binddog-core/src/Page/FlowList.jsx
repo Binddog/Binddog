@@ -1,45 +1,44 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import SideNav from '../Component/SideNav';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import SideNav from "../Component/SideNav";
 
 function FlowList() {
   const theme = useTheme();
 
-  const li = ['제목1', '제목2', '제목3']
+  const li = [
+    { id: 1, title: "제목1" },
+    { id: 2, title: "제목2" },
+    { id: 3, title: "제목3" },
+  ];
 
   return (
     <Box
       sx={{
-        display: 'flex',
+        display: "flex",
         flexGrow: 1,
       }}
     >
-      <SideNav
-        li={li}
-      />
+      <SideNav li={li} name={"일단제목"} />
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
           flexGrow: 1,
-          height: '100%',
-          padding: '30px'
+          padding: "30px",
         }}
       >
         <Box
           sx={{
-            textAlign: 'center',
+            textAlign: "center",
           }}
         >
-          <Typography sx={theme.title}>
+          <Typography sx={theme.typography.h2}>
             플로우 확인 페이지(플로우 리스트)
           </Typography>
         </Box>
       </Box>
     </Box>
   );
-};
+}
 
 export default FlowList;
