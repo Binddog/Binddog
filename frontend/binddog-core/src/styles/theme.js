@@ -14,44 +14,48 @@ const theme = createTheme({
     bold: 700,
     heavy: 900,
   },
-
-  title: {
-    fontFamily: "KOTRA_GOTHIC",
-    fontSize: 48,
-    fontWeight: 700,
-    fontStyle: "normal",
-  },
-
-  subtitle: {
-    fontFamily: "KOTRA_GOTHIC",
-    fontSize: 24,
-    fontWeight: 700,
-    fontStyle: "normal",
-  },
-
-  menu: {
-    fontFamily: "KOTRA_GOTHIC",
-    fontSize: 20,
-    fontWeight: 700,
-    fontStyle: "normal",
-  },
-
   typography: {
     fontFamily: "KOTRA_GOTHIC",
     fontSize: 16,
     fontWeight: 400,
+    color: "#121212",
+    h1: {
+      fontFamily: "KOTRA_GOTHIC",
+      fontSize: 48,
+      fontWeight: 700,
+      color: "#121212",
+    },
+    h2: {
+      fontFamily: "KOTRA_GOTHIC",
+      fontSize: 24,
+      fontWeight: 700,
+      color: "#121212",
+    },
+    h3: {
+      fontFamily: "KOTRA_GOTHIC",
+      fontSize: 20,
+      fontWeight: 700,
+      color: "#121212",
+    },
+  },
 
-    method: {
-      fontSize: 14,
-      fontWeight: 700,
-      fontFamily: "ChosunGu",
-    },
-    api: {
-      fontSize: 14,
-      fontWeight: 700,
-      fontFamily: "ChosunGu",
-      color: "#282828",
-    },
+  method: {
+    fontSize: 14,
+    fontWeight: 700,
+    fontFamily: "ChosunGu",
+    color: "#FCFCFC",
+  },
+  api: {
+    fontSize: 12,
+    fontWeight: 600,
+    fontFamily: "ChosunGu",
+    color: "#282828",
+  },
+  endpoint: {
+    fontSize: 10,
+    fontWeight: 400,
+    fontFamily: "ChosunGu",
+    color: "#FCFCFC",
   },
 
   // 색상 관련 스타일 정의
@@ -71,15 +75,15 @@ const theme = createTheme({
 
     // 텍스트 색상 정의
     text: {
-      primary: "rgba(0, 0, 0, 0.87)",
-      secondary: "rgba(0, 0, 0, 0.54)",
-      disabled: "rgba(0, 0, 0, 0.38)",
+      primary: "#121212",
+      secondary: "#535353",
+      disabled: "#797979",
     },
     // 구분선 색상 정의
     divider: "rgba(0, 0, 0, 0.12)",
     // 배경 색상 정의
     background: {
-      default: "#ffffff",
+      default: "#FDFDFD",
       paper: "#f5f5f5",
     },
     // 작업 요소 색상 정의
@@ -92,9 +96,10 @@ const theme = createTheme({
     },
     // 공통 색상 정의
     common: {
-      black: "#000000",
-      white: "#ffffff",
+      black: "#121212",
+      white: "#FCFCFC",
       grey: "#797979",
+      lightgrey: "#EBEBEB",
     },
   },
 });
