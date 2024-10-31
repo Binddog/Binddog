@@ -58,7 +58,6 @@ public class BindDogConfigProperties {
         }
 
         public void setPath(String path) {
-            System.out.println("Hub.setPath : " + path);
             this.path = path;
         }
     }
@@ -75,7 +74,6 @@ public class BindDogConfigProperties {
         }
 
         public void setPath(String path) {
-            System.out.println("Local.setPath : " + path);
             this.path = path;
         }
     }
