@@ -23,11 +23,6 @@ function FlowList() {
     handleKebabClose();
   };
 
-  const handleDelete = () => {
-    alert('삭제하기 클릭');
-    handleKebabClose();
-  };
-
   const li = [
     { id: 1, title: "FLOW1" },
     { id: 2, title: "FLOW2" },
@@ -67,19 +62,26 @@ function FlowList() {
             플로우 확인 페이지 (플로우 리스트)
           </Typography>
           <Box>
-              <IconButton onClick={handleKebabToggle} sx={{color:theme.palette.common.grey}}>
-              <MoreVertIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={isKebabOpen}
-                onClose={handleKebabClose}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              >
-                <MenuItem onClick={handleCreate} sx={theme.typography.sub}>생성하기</MenuItem>
-              </Menu>
-            </Box>
+            <Typography
+              component="button"
+              onClick={handleCreate}
+              sx={[
+                theme.typography.sub,
+                {
+                  padding: "10px",
+                  borderRadius: "7px",
+                  border: "none",
+                  bgcolor: theme.palette.common.lightgrey,
+                  cursor: "pointer",
+                  "&:hover": {
+                    bgcolor: theme.palette.primary.dark,
+                  },
+                },
+              ]}
+            >
+              생성하기
+            </Typography>
+          </Box>
 
         </Box>
 
@@ -96,7 +98,7 @@ function FlowList() {
           }}
         >
           {li.map((item) => (
-            <FlowBlock key={item.id} flowName={item.title} />
+            <FlowBlock key={item.id} inId={item.id} flowName={item.title} />
           ))}
         </Box>
       </Box>
