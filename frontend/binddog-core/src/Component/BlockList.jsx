@@ -17,6 +17,7 @@ function BlockList({ li = blocks, name }) {
         padding: "50px",
         alignItems: "flex-start",
         gap: 3,
+        overflow: "auto",
       }}
     >
       <Typography
@@ -30,6 +31,7 @@ function BlockList({ li = blocks, name }) {
       {li.map((item) => (
         <Block
           key={item.block_id}
+          id={item.block_id}
           method={item.method}
           apiName={item.name}
           endpoint={item.endpoint}

@@ -1,17 +1,32 @@
-import * as React from "react";
+import React from "react";
 import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useDraggable } from "@dnd-kit/core";
 
-export default function Block({ method, apiName, endpoint }) {
+export default function Block({ method, apiName, endpoint, id }) {
   const theme = useTheme();
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id,
+  });
+
+  const style = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined,
+  };
 
   return (
     <Card
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
       sx={{
         bgcolor: theme.palette.block[method],
         borderRadius: "8px",
         width: "220px",
         padding: "8px 8px 2px",
+        cursor: "grab",
       }}
     >
       <Box
