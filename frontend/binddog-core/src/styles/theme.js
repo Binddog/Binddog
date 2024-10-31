@@ -37,6 +37,12 @@ const theme = createTheme({
       fontWeight: 700,
       color: "#121212",
     },
+    sub: {
+      fontFamily: "KOTRA_GOTHIC",
+      fontSize: 16,
+      fontWeight: 700,
+      color: "#121212",
+    },
   },
 
   method: {
