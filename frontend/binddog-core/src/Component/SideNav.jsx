@@ -3,7 +3,7 @@ import React from "react";
 import { useTheme } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 
-function SideNav({ li, name }) {
+function SideNav({ li, title }) {
   const theme = useTheme();
 
   return (
@@ -21,8 +21,8 @@ function SideNav({ li, name }) {
       <Typography component="div" sx={theme.typography}>
         나중에 햄버거 버튼 들어갈 곳(안들어가도 되긴함)
       </Typography>
-      <Typography component="div" sx={theme.typography.h2}>
-        {name}
+      <Typography component="div" sx={theme.typography.h3}>
+        유저의 라이브러리
       </Typography>
       <Box
         sx={{
@@ -35,8 +35,8 @@ function SideNav({ li, name }) {
       >
         {li.map((item) => (
           <Link
-            key={item.id}
             to={`/flow/${item.id}`}
+            key={item.id}
             style={{
               textDecoration: "none",
               color: theme.palette.text.secondary,

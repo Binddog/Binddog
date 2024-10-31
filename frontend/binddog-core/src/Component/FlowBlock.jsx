@@ -1,48 +1,50 @@
 import * as React from "react";
-import { Card, Typography, Box, img } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-function FlowBlock({name}) {
+function FlowBlock({ flowName }) {
   const theme = useTheme();
 
   return (
     <Box
       sx={{
-        width: '500px',
-        height: '300px',
-        borderRadius: '10px',
-        border: 'lightgray solid 2px',
-        padding: '20px 40px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        // bgcolor: 'lightgray'
+        width: "100%",
+        maxWidth: "370px",
+        height: "200px",
+        borderRadius: "10px",
+        border: "1px solid lightgray",
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        gap: 1,
       }}
     >
       <Box
         sx={{
-          borderRadius: '5px',
-          flex: 0.8,
-          overflow: 'hidden',
+          borderRadius: "5px",
+          overflow: "hidden",
+          flex: 1,
         }}
       >
-        <img style={{ width: '100%', height: '100%', borderRadius: '10px' }} src="https://picsum.photos/500/233?random=1" alt="" />
+        <img
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          src="https://picsum.photos/500/233?random=1"
+          alt=""
+        />
       </Box>
       <Box
         sx={{
-          flex: 0.2,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "10px",
         }}
       >
-        <Typography sx={theme.subtitle}>
-          이름 : {name}
-        </Typography>
+        <Typography sx={theme.typography.sub}>이름: {flowName}</Typography>
       </Box>
-
     </Box>
   );
-};
+}
 
 export default FlowBlock;
