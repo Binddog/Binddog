@@ -13,6 +13,15 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+  data:
+    mongodb:
+      host: ${MONGODB_HOST}
+      username: ${MONGODB_USER}
+      password: ${MONGODB_PASSWORD}
+      database: ${MONGODB_DB}
+      authentication-database: ${MONGODB_AUTH_DB}
+      port: ${MONGODB_PORT}
+
 server:
   port: ${HUB_PORT}
   servlet:
