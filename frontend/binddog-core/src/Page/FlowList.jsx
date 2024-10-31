@@ -1,11 +1,32 @@
-import React from "react";
+import {React, useState} from "react";
 import SideNav from "../Component/SideNav";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton, Menu, MenuItem } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import FlowBlock from "../Component/FlowBlock";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 function FlowList() {
   const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isKebabOpen = Boolean(anchorEl);
+
+  const handleKebabToggle = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleKebabClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCreate = () => {
+    alert('생성하기 클릭');
+    handleKebabClose();
+  };
+
+  const handleDelete = () => {
+    alert('삭제하기 클릭');
+    handleKebabClose();
+  };
 
   const li = [
     { id: 1, title: "FLOW1" },
@@ -31,13 +52,36 @@ function FlowList() {
           overflow: "auto",
         }}
       >
-        <Typography
+        <Box
           sx={{
-            ...theme.typography.h2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          플로우 확인 페이지 (플로우 리스트)
-        </Typography>
+          <Typography
+            sx={{
+              ...theme.typography.h2,
+            }}
+          >
+            플로우 확인 페이지 (플로우 리스트)
+          </Typography>
+          <Box>
+              <IconButton onClick={handleKebabToggle} sx={{color:theme.palette.common.grey}}>
+              <MoreVertIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={isKebabOpen}
+                onClose={handleKebabClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              >
+                <MenuItem onClick={handleCreate} sx={theme.typography.sub}>생성하기</MenuItem>
+              </Menu>
+            </Box>
+
+        </Box>
 
         <Box
           sx={{
