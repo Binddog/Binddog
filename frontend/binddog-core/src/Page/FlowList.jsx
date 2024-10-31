@@ -1,34 +1,30 @@
-import {React, useState} from "react";
+import {React, useState, useEffect} from "react";
 import SideNav from "../Component/SideNav";
 import { Box, Typography, IconButton, Menu, MenuItem } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import FlowBlock from "../Component/FlowBlock";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 function FlowList() {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const isKebabOpen = Boolean(anchorEl);
 
-  const handleKebabToggle = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+  const [num, setNum] = useState(5);
+  const [titleName, setTitleName] = useState('FLOW5');
 
-  const handleKebabClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleCreate = () => {
-    alert('생성하기 클릭');
-    handleKebabClose();
-  };
-
-  const li = [
+  // 바로 생성될 때 확인을 위해 useState로 변경
+  const [li, setLi] = useState([
     { id: 1, title: "FLOW1" },
     { id: 2, title: "FLOW2" },
     { id: 3, title: "FLOW3" },
     { id: 4, title: "FLOW4" },
-  ];
+  ]);
+
+  const handleCreate = () => {
+    setLi((prevLi) => [...prevLi, { id: num, title: titleName }]);
+    setNum(num + 1);
+    setTitleName('FLOW' + (num + 1));
+  };
 
   return (
     <Box
