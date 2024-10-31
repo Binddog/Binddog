@@ -43,7 +43,7 @@ export default function Block({ method, apiName, endpoint }) {
               bgcolor: "white",
               padding: "8px 2px",
               borderRadius: "4px",
-              width: "165px",
+              width: "175px",
               mb: "2px",
               display: "flex",
               justifyContent: "center",

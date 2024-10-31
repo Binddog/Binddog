@@ -43,7 +43,7 @@ function Flow() {
           display: "flex",
           flexDirection: "column",
           flexGrow: 1,
-          padding: "16px",
+          padding: "10px",
         }}
       >
         <Board />

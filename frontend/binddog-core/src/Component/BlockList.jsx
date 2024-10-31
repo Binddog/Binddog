@@ -20,12 +20,9 @@ function BlockList({ li = blocks, name }) {
       }}
     >
       <Typography
-        variant="h6"
         sx={{
-          ...theme.typography,
-          color: theme.palette.text.primary,
+          ...theme.typography.h3,
           marginBottom: "20px",
-          textAlign: "center",
         }}
       >
         {name}
