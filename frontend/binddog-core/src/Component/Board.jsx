@@ -1,23 +1,60 @@
 import React from "react";
 import { useTheme } from "@mui/material/styles";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { useDroppable } from "@dnd-kit/core";
+import Block from "./Block";
 
-function Board() {
+function DroppableZone({ id, block }) {
+  const { setNodeRef } = useDroppable({
+    id,
+  });
+
+  return (
+    <Box
+      ref={setNodeRef}
+      sx={{
+        border: "1px dashed lightgray",
+        borderRadius: "8px",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {block && (
+        <Block
+          method={block.method}
+          apiName={block.name}
+          endpoint={block.endpoint}
+        />
+      )}
+    </Box>
+  );
+}
+
+function Board({ blocks }) {
   const theme = useTheme();
 
   return (
     <Box
       sx={{
-        padding: "10px",
+        width: "100%",
         height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        flexGrow: 1,
-        borderRadius: "10px",
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gridTemplateRows: "repeat(3, 1fr)",
+        gap: 2,
+        padding: "10px",
+        bgcolor: theme.palette.background.paper,
       }}
-      bgcolor={theme.palette.background.paper}
     >
-      <Typography sx={theme.title}>보드</Typography>
+      {Array.from({ length: 9 }).map((_, index) => {
+        const zoneId = `zone-${index + 1}`;
+        return (
+          <DroppableZone key={zoneId} id={zoneId} block={blocks[zoneId]} />
+        );
+      })}
     </Box>
   );
 }
