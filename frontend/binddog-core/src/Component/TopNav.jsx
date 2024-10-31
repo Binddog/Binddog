@@ -9,7 +9,7 @@ function TopNav() {
   const navigate = useNavigate();
 
   const goToHome = () => {
-    navigate("/home");
+    navigate("/");
   };
 
   const goToDocs = () => {
