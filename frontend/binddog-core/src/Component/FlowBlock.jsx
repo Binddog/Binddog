@@ -36,6 +36,12 @@ function FlowBlock({ inId, flowName }) {
 
   return (
     <Box
+      onClick={(event) => {
+        // 케밥버튼이 아닌 경우에만 수정하기 실행
+        if (!event.target.closest('button') && !event.target.closest('.MuiMenuItem-root')) {
+          handleModify();
+        }
+      }}
       sx={{
         width: "100%",
         maxWidth: "370px",
@@ -88,21 +94,18 @@ function FlowBlock({ inId, flowName }) {
         >
           <Typography sx={theme.typography.sub}>이름: {flowName}</Typography>
         </Box>
-        <Box>
-          <IconButton onClick={handleKebabToggle} sx={{color:theme.palette.common.grey}}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={isKebabOpen}
-            onClose={handleKebabClose}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          >
-            <MenuItem onClick={handleModify} sx={theme.typography.sub}>수정하기</MenuItem>
-            <MenuItem onClick={handleDelete} sx={theme.typography.sub}>삭제하기</MenuItem>
-          </Menu>
-        </Box>
+        <IconButton onClick={handleKebabToggle} sx={{color:theme.palette.common.grey}}>
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={isKebabOpen}
+          onClose={handleKebabClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <MenuItem onClick={handleDelete} sx={theme.typography.sub}>삭제하기</MenuItem>
+        </Menu>
       </Box>
     </Box>
   );
