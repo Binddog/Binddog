@@ -15,7 +15,7 @@ function App() {
       <Box
         sx={{
           height: "100%",
-          textAlign: "center",
+          // textAlign: "center",
           display: "flex",
           flexDirection: "column",
           overflowX: "hidden",
