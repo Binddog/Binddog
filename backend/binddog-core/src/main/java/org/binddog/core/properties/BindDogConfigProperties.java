@@ -13,8 +13,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class BindDogConfigProperties {
 
     private final SpringDocConfigProperties springDocConfigProperties;
-    private Hub hub;
-    private Local local;
+    private Hub hub = new Hub();
+    private Local local = new Local();
+    private static final String HUB_BASE_URL = "https://api.binddog.org";
+    private static final String LOCAL_BASE_URL = "/binddog-ui/index.html";
+
 
     @Autowired
     public BindDogConfigProperties(SpringDocConfigProperties springDocConfigProperties) {
@@ -51,7 +54,7 @@ public class BindDogConfigProperties {
     static class Hub {
         //Hub Connection URI
         @Value("${binddog.hub.base-url}")
-        private String path;
+        private String path = HUB_BASE_URL;
 
         public String getPath() {
             return path;
@@ -67,7 +70,7 @@ public class BindDogConfigProperties {
      */
     static class Local {
         //BindDog Test GUI Path
-        private String path = "/binddog/index.html";
+        private String path = LOCAL_BASE_URL;
 
         public String getPath() {
             return path;
