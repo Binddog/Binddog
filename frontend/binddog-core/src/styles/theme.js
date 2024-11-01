@@ -63,7 +63,12 @@ const theme = createTheme({
     fontFamily: "ChosunGu",
     color: "#FCFCFC",
   },
-
+  button: {
+    fontSize: 14,
+    fontWeight: 700,
+    fontFamily: "ChosunGu",
+    color: "#FCFCFC",
+  },
   // 색상 관련 스타일 정의
   palette: {
     // 주 테마 색상 정의
@@ -78,7 +83,12 @@ const theme = createTheme({
       DELETE: "#C40000",
       PUT: "#E7872E",
     },
-
+    button: {
+      start: "#ACACAC",
+      delete: "#C40000",
+      run: "#187A23",
+      add: "#6076C4",
+    },
     // 텍스트 색상 정의
     text: {
       primary: "#121212",
