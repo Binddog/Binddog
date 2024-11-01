@@ -18,6 +18,8 @@ public class Flow extends BaseDocument {
     
     @Id
     private String id;
+    private String title;
+    private String desc;
     private Long projectId;
     private List<Block> blocks;
     private List<Link> links;
