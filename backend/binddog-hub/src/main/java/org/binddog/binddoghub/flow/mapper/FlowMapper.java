@@ -1,6 +1,7 @@
 package org.binddog.binddoghub.flow.mapper;
 
 import org.binddog.binddoghub.flow.document.Flow;
+import org.binddog.binddoghub.flow.dto.req.FlowCreateReq;
 import org.binddog.binddoghub.flow.dto.req.FlowRegisterReq;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,6 +17,10 @@ public interface FlowMapper {
     @Mapping(target = "links", source = "flow.links", qualifiedByName = "mapLinks")
     @Mapping(target = "mapping", expression = "java(toMapping(flow.getMapping()))")
     Flow toFlow(Long projectId, String flowId, FlowRegisterReq flow);
+
+    @Mapping(target = "title", source = "flowCreateReq.title")
+    @Mapping(target = "desc", source = "flowCreateReq.desc")
+    Flow toNewFlow(Long projectId, FlowCreateReq flowCreateReq);
 
     Flow.Block toBlock(FlowRegisterReq.Block blocks);
 
