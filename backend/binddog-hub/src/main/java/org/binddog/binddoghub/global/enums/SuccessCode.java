@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum SuccessCode implements ResponseCode {
 
+    // MemberAPI
+    USER_CREATED(HttpStatus.CREATED, "Member creation has been completed."),
+
     // Flow APi
     GET_FLOW_SUCCESS(HttpStatus.OK, "플로우 단일 조회가 성공적으로 완료되었습니다."),
     REGISTER_FLOW_SUCCESS(HttpStatus.OK, "플로우 저장이 성공적으로 완료되었습니다."),
