@@ -3,7 +3,9 @@ package org.binddog.binddoghub.flow.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.binddog.binddoghub.flow.dto.req.FlowCreateReq;
 import org.binddog.binddoghub.flow.dto.req.FlowRegisterReq;
+import org.binddog.binddoghub.flow.dto.res.FlowCreateRes;
 import org.binddog.binddoghub.flow.service.FlowService;
 import org.binddog.binddoghub.global.enums.NoneResponse;
 import org.binddog.binddoghub.global.response.Response;
@@ -28,9 +30,24 @@ public class FlowController {
     @GetMapping("/{projectId}/flows/{flowId}")
     public ResponseEntity<Response<NoneResponse>> getFlow(
             @PathVariable Long projectId,
-            @PathVariable Long flowId
+            @PathVariable String flowId
     ) {
         SuccessResponse<NoneResponse> response = new SuccessResponse<>(GET_FLOW_SUCCESS, NoneResponse.NONE);
+        return Response.success(response);
+    }
+
+    @Operation(
+            summary = "Save flow",
+            description = "Create a new flow."
+    )
+    @PostMapping("/{projectId}/flows")
+    public ResponseEntity<Response<FlowCreateRes>> createFlow(
+            @PathVariable Long projectId,
+            @RequestBody FlowCreateReq flowCreateReq
+    ) {
+        log.info(flowCreateReq.toString());
+        SuccessResponse<FlowCreateRes> response = flowService.saveFlow(projectId, flowCreateReq);
+        log.info("Create Flow Success : [{}]", projectId);
         return Response.success(response);
     }
 
@@ -44,9 +61,24 @@ public class FlowController {
             @PathVariable String flowId,
             @RequestBody FlowRegisterReq flowRegisterReq
     ) {
-        log.info("OverWrite Flow Success : [{}]", projectId);
         log.info(flowRegisterReq.toString());
         SuccessResponse<NoneResponse> response = flowService.updateFlow(projectId, flowId, flowRegisterReq);
+        log.info("OverWrite Flow Success : [{}]", projectId);
         return Response.success(response);
     }
+
+    @Operation(
+            summary = "Delete flow",
+            description = "Delete the flow."
+    )
+    @DeleteMapping("/{projectId}/flows/{flowId}")
+    public ResponseEntity<Response<NoneResponse>> deleteFlow(
+            @PathVariable Long projectId,
+            @PathVariable String flowId
+    ) {
+        SuccessResponse<NoneResponse> response = flowService.deleteFlow(projectId, flowId);
+        return Response.success(response);
+    }
+
+
 }
