@@ -9,11 +9,12 @@ import org.springframework.http.HttpStatus;
 public enum SuccessCode implements ResponseCode {
 
     // Flow APi
-    GET_FLOW_SUCCESS(HttpStatus.OK, "플로우 단일 조회가 성공적으로 완료되었습니다."),
-    REGISTER_FLOW_SUCCESS(HttpStatus.OK, "플로우 저장이 성공적으로 완료되었습니다."),
+    GET_FLOW_SUCCESS(HttpStatus.OK, "Flow retrieval completed successfully."),
+    REGISTER_FLOW_SUCCESS(HttpStatus.OK, "Flow registration completed successfully."),
+    DELETE_FLOW_SUCCESS(HttpStatus.NO_CONTENT, "Flow deletion completed successfully."),
 
     // BASE API
-    SUCCESS(HttpStatus.OK, "조회가 성공적으로 완료되었습니다.");
+    SUCCESS(HttpStatus.OK, "Retrieval completed successfully.");
 
     private final HttpStatus httpStatus;
     private final String message;
