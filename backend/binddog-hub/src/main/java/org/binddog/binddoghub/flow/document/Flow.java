@@ -17,7 +17,7 @@ import java.util.Map;
 public class Flow extends BaseDocument {
     
     @Id
-    private String id;
+    private String flowId;
     private String title;
     private String desc;
     private Long projectId;

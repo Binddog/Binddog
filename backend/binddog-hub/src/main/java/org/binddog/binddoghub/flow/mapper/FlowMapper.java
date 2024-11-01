@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface FlowMapper {
 
-    @Mapping(target = "id", source = "flowId")
+    @Mapping(target = "flowId", source = "flowId")
     @Mapping(target = "blocks", source = "flow.blocks", qualifiedByName = "mapBlocks")
     @Mapping(target = "links", source = "flow.links", qualifiedByName = "mapLinks")
     @Mapping(target = "mapping", expression = "java(toMapping(flow.getMapping()))")

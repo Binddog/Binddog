@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface FlowRepository extends MongoRepository<Flow, String> {
 
-    void deleteByProjectIdAndId(Long projectId, String id);
+    void deleteByProjectIdAndFlowId(Long projectId, String flowId);
 
 }

@@ -12,7 +12,7 @@ public interface FlowService {
 
     SuccessResponse<NoneResponse> loadFlow(final Long projectId, final String flowId, final FlowRegisterReq flowRegisterReq);
 
-    SuccessResponse<NoneResponse> updateFlow(final Long projectId, final String flowId, final FlowRegisterReq flowRegisterReq);
+    SuccessResponse<NoneResponse> updateFlow(final Long projectId, final String flowId, FlowRegisterReq flowRegisterReq);
 
     SuccessResponse<NoneResponse> deleteFlow(final Long projectId, final String flowId);
 }

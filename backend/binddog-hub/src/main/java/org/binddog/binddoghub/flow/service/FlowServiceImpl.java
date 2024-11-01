@@ -33,7 +33,7 @@ public class FlowServiceImpl implements FlowService {
         flowRepository.save(flow);
 
         FlowCreateRes response = FlowCreateRes.builder()
-                                         .flowId(flow.getId())
+                                         .flowId(flow.getFlowId())
                                          .build();
 
         return new SuccessResponse<>(REGISTER_FLOW_SUCCESS, response);
@@ -48,8 +48,8 @@ public class FlowServiceImpl implements FlowService {
     public SuccessResponse<NoneResponse> updateFlow(
             final Long projectId,
             final String flowId,
-            final FlowRegisterReq flowRegisterReq)
-    {
+            FlowRegisterReq flowRegisterReq
+    ) {
         Flow flow = flowMapper.toFlow(projectId, flowId, flowRegisterReq);
         flowRepository.save(flow);
         return new SuccessResponse<>(REGISTER_FLOW_SUCCESS, NoneResponse.NONE);
@@ -60,7 +60,7 @@ public class FlowServiceImpl implements FlowService {
             final Long projectId,
             final String flowId
     ) {
-        flowRepository.deleteByProjectIdAndId(projectId, flowId);
+        flowRepository.deleteByProjectIdAndFlowId(projectId, flowId);
         return new SuccessResponse<>(DELETE_FLOW_SUCCESS, NoneResponse.NONE);
     }
 }
