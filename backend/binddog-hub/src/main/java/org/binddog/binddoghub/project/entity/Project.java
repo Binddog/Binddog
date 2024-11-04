@@ -8,7 +8,6 @@ import org.binddog.binddoghub.member.entity.Member;
 @Entity
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Project extends BaseEntity {
 
@@ -26,4 +25,12 @@ public class Project extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @Builder
+    public Project(Long id, String title, String description, Member member) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.member = member;
+    }
 }
