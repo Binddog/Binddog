@@ -22,7 +22,7 @@ function SideNav({ li, title }) {
         나중에 햄버거 버튼 들어갈 곳(안들어가도 되긴함)
       </Typography>
       <Typography component="div" sx={theme.typography.h3}>
-        유저의 라이브러리
+        유저의 허브
       </Typography>
       <Box
         sx={{

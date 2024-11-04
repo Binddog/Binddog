@@ -9,9 +9,6 @@ function HubList() {
   const [anchorEl, setAnchorEl] = useState(null);
   const isKebabOpen = Boolean(anchorEl);
 
-  const [num, setNum] = useState(5);
-  const [titleName, setTitleName] = useState('FLOW5');
-
   // 바로 생성될 때 확인을 위해 useState로 변경
   const [li, setLi] = useState([
     { id: 1, title: "FLOW1" },
@@ -20,11 +17,6 @@ function HubList() {
     { id: 4, title: "FLOW4" },
   ]);
 
-  const handleCreate = () => {
-    setLi((prevLi) => [...prevLi, { id: num, title: titleName }]);
-    setNum(num + 1);
-    setTitleName('FLOW' + (num + 1));
-  };
 
   return (
     <Box
@@ -55,29 +47,8 @@ function HubList() {
               ...theme.typography.h2,
             }}
           >
-            플로우 확인 페이지 (플로우 리스트)
+            허브 확인 페이지 (허브 리스트)
           </Typography>
-          <Box>
-            <Typography
-              component="button"
-              onClick={handleCreate}
-              sx={[
-                theme.typography.sub,
-                {
-                  padding: "10px",
-                  borderRadius: "7px",
-                  border: "none",
-                  bgcolor: theme.palette.common.lightgrey,
-                  cursor: "pointer",
-                  "&:hover": {
-                    bgcolor: theme.palette.primary.dark,
-                  },
-                },
-              ]}
-            >
-              생성하기
-            </Typography>
-          </Box>
 
         </Box>
 
