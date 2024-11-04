@@ -10,7 +10,7 @@ public enum SuccessCode implements ResponseCode {
 
     // Project API
     PROJECT_CREATED(HttpStatus.CREATED, "Project creation has been completed."),
-    GET_PROJECT_SUCCESS(HttpStatus.OK, "The project list has been successfully viewed."),
+    GET_PROJECT_SUCCESS(HttpStatus.OK, "Project list retrieved successfully."),
 
     // MemberAPI
     USER_CREATED(HttpStatus.CREATED, "Member creation has been completed."),
