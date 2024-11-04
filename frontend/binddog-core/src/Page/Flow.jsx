@@ -48,7 +48,7 @@ function parsePaths(paths) {
 
 const parsedBlocks = parsePaths(blockData.paths);
 
-function Flow2() {
+function Flow() {
   const theme = useTheme();
   const initialEdges = []
 
@@ -114,4 +114,4 @@ function Flow2() {
     </Box>
   );
 }
-export default Flow2;
+export default Flow;
