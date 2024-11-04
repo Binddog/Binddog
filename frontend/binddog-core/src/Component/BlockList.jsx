@@ -4,7 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import Block from "./Block";
 import blocks from "../block.json";
 
-function BlockList({ li = blocks, name }) {
+function BlockList({ li = blocks, name, addNode }) {
   const theme = useTheme();
 
   return (
@@ -35,6 +35,7 @@ function BlockList({ li = blocks, name }) {
           method={item.method}
           apiName={item.name}
           endpoint={item.endpoint}
+          addNode={addNode}
         />
       ))}
     </Box>

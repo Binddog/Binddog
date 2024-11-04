@@ -1,13 +1,13 @@
 import React from "react";
 import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 
-export default function Block({ method, apiName, endpoint, id, addNode }) {
+// ReactFlow 안에 생기는 블록 커스텀 포맷
+export default function BlockFormat({ data }) {
   const theme = useTheme();
 
-  const handleClick = () => {
-    addNode({ apiName, method, endpoint });
-  };
+  const { method, apiName, endpoint } = data;
 
   return (
     <Card
@@ -18,8 +18,8 @@ export default function Block({ method, apiName, endpoint, id, addNode }) {
         padding: "8px 8px 2px",
         cursor: "grab",
       }}
-      onClick={handleClick}
     >
+      <Handle type="target" position={Position.Left} />
       <Box
         sx={{
           display: "flex",
@@ -77,6 +77,7 @@ export default function Block({ method, apiName, endpoint, id, addNode }) {
           </Typography>
         </Box>
       </Box>
+      <Handle type="source" position={Position.Right} id="a" />
     </Card>
   );
 }
