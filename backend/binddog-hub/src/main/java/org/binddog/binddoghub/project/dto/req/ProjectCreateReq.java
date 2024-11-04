@@ -9,7 +9,7 @@ public record ProjectCreateReq(
         @Length(
                 min = 1,
                 max = 50,
-                message = "The title must be 50 characters or less."
+                message = "Title must be 50 characters or less."
         )
         @NotBlank(message = "Title cannot be an empty value.")
         String title,
