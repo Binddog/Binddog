@@ -8,6 +8,11 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum SuccessCode implements ResponseCode {
 
+    //Auth
+    LOGIN_SUCCESS(HttpStatus.OK, "Login successfully."),
+    LOGOUT_SUCCESS(HttpStatus.OK, "Logout successfully."),
+    AUTH_TOKEN_CHANGE_SUCCESS(HttpStatus.OK, "Auth token change successfully."),
+
     // MemberAPI
     USER_CREATED(HttpStatus.CREATED, "Member creation has been completed."),
 

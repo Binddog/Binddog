@@ -7,6 +7,12 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode implements ResponseCode {
+
+    //Auth Error code
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "Member not found."),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "Invalid or expired token."),
+    TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "Token not found."),
+
     // Member Error code
     EMAIL_DUPLICATED(HttpStatus.CONFLICT, "Email is duplicated"),
 
