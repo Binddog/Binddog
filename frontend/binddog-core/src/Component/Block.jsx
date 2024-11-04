@@ -1,26 +1,16 @@
 import React from "react";
 import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useDraggable } from "@dnd-kit/core";
 
-export default function Block({ method, apiName, endpoint, id }) {
+export default function Block3({ method, apiName, endpoint, id, addNode }) {
   const theme = useTheme();
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id,
-  });
 
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
+  const handleClick = () => {
+    addNode({ apiName, method, endpoint });
   };
 
   return (
     <Card
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
       sx={{
         bgcolor: theme.palette.block[method],
         borderRadius: "8px",
@@ -28,6 +18,7 @@ export default function Block({ method, apiName, endpoint, id }) {
         padding: "8px 8px 2px",
         cursor: "grab",
       }}
+      onClick={handleClick}
     >
       <Box
         sx={{

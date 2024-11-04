@@ -3,30 +3,11 @@ import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 
-export default function Block2({ data }) {
+// ReactFlow 안에 생기는 블록 커스텀 포맷
+export default function BlockFormat({ data }) {
   const theme = useTheme();
 
   const { method, apiName, endpoint } = data;
-
-  // 원래 위에 있었던 것
-  // method, apiName, endpoint, id, num, position, data, onAddNode
-
-  // const handleAddNode = () => {
-  //   if (onAddNode) {
-  //     console.log(`Adding node at position: ${position}`);
-  //     onAddNode({
-  //       // id: `${apiName}`,
-  //       position: { x: 300, y: (position) * 70 },
-  //       data: { label: `${data}` },
-  //       // block_id: apiName,
-  //       // endpoint,
-  //     });
-  //   }
-  // };
-  
-  const handleStyle = { left: 10 };
-
-  // console.log(`id : ${id}, method : ${method}, apiName : ${apiName}, num : ${num}, position : ${position}, data : ${data}`)
 
   return (
     <Card
@@ -37,7 +18,6 @@ export default function Block2({ data }) {
         padding: "8px 8px 2px",
         cursor: "grab",
       }}
-      // onClick={handleAddNode}
     >
       <Handle type="target" position={Position.Left} />
       <Box
@@ -98,12 +78,6 @@ export default function Block2({ data }) {
         </Box>
       </Box>
       <Handle type="source" position={Position.Right} id="a" />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="b"
-        style={handleStyle}
-      />
     </Card>
   );
 }

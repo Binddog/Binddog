@@ -1,10 +1,10 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Block from "./Block";
+import Block3 from "./Block";
 import blocks from "../block.json";
 
-function BlockList({ li = blocks, name }) {
+function BlockList3({ li = blocks, name, addNode }) {
   const theme = useTheme();
 
   return (
@@ -29,16 +29,17 @@ function BlockList({ li = blocks, name }) {
         {name}
       </Typography>
       {li.map((item) => (
-        <Block
+        <Block3
           key={item.block_id}
           id={item.block_id}
           method={item.method}
           apiName={item.name}
           endpoint={item.endpoint}
+          addNode={addNode}
         />
       ))}
     </Box>
   );
 }
 
-export default BlockList;
+export default BlockList3;

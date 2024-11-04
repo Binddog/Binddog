@@ -20,10 +20,6 @@ function TopNav() {
     navigate("/flowList");
   };
 
-  const goToFlow2 = () => {
-    navigate("/flow2");
-  };
-
   return (
     <Box
       sx={{
@@ -102,25 +98,6 @@ function TopNav() {
           ]}
         >
           FlowList
-        </Typography>
-        <Typography
-          component="button"
-          onClick={goToFlow2}
-          sx={[
-            theme.typography.h3,
-            {
-              padding: "10px",
-              borderRadius: "10px",
-              border: "none",
-              bgcolor: theme.palette.primary.main,
-              cursor: "pointer",
-              "&:hover": {
-                bgcolor: theme.palette.primary.dark,
-              },
-            },
-          ]}
-        >
-          Flow2
         </Typography>
       </Box>
     </Box>

@@ -9,8 +9,6 @@ import FlowList from "./Page/FlowList";
 import Flow from "./Page/Flow";
 import { Box } from "@mui/material";
 
-import Flow2 from './Page/Flow2';
-
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -29,7 +27,6 @@ function App() {
           <Route path="/docs" element={<Docs />} />
           <Route path="/flowList" element={<FlowList />} />
           <Route path="/flow/:id" element={<Flow />} />
-          <Route path="/flow2" element={<Flow2 />} />
         </Routes>
       </Box>
     </ThemeProvider>

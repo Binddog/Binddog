@@ -37,8 +37,8 @@ function FlowBlock({ inId, flowName }) {
   return (
     <Box
       onClick={(event) => {
-        // 케밥버튼이 아닌 경우에만 수정하기 실행
-        if (!event.target.closest('button') && !event.target.closest('.MuiMenuItem-root')) {
+        // 케밥버튼이 아닌 경우에만 수정하기 실행 + 케밥 버튼 누른 후 리스트 밖에 눌러도 수정하기 막기 추가
+        if (!event.target.closest('button') && !event.target.closest('.MuiMenuItem-root') && !event.target.closest('.MuiMenu-root')) {
           handleModify();
         }
       }}
