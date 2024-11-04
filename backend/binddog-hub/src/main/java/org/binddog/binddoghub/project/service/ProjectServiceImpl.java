@@ -35,7 +35,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public SuccessResponse<List<ProjectSearchRes>> getProjects(Long memberId) {
-        List<Project> projectList = projectRepository.findByMemberId(memberId);
+        List<Project> projectList = projectRepository.findByMemberIdOrderByUpdatedAtDesc(memberId);
         List<ProjectSearchRes> response
                 = projectList.stream()
                              .map(projectMapper::toDto)
