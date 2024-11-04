@@ -19,7 +19,7 @@ public interface FlowMapper {
     Flow toFlow(Long projectId, String flowId, FlowRegisterReq flow);
 
     @Mapping(target = "title", source = "flowCreateReq.title")
-    @Mapping(target = "desc", source = "flowCreateReq.desc")
+    @Mapping(target = "description", source = "flowCreateReq.description")
     Flow toNewFlow(Long projectId, FlowCreateReq flowCreateReq);
 
     Flow.Block toBlock(FlowRegisterReq.Block blocks);

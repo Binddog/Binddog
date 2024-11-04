@@ -8,11 +8,11 @@ import org.binddog.binddoghub.global.response.SuccessResponse;
 
 public interface FlowService {
 
-    SuccessResponse<FlowCreateRes> saveFlow(final Long projectId, FlowCreateReq flowCreateReq);
+    SuccessResponse<FlowCreateRes> createFlow(final Long projectId, FlowCreateReq flowCreateReq);
 
     SuccessResponse<NoneResponse> loadFlow(final Long projectId, final String flowId, final FlowRegisterReq flowRegisterReq);
 
-    SuccessResponse<NoneResponse> updateFlow(final Long projectId, final String flowId, FlowRegisterReq flowRegisterReq);
+    SuccessResponse<NoneResponse> saveFlow(final Long projectId, final String flowId, FlowRegisterReq flowRegisterReq);
 
     SuccessResponse<NoneResponse> deleteFlow(final Long projectId, final String flowId);
 }
