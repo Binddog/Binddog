@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-export default function Block3({ method, apiName, endpoint, id, addNode }) {
+export default function Block({ method, apiName, endpoint, id, addNode }) {
   const theme = useTheme();
 
   const handleClick = () => {
