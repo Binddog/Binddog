@@ -17,7 +17,7 @@ public class BlockInfo {
         return status;
     }
 
-    // Builder 클래스 정의
+    // Builder class definition
     public static class Builder {
         private String blockName;
         private String status;

@@ -22,12 +22,25 @@ public class BindDogMetadataCustomizer implements OpenApiCustomizer {
         this.handlerMapping = handlerMapping;
     }
 
+    /**
+     * Customizes the OpenAPI object by adding extended metadata for specific API paths.
+     *
+     * <p>This method retrieves handler method information for each API path and checks for the presence
+     * of the {@link BindDogMetadata} annotation on each handler method. If the annotation is found,
+     * it adds the extended field information specified by {@link BindDogMetadata} to the operation's
+     * extensions.
+     *
+     * @param openApi the OpenAPI object to customize
+     */
     @Override
     public void customise(OpenAPI openApi) {
+        // Retrieve all paths in the OpenAPI object
         Map<String, PathItem> paths = openApi.getPaths();
+
+        // Iterate through each path and its associated PathItem
         paths.forEach((path, pathItem) -> {
             pathItem.readOperations().forEach(operation -> {
-                // 해당 API의 핸들러 메서드 정보를 가져옴
+                // Retrieve handler method information of the specified API
                 HandlerMethod handlerMethod = handlerMapping.getHandlerMethods()
                                                             .entrySet()
                                                             .stream()
@@ -37,16 +50,17 @@ public class BindDogMetadataCustomizer implements OpenApiCustomizer {
                                                             .orElse(null);
 
                 if (handlerMethod != null) {
+                    // Check if the handler method has the BindDogMetadata annotation
                     BindDogMetadata bindDogMetadata = handlerMethod.getMethodAnnotation(BindDogMetadata.class);
                     if (bindDogMetadata != null) {
-                        // 기존 확장 필드를 가져오거나 새로 생성
+                        // Retrieve existing extended fields or create new ones
                         Map<String, Object> extensions = operation.getExtensions();
                         if (extensions == null) {
                             extensions = new HashMap<>();
-                            operation.setExtensions(extensions);  // 새로 생성한 경우 설정해줌
+                            operation.setExtensions(extensions);  // Set it up if newly created
                         }
 
-                        // 확장 필드 추가
+                        // Add extended field
                         BlockInfo blockInfo = new BlockInfo.Builder()
                                 .blockName(bindDogMetadata.blockName())
                                 .status(bindDogMetadata.status())
@@ -58,5 +72,6 @@ public class BindDogMetadataCustomizer implements OpenApiCustomizer {
             });
         });
     }
+
 
 }
