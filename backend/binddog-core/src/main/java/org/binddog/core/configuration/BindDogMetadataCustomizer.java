@@ -39,37 +39,42 @@ public class BindDogMetadataCustomizer implements OpenApiCustomizer {
 
         // Iterate through each path and its associated PathItem
         paths.forEach((path, pathItem) -> {
-            pathItem.readOperations().forEach(operation -> {
-                // Retrieve handler method information of the specified API
-                HandlerMethod handlerMethod = handlerMapping.getHandlerMethods()
-                                                            .entrySet()
-                                                            .stream()
-                                                            .filter(entry -> entry.getKey().getPatternValues().contains(path))
-                                                            .map(Map.Entry::getValue)
-                                                            .findFirst()
-                                                            .orElse(null);
+            pathItem.readOperations()
+                    .forEach(operation -> {
+                        // Retrieve handler method information of the specified API
+                        HandlerMethod handlerMethod = handlerMapping.getHandlerMethods()
+                                                                    .entrySet()
+                                                                    .stream()
+                                                                    .filter(entry -> entry.getKey()
+                                                                                          .getPatternValues()
+                                                                                          .contains(path))
+                                                                    .map(Map.Entry::getValue)
+                                                                    .findFirst()
+                                                                    .orElse(null);
 
-                if (handlerMethod != null) {
-                    // Check if the handler method has the BindDogMetadata annotation
-                    BindDogMetadata bindDogMetadata = handlerMethod.getMethodAnnotation(BindDogMetadata.class);
-                    if (bindDogMetadata != null) {
-                        // Retrieve existing extended fields or create new ones
-                        Map<String, Object> extensions = operation.getExtensions();
-                        if (extensions == null) {
-                            extensions = new HashMap<>();
-                            operation.setExtensions(extensions);  // Set it up if newly created
+                        if (handlerMethod != null) {
+                            // Check if the handler method has the BindDogMetadata annotation
+                            BindDogMetadata bindDogMetadata = handlerMethod.getMethodAnnotation(BindDogMetadata.class);
+                            if (bindDogMetadata != null) {
+                                // Retrieve existing extended fields or create new ones
+                                Map<String, Object> extensions = operation.getExtensions();
+                                if (extensions == null) {
+                                    extensions = new HashMap<>();
+                                    operation.setExtensions(extensions);  // Set it up if newly created
+                                }
+
+                                // Add extended field
+                                BlockInfo blockInfo = new BlockInfo.Builder()
+                                        .blockName(bindDogMetadata.blockName()
+                                                                  .isEmpty() ? null : bindDogMetadata.blockName())
+                                        .status(bindDogMetadata.status()
+                                                               .isEmpty() ? null : bindDogMetadata.status())
+                                        .build();
+
+                                extensions.put(BINDDOG_FIELD, blockInfo);
+                            }
                         }
-
-                        // Add extended field
-                        BlockInfo blockInfo = new BlockInfo.Builder()
-                                .blockName(bindDogMetadata.blockName())
-                                .status(bindDogMetadata.status())
-                                .build();
-
-                        extensions.put(BINDDOG_FIELD, blockInfo);
-                    }
-                }
-            });
+                    });
         });
     }
 

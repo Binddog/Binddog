@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BindDogMetadata {
-    String blockName();
-    String status();
+    String blockName() default "";
+    String status() default "";
 }
