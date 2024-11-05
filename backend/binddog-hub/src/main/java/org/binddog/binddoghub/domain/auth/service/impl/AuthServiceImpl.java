@@ -3,8 +3,6 @@ package org.binddog.binddoghub.domain.auth.service.impl;
 import static org.binddog.binddoghub.global.enums.ErrorCode.*;
 import static org.binddog.binddoghub.global.enums.SuccessCode.*;
 
-import java.util.Optional;
-
 import org.binddog.binddoghub.domain.auth.dto.LoginRequest;
 import org.binddog.binddoghub.domain.auth.service.AuthService;
 import org.binddog.binddoghub.global.config.security.JwtProvider;
@@ -19,6 +17,7 @@ import org.binddog.binddoghub.member.repository.MemberRepository;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -37,24 +36,27 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public SuccessResponse<Tokens> login(LoginRequest request){
+		try {
+			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+					request.email(), request.password()
+			);
+			Authentication authentication = authenticationManager.authenticate(token);
 
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-				request.email(), request.password()
-		);
-		authenticationManager.authenticate(token);
+			Long memberId = getByEmail(request.email()).getId();
+			Tokens tokens = jwtProvider.generateTokens(memberId);
+			redisRepository.save(tokens);
+			log.info("Tokens saved to Redis: " + redisRepository.findByAccessToken(tokens.getAccessToken()) );
 
-		Long memberId = getByEmail(request.email()).getId();
-		Tokens tokens = jwtProvider.generateTokens(memberId);
-		redisRepository.save(tokens);
-		log.info("Tokens saved to Redis: " + redisRepository.findByAccessToken(tokens.getAccessToken()) );
+			return new SuccessResponse<>(LOGIN_SUCCESS, tokens);
+		} catch(Exception e){
+			throw new AppException(TOKEN_INVALID);
+		}
 
-		return new SuccessResponse<>(LOGIN_SUCCESS, tokens);
+
 	}
 
 	@Override
 	public SuccessResponse<NoneResponse> logout(String header, Long id) {
-		log.info("logout starts");
-
 		String accessToken = header.substring(TOKEN_SPLIT_INDEX);
 
 		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken) );
