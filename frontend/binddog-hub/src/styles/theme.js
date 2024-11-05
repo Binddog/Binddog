@@ -4,7 +4,7 @@ import "./font.css";
 const theme = createTheme({
   fontSize: {
     small: "10px",
-    medium: "16px",
+    medium: "14px",
     large: "18px",
     larger: "20px",
   },
