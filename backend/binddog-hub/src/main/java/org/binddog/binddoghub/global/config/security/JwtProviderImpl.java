@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import io.jsonwebtoken.Claims;
@@ -33,6 +34,16 @@ public class JwtProviderImpl implements JwtProvider {
 					 .refreshToken(generateRefreshToken(memberId))
 					 .ttl(REFRESH_TOKEN_EXPIRED_TIME)
 					 .build();
+	}
+
+	@Override
+	public boolean isValid(String token, Long userId) {
+		final Long extractedUserId = parseUserId(token);
+		return Objects.equals(userId, extractedUserId) && !isTokenExpired(token);
+	}
+
+	private boolean isTokenExpired(String token) {
+		return extractExpiration(token).before(new Date());
 	}
 
 	@Override
