@@ -20,6 +20,6 @@ public class WebAutoConfig implements WebMvcConfigurer {
         if (!path.startsWith("/")) {
             path = "/" + path;
         }
-        registry.addViewController(path).setViewName("forward:/BINDDOG-UI/index.html");
+        registry.addViewController(path).setViewName("forward:/binddog/ui/index.html");
     }
 }
