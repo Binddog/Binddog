@@ -40,6 +40,20 @@ const SignUpPage = () => {
     }
   };
 
+  const handlePasswordChange = (e) => {
+    const { value } = e.target;
+    if (value.length <= 16) {
+      setPassword(value);
+    }
+  };
+
+  const handlePasswordConfirmChange = (e) => {
+    const { value } = e.target;
+    if (value.length <= 16) {
+      setPasswordConfirm(value);
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     validateEmail();
@@ -115,7 +129,7 @@ const SignUpPage = () => {
           variant="outlined"
           fullWidth
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
           onBlur={validatePassword}
           error={Boolean(passwordError)}
           helperText={passwordError}
@@ -150,7 +164,7 @@ const SignUpPage = () => {
           variant="outlined"
           fullWidth
           value={passwordConfirm}
-          onChange={(e) => setPasswordConfirm(e.target.value)}
+          onChange={handlePasswordConfirmChange}
           onBlur={validatePasswordConfirm}
           error={Boolean(passwordConfirmError)}
           helperText={passwordConfirmError}
