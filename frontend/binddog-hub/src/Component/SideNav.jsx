@@ -33,8 +33,8 @@ function SideNav({ li, title }) {
           gap: 2,
         }}
       >
-        {li.map((item) => (
-          <Typography component="li" sx={theme.typography}>
+        {li.map((item, index) => (
+          <Typography component="li" key={index} sx={theme.typography}>
             {item.title}
           </Typography>
         ))}
