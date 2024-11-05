@@ -34,18 +34,9 @@ function SideNav({ li, title }) {
         }}
       >
         {li.map((item) => (
-          <Link
-            to={`/flow/${item.id}`}
-            key={item.id}
-            style={{
-              textDecoration: "none",
-              color: theme.palette.text.secondary,
-            }}
-          >
-            <Typography component="li" sx={theme.typography}>
-              {item.title}
-            </Typography>
-          </Link>
+          <Typography component="li" sx={theme.typography}>
+            {item.title}
+          </Typography>
         ))}
       </Box>
     </Box>
