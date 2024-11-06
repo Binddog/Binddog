@@ -10,61 +10,44 @@ import {
   useNodesState,
   useEdgesState,
   addEdge,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 import { useTheme } from "@mui/material/styles";
 import BlockList from "../Component/BlockList";
 
-function parsePaths(paths) {
-  const blocks = [];
-  let inCounter = 1;
-
-  Object.keys(paths).forEach((endpoint) => {
-    const methods = paths[endpoint];
-
-    Object.keys(methods).forEach((method) => {
-      const { summary, description, operationId, tags } = methods[method];
-
-      blocks.push({
-        id: `${inCounter}`,
-        position: { x: 50, y: (inCounter) * 70 },
-        data: { label: `${operationId}` },
-        block_id: operationId,
-        method: method.toUpperCase(),
-        endpoint,
-        name: summary,
-        description,
-        tags,
-        type: "customBlock",
-        
-      });
-
-      inCounter++;
-    });
-  });
-
-  return blocks;
+function parseBlocks(blocks) {
+  return blocks.map((block, index) => ({
+    id: block.blockId.toString(),
+    position: { x: 50, y: index * 70 },
+    data: {
+      label: block.name,
+      method: block.method,
+      endpoint: block.endpoint,
+      description: block.description,
+      tags: block.tags,
+    },
+    type: "customBlock",
+  }));
 }
 
-const parsedBlocks = parsePaths(blockData.paths);
+const parsedBlocks = [];
+const parsedLinks = [];
 
 function Flow() {
   const theme = useTheme();
-  const initialEdges = []
-
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
+    [setEdges]
   );
 
   function addNode(item) {
     const newNode = {
-      id: `${Date.now()}`, // 새로운 id 값 생성
-      type: "customBlock", // customBlock 타입 지정
-      position: { x: 50, y: nodes.length * 70 }, // 노드의 위치 지정
+      id: `${Date.now()}`,
+      type: "customBlock",
+      position: { x: 50, y: nodes.length * 70 },
       data: {
         method: item.method,
         apiName: item.apiName,
@@ -72,25 +55,22 @@ function Flow() {
       },
     };
 
-    // 새로운 노드를 기존 nodes 상태에 추가
     setNodes((nds) => [...nds, newNode]);
-    console.log("Node 추가:", newNode);
-  };
+  }
 
-  // 노드 타입 정의
   const nodeTypes = {
-    customBlock: BlockFormat, // BlockFormat을 customBlock 노드로 사용
+    customBlock: BlockFormat,
   };
 
   return (
-    <Box sx={{ display:'flex', height: "100%", overflow: "hidden"}}>
+    <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
       <Box sx={{ height: "100%", overflow: "auto" }}>
-        <BlockList  name={"APIs"} li={parsedBlocks} addNode={addNode} />
+        <BlockList name={"APIs"} li={blockData.blocks} addNode={addNode} />
       </Box>
       <Box
         sx={{
-          flexGrow: 0.96,
-          height: "95%",
+          flexGrow: 1,
+          height: "100%",
           padding: "10px",
         }}
       >
@@ -103,7 +83,6 @@ function Flow() {
           nodeTypes={nodeTypes}
           style={{
             bgcolor: theme.palette.primary.main,
-
           }}
         >
           <Controls />
@@ -114,4 +93,5 @@ function Flow() {
     </Box>
   );
 }
+
 export default Flow;

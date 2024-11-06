@@ -10,7 +10,7 @@ function SideNav({ li, title }) {
     <Box
       sx={{
         width: "250px",
-        bgcolor: theme.palette.primary.dark,
+        bgcolor: "#F7F7F7",
         display: "flex",
         flexDirection: "column",
         padding: "50px",
