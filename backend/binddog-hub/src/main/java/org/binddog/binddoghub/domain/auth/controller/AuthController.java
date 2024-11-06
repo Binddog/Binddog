@@ -30,7 +30,6 @@ public class AuthController {
 		return Response.success(response);
 	}
 
-	@SecurityRequirement(name = "Bearer Authentication")
 	@PostMapping("/logout")
 	public ResponseEntity<Response<NoneResponse>> logout(
 			@RequestHeader("Authorization") String header,
@@ -40,7 +39,6 @@ public class AuthController {
 		return Response.success(response);
 	}
 
-	@SecurityRequirement(name = "Bearer Authentication")
 	@PostMapping("/refresh")
 	public ResponseEntity<Response<Tokens>> refreshTokens(
 			@RequestBody Tokens tokens
