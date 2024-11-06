@@ -5,6 +5,6 @@ import lombok.Builder;
 @Builder
 public record FlowCreateReq(
         String title,
-        String desc
+        String description
 ) {
 }

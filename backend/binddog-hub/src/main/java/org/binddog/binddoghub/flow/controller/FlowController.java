@@ -37,7 +37,7 @@ public class FlowController {
     }
 
     @Operation(
-            summary = "Save flow",
+            summary = "Create flow",
             description = "Create a new flow."
     )
     @PostMapping("/{projectId}/flows")
@@ -46,7 +46,7 @@ public class FlowController {
             @RequestBody FlowCreateReq flowCreateReq
     ) {
         log.info(flowCreateReq.toString());
-        SuccessResponse<FlowCreateRes> response = flowService.saveFlow(projectId, flowCreateReq);
+        SuccessResponse<FlowCreateRes> response = flowService.createFlow(projectId, flowCreateReq);
         log.info("Create Flow Success : [{}]", projectId);
         return Response.success(response);
     }
@@ -62,7 +62,7 @@ public class FlowController {
             @RequestBody FlowRegisterReq flowRegisterReq
     ) {
         log.info(flowRegisterReq.toString());
-        SuccessResponse<NoneResponse> response = flowService.updateFlow(projectId, flowId, flowRegisterReq);
+        SuccessResponse<NoneResponse> response = flowService.saveFlow(projectId, flowId, flowRegisterReq);
         log.info("OverWrite Flow Success : [{}]", projectId);
         return Response.success(response);
     }

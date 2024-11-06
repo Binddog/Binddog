@@ -15,6 +15,7 @@ public enum ErrorCode implements ResponseCode {
 
     // Member Error code
     EMAIL_DUPLICATED(HttpStatus.CONFLICT, "Email is duplicated"),
+    NOT_FOUND_MEMBER(HttpStatus.BAD_REQUEST, "Member not found"),
 
     // Common Error Code
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "An internal server error occurred."),

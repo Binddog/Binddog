@@ -24,17 +24,16 @@ public class FlowServiceImpl implements FlowService {
     private final FlowRepository flowRepository;
 
     @Override
-    public SuccessResponse<FlowCreateRes> saveFlow(
+    public SuccessResponse<FlowCreateRes> createFlow(
             final Long projectId,
             final FlowCreateReq flowCreateReq
     ) {
         Flow flow = flowMapper.toNewFlow(projectId, flowCreateReq);
-
         flowRepository.save(flow);
 
         FlowCreateRes response = FlowCreateRes.builder()
-                                         .flowId(flow.getFlowId())
-                                         .build();
+                                              .flowId(flow.getFlowId())
+                                              .build();
 
         return new SuccessResponse<>(REGISTER_FLOW_SUCCESS, response);
     }
@@ -45,7 +44,7 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
-    public SuccessResponse<NoneResponse> updateFlow(
+    public SuccessResponse<NoneResponse> saveFlow(
             final Long projectId,
             final String flowId,
             FlowRegisterReq flowRegisterReq
