@@ -22,7 +22,7 @@ function SideNav({ li, title }) {
         나중에 햄버거 버튼 들어갈 곳(안들어가도 되긴함)
       </Typography>
       <Typography component="div" sx={theme.typography.h3}>
-        유저의 라이브러리
+        유저의 허브
       </Typography>
       <Box
         sx={{
@@ -33,19 +33,10 @@ function SideNav({ li, title }) {
           gap: 2,
         }}
       >
-        {li.map((item) => (
-          <Link
-            to={`/flow/${item.id}`}
-            key={item.id}
-            style={{
-              textDecoration: "none",
-              color: theme.palette.text.secondary,
-            }}
-          >
-            <Typography component="li" sx={theme.typography}>
-              {item.title}
-            </Typography>
-          </Link>
+        {li.map((item, index) => (
+          <Typography component="li" key={index} sx={theme.typography}>
+            {item.title}
+          </Typography>
         ))}
       </Box>
     </Box>

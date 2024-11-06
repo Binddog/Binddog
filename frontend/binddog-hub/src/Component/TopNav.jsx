@@ -12,7 +12,7 @@ function TopNav() {
     { label: "Docs", onClick: () => navigate("/docs") },
     { label: "SignUp", onClick: () => navigate("/signup") },
     { label: "Login", onClick: () => navigate("/login") },
-    { label: "FlowList", onClick: () => navigate("/flowList") },
+    { label: "HubList", onClick: () => navigate("/hubList") },
   ];
 
   return (

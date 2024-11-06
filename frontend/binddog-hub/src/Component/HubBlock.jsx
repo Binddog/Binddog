@@ -1,13 +1,10 @@
 import {React, useState} from "react";
-import { Typography, Box, IconButton, Menu, MenuItem, Skeleton } from "@mui/material";
+import { Typography, Box, IconButton, Menu, MenuItem, Skeleton, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Link, useNavigate } from "react-router-dom";
 
 function HubBlock({ inId, flowName }) {
   const theme = useTheme();
-
-  const navigate = useNavigate();
 
   // 이미지 로딩을 확인하기 위한 상태
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -24,18 +21,20 @@ function HubBlock({ inId, flowName }) {
     setAnchorEl(null);
   };
 
-  const handleModify = () => {
-    navigate(`/hub/${inId}`);
-    handleKebabClose();
-  };
-
   const handleDelete = () => {
     alert('삭제하기 클릭');
     handleKebabClose();
   };
 
-  const check = () => {
-    alert('클릭');
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  }
+
+
+  const openModal = () => {
+    setIsModalOpen(true);
     handleKebabClose();
   };
 
@@ -44,7 +43,7 @@ function HubBlock({ inId, flowName }) {
       onClick={(event) => {
         // 케밥버튼이 아닌 경우에만 수정하기 실행 + 케밥 버튼 누른 후 리스트 밖에 눌러도 수정하기 막기 추가
         if (!event.target.closest('button') && !event.target.closest('.MuiMenuItem-root') && !event.target.closest('.MuiMenu-root')) {
-          check();
+          openModal();
         }
       }}
       sx={{
@@ -112,6 +111,62 @@ function HubBlock({ inId, flowName }) {
           <MenuItem onClick={handleDelete} sx={theme.typography.sub}>삭제하기</MenuItem>
         </Menu>
       </Box>
+
+      <Modal
+        open={isModalOpen}
+        onClose={handleModalClose}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <Box
+          sx={{
+            width: "80%",
+            display: "flex",
+            justifyContent: "center",
+            bgcolor: "background.paper",
+            textAlign: 'center',
+            borderRadius: '8px',
+            boxShadow: 24,
+            padding: "10px",
+            outline: 'none',
+            gap: 1,
+          }}
+        >
+          <img
+            src="https://picsum.photos/500/233?random=1"
+            alt=""
+            style={{ width: "100%", borderRadius: "8px" }}
+          />
+          <Box>
+            <Typography
+              component="button"
+              onClick={handleModalClose}
+              sx={[
+                theme.typography.h3,
+                {
+                  width: "40px",
+                  height: "40px",
+                  padding: "10px",
+                  borderRadius: "10px",
+                  border: "none",
+                  bgcolor: "transparent", // 배경색 제거
+                  cursor: "pointer",
+                  "&:hover": {
+                    bgcolor: theme.palette.primary.dark,
+                    color: theme.palette.common.black,
+                  },
+                },
+              ]}
+            >
+              X
+            </Typography>
+          </Box>
+        </Box>
+      </Modal>
+
     </Box>
   );
 }
