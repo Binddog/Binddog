@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 	private static final int TOKEN_SPLIT_INDEX = 7;
-
 	private final AuthenticationManager authenticationManager;
 	private final JwtProvider jwtProvider;
 	private final MemberRepository memberRepository;
@@ -36,35 +35,25 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public SuccessResponse<Tokens> login(LoginRequest request){
-		try {
-			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-					request.email(), request.password()
-			);
-			Authentication authentication = authenticationManager.authenticate(token);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+				request.email(), request.password()
+		);
+		authenticationManager.authenticate(token);
 
-			Long memberId = getByEmail(request.email()).getId();
-			Tokens tokens = jwtProvider.generateTokens(memberId);
-			redisRepository.save(tokens);
-			log.info("Tokens saved to Redis: " + redisRepository.findByAccessToken(tokens.getAccessToken()) );
+		Long memberId = getByEmail(request.email()).getId();
+		Tokens tokens = jwtProvider.generateTokens(memberId);
+		redisRepository.save(tokens);
+		log.info("Tokens saved to Redis: " + redisRepository.findByAccessToken(tokens.getAccessToken()) );
 
-			return new SuccessResponse<>(LOGIN_SUCCESS, tokens);
-		} catch(Exception e){
-			throw new AppException(TOKEN_INVALID);
-		}
-
-
+		return new SuccessResponse<>(LOGIN_SUCCESS, tokens); 
 	}
 
 	@Override
 	public SuccessResponse<NoneResponse> logout(String header, Long id) {
 		String accessToken = header.substring(TOKEN_SPLIT_INDEX);
-
 		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken) );
-
 		redisRepository.deleteByAccessToken(accessToken);
-
 		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken) );
-
 		return new SuccessResponse<>(LOGOUT_SUCCESS, NoneResponse.NONE);
 	}
 
@@ -80,7 +69,6 @@ public class AuthServiceImpl implements AuthService {
 		long memberId = jwtProvider.parseUserId(refreshToken);
 		Tokens newTokens = jwtProvider.generateTokens(memberId);
 		redisRepository.save(newTokens);
-
 		return new SuccessResponse<>(AUTH_TOKEN_CHANGE_SUCCESS, newTokens);
 	}
 
