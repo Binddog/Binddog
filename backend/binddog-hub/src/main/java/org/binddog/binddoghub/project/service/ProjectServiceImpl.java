@@ -42,4 +42,9 @@ public class ProjectServiceImpl implements ProjectService {
                              .toList();
         return new SuccessResponse<>(GET_PROJECT_SUCCESS, response);
     }
+
+    @Override
+    public boolean existsByIdAndMemberId(Long projectId, Long memberId) {
+        return projectRepository.existsByIdAndMemberId(projectId, memberId);
+    }
 }

@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
+    boolean existsByIdAndMemberId(Long id, Long memberId);
+
     List<Project> findByMemberIdOrderByUpdatedAtDesc(Long memberId);
 }

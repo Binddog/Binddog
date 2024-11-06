@@ -10,6 +10,7 @@ import org.binddog.binddoghub.project.dto.req.ProjectCreateReq;
 import org.binddog.binddoghub.project.dto.res.ProjectSearchRes;
 import org.binddog.binddoghub.project.service.ProjectService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +27,11 @@ public class ProjectController {
             description = "View all of a user's projects."
     )
     @GetMapping
-    public ResponseEntity<Response<List<ProjectSearchRes>>> getProjects() {
-        Long memberId = 1L;
-        SuccessResponse<List<ProjectSearchRes>> response = projectService.getProjects(memberId);
+    public ResponseEntity<Response<List<ProjectSearchRes>>> getProjects(
+            @AuthenticationPrincipal Long memberId
+    ) {
+        SuccessResponse<List<ProjectSearchRes>> response
+                = projectService.getProjects(memberId);
         return Response.success(response);
     }
 
@@ -38,10 +41,11 @@ public class ProjectController {
     )
     @PostMapping
     public ResponseEntity<Response<NoneResponse>> createProject(
-            @RequestBody @Valid ProjectCreateReq request
+            @RequestBody @Valid ProjectCreateReq request,
+            @AuthenticationPrincipal Long memberId
     ) {
-        Long memberId = 1L;
-        SuccessResponse<NoneResponse> response = projectService.createProject(memberId, request);
+        SuccessResponse<NoneResponse> response
+                = projectService.createProject(memberId, request);
         return Response.success(response);
     }
 
