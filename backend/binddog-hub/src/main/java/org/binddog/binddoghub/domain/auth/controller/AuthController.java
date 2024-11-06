@@ -32,10 +32,9 @@ public class AuthController {
 
 	@PostMapping("/logout")
 	public ResponseEntity<Response<NoneResponse>> logout(
-			@RequestHeader("Authorization") String header,
-			@AuthenticationPrincipal Long id
+			@RequestHeader("Authorization") String header
 	) {
-		SuccessResponse<NoneResponse> response = authService.logout(header, id);
+		SuccessResponse<NoneResponse> response = authService.logout(header);
 		return Response.success(response);
 	}
 

@@ -45,11 +45,11 @@ public class AuthServiceImpl implements AuthService {
 		redisRepository.save(tokens);
 		log.info("Tokens saved to Redis: " + redisRepository.findByAccessToken(tokens.getAccessToken()) );
 
-		return new SuccessResponse<>(LOGIN_SUCCESS, tokens); 
+		return new SuccessResponse<>(LOGIN_SUCCESS, tokens);
 	}
 
 	@Override
-	public SuccessResponse<NoneResponse> logout(String header, Long id) {
+	public SuccessResponse<NoneResponse> logout(String header) {
 		String accessToken = header.substring(TOKEN_SPLIT_INDEX);
 		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken) );
 		redisRepository.deleteByAccessToken(accessToken);
