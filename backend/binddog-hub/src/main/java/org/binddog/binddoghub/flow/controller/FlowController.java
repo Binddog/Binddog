@@ -11,6 +11,7 @@ import org.binddog.binddoghub.global.enums.NoneResponse;
 import org.binddog.binddoghub.global.response.Response;
 import org.binddog.binddoghub.global.response.SuccessResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static org.binddog.binddoghub.global.enums.SuccessCode.GET_FLOW_SUCCESS;
@@ -43,10 +44,12 @@ public class FlowController {
     @PostMapping("/{projectId}/flows")
     public ResponseEntity<Response<FlowCreateRes>> createFlow(
             @PathVariable Long projectId,
-            @RequestBody FlowCreateReq flowCreateReq
+            @RequestBody FlowCreateReq flowCreateReq,
+            @AuthenticationPrincipal Long memberId
     ) {
         log.info(flowCreateReq.toString());
-        SuccessResponse<FlowCreateRes> response = flowService.createFlow(projectId, flowCreateReq);
+        SuccessResponse<FlowCreateRes> response
+                = flowService.createFlow(memberId, projectId, flowCreateReq);
         log.info("Create Flow Success : [{}]", projectId);
         return Response.success(response);
     }
@@ -59,10 +62,12 @@ public class FlowController {
     public ResponseEntity<Response<NoneResponse>> overWriteFlow(
             @PathVariable Long projectId,
             @PathVariable String flowId,
-            @RequestBody FlowRegisterReq flowRegisterReq
+            @RequestBody FlowRegisterReq flowRegisterReq,
+            @AuthenticationPrincipal Long memberId
     ) {
         log.info(flowRegisterReq.toString());
-        SuccessResponse<NoneResponse> response = flowService.saveFlow(projectId, flowId, flowRegisterReq);
+        SuccessResponse<NoneResponse> response
+                = flowService.saveFlow(memberId, projectId, flowId, flowRegisterReq);
         log.info("OverWrite Flow Success : [{}]", projectId);
         return Response.success(response);
     }
@@ -74,9 +79,11 @@ public class FlowController {
     @DeleteMapping("/{projectId}/flows/{flowId}")
     public ResponseEntity<Response<NoneResponse>> deleteFlow(
             @PathVariable Long projectId,
-            @PathVariable String flowId
+            @PathVariable String flowId,
+            @AuthenticationPrincipal Long memberId
     ) {
-        SuccessResponse<NoneResponse> response = flowService.deleteFlow(projectId, flowId);
+        SuccessResponse<NoneResponse> response
+                = flowService.deleteFlow(memberId, projectId, flowId);
         return Response.success(response);
     }
 
