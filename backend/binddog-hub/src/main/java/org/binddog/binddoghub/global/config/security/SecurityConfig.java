@@ -14,6 +14,7 @@ import org.binddog.binddoghub.global.config.security.filter.AppExceptionFilter;
 import org.binddog.binddoghub.global.config.security.filter.JwtTokenFilter;
 import org.binddog.binddoghub.global.enums.ErrorCode;
 import org.binddog.binddoghub.global.handler.AppException;
+import org.binddog.binddoghub.global.handler.CustomAccessDeniedHandler;
 import org.binddog.binddoghub.global.response.Response;
 import org.binddog.binddoghub.member.entity.Member;
 import org.binddog.binddoghub.member.repository.MemberRepository;
@@ -82,7 +83,7 @@ public class SecurityConfig {
 			return User.builder()
 					   .username(member.getEmail())
 					   .password(member.getPassword())
-					   .authorities(Collections.emptyList())  // roles 대신 빈 authorities 사용
+					   .authorities(Collections.emptyList())
 					   .build();
 		};
 	}
@@ -104,45 +105,19 @@ public class SecurityConfig {
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(PUBLIC_PATHS).permitAll()
 						.requestMatchers(AUTHENTICATED_PATHS).authenticated()
-						.anyRequest().anonymous()  // 나머지는 비로그인 사용자만 접근 가능
+						.anyRequest().anonymous()
 				)
 				.exceptionHandling(handler ->
-						handler.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+						handler.accessDeniedHandler(accessDeniedHandler())
 				)
 				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(appExceptionFilter, JwtTokenFilter.class)
 				.build();
 	}
 
-	private class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-		@Override
-		public void commence(HttpServletRequest request,
-				HttpServletResponse response,
-				AuthenticationException authException) throws IOException {
-			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			response.setContentType("application/json;charset=UTF-8");
-
-			// AUTHENTICATED_PATHS에 해당하는 경로인 경우
-			if (isAuthenticatedPath(request.getRequestURI())) {
-				response.getWriter().write(
-						"{\"error\": \"로그인이 필요한 서비스입니다.\", " +
-								"\"status\": 401, " +
-								"\"path\": \"" + request.getRequestURI() + "\"}"
-				);
-			} else {
-				// 비로그인 사용자만 접근 가능한 경로에 로그인 사용자가 접근한 경우
-				response.setStatus(HttpStatus.FORBIDDEN.value());
-				response.getWriter().write(
-						"{\"error\": \"로그인하지 않은 사용자만 접근 가능합니다.\", " +
-								"\"status\": 403, " +
-								"\"path\": \"" + request.getRequestURI() + "\"}"
-				);
-			}
-		}
-
-		private boolean isAuthenticatedPath(String uri) {
-			return Arrays.stream(AUTHENTICATED_PATHS)
-						 .anyMatch(uri::startsWith);
-		}
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler();
 	}
+
 }
