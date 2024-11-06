@@ -36,6 +36,14 @@ dependencies {
 	// MongoDB
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	//jwt
+	implementation 'io.jsonwebtoken:jjwt:0.12.6'
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
 	// MapStruct
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
