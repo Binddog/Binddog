@@ -50,7 +50,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public SuccessResponse<NoneResponse> logout(String header) {
+		log.info("Header: " + header);
 		String accessToken = header.substring(TOKEN_SPLIT_INDEX);
+		log.info("Access token: " + accessToken);
 		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken) );
 		redisRepository.deleteByAccessToken(accessToken);
 		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken) );

@@ -103,9 +103,8 @@ public class SecurityConfig {
 						sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				)
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(PUBLIC_PATHS).permitAll()
 						.requestMatchers(AUTHENTICATED_PATHS).authenticated()
-						.anyRequest().anonymous()
+						.anyRequest().permitAll()
 				)
 				.exceptionHandling(handler ->
 						handler.accessDeniedHandler(accessDeniedHandler())

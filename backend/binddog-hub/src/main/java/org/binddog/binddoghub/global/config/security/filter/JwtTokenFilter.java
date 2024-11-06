@@ -23,7 +23,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -57,25 +59,32 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	) throws ServletException, IOException {
 
 		try {
-			// 공개 경로는 인증 없이 통과
 			if (isPublicPath(request.getRequestURI())) {
+				log.info("publicPath access granted");
 				filterChain.doFilter(request, response);
 				return;
 			}
 
-			// 인증이 필요한 경로인 경우 토큰 검증
 			if (isAuthenticatedPath(request.getRequestURI())) {
+				log.info("AuthenticatedPath access checking...");
+
 				String token = extractToken(request);
 				if (token != null) {
 					processAuthentication(request, token);
+					log.info("AuthenticatedPath access granted");
 				} else {
+					log.error("AuthenticatedPath access denied");
 					throw new AppException(ErrorCode.TOKEN_INVALID);
 				}
 			}
 
+			log.info("filter processing...");
 			filterChain.doFilter(request, response);
+			log.info("filter process finished");
 		} catch (AppException e) {
 			throw new AppException(ErrorCode.TOKEN_INVALID);
+		} catch (Exception e) {
+			log.info("error");
 		}
 	}
 
@@ -88,30 +97,46 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	}
 
 	private void processAuthentication(HttpServletRequest request, String token) {
-		Long userId = jwtProvider.parseUserId(token);
-
-		// Redis에서 로그아웃된 토큰인지 확인
-		redisRepository.findByAccessToken(token);  // 로그아웃된 토큰이면 예외 발생
-
-		// 토큰 유효성 검증
-		if (!jwtProvider.isValid(token, userId)) {
+		Long memberId;
+		try {
+			memberId = jwtProvider.parseUserId(token);
+		} catch (Exception e) {
+			log.error("Failed to parse user ID from token: {}", token, e);
 			throw new AppException(ErrorCode.TOKEN_INVALID);
 		}
 
+		try {
+			redisRepository.findByAccessToken(token);
+			log.info("Token found in Redis: {}", token);
+		} catch (Exception e) {
+			log.warn("Token not found in Redis or token is expired: {}", token);
+			throw new AppException(ErrorCode.TOKEN_NOT_FOUND);
+		}
+
+		// 토큰 유효성 검증
+		if (!jwtProvider.isValid(token, memberId)) {
+			throw new AppException(ErrorCode.TOKEN_INVALID);
+		}
+		log.info("Token valid: {}", token);
+
 		// 인증 정보 설정
-		Member member = memberRepository.findById(userId)
-										.orElseThrow(() -> new AppException(ErrorCode.TOKEN_INVALID));
+		Member member = memberRepository.findById(memberId)
+										.orElseThrow(() -> new AppException(ErrorCode.MEMBER_NOT_FOUND));
+		log.info("matching member in DB: {}", member);
 
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
 		UsernamePasswordAuthenticationToken authentication =
 				new UsernamePasswordAuthenticationToken(
-						userId,
+						memberId,
 						null,
-						Collections.emptyList()  // 권한 없이 인증만 표시
+						Collections.emptyList()
 				);
 
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		context.setAuthentication(authentication);
+
+		log.info("SecurityContext: {}", context);
+
 		SecurityContextHolder.setContext(context);
 	}
 

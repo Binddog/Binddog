@@ -36,3 +36,6 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}

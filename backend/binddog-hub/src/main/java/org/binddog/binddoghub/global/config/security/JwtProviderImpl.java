@@ -22,7 +22,7 @@ public class JwtProviderImpl implements JwtProvider {
 
 	private static final long ACCESS_TOKEN_EXPIRED_TIME = 1000L * 60 * 60;
 	private static final long REFRESH_TOKEN_EXPIRED_TIME = 1000L * 60 * 60 * 24 * 7;
-	@Value("${JWT_SECRET_KEY}")
+	@Value("${jwt.secret-key}")
 	private String SIGNING_KEY;
 
 	@Override
