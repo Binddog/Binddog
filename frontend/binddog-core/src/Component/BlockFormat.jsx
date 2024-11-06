@@ -17,6 +17,7 @@ export default function BlockFormat({ data }) {
         width: "220px",
         padding: "8px 8px 2px",
         cursor: "grab",
+        boxShadow: "-4px 4px 2px rgba(0, 0, 0, 0.4)",
       }}
     >
       <Handle type="target" position={Position.Left} />
