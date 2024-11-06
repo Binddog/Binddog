@@ -1,8 +1,37 @@
+import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 const LoginPage = () => {
   const theme = useTheme();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const handleLogin = () => {
+    if (email === "test@example.com" && password === "password123") {
+      setSnackbarMessage("로그인 성공!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } else {
+      setSnackbarMessage("로그인 실패! 이메일과 비밀번호를 확인하세요.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   return (
     <Box
@@ -30,6 +59,8 @@ const LoginPage = () => {
           id="email"
           variant="outlined"
           fullWidth
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           sx={{
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
@@ -58,6 +89,8 @@ const LoginPage = () => {
           type="password"
           variant="outlined"
           fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           sx={{
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
@@ -83,6 +116,7 @@ const LoginPage = () => {
         <Button
           variant="contained"
           fullWidth
+          onClick={handleLogin}
           sx={{
             backgroundColor: theme.palette.primary.main,
             borderRadius: "20px",
@@ -98,6 +132,20 @@ const LoginPage = () => {
         >
           로그인하기
         </Button>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarSeverity}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );
