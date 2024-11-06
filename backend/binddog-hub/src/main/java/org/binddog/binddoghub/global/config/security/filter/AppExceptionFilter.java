@@ -14,7 +14,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class AppExceptionFilter extends OncePerRequestFilter {
 
@@ -22,10 +24,14 @@ public class AppExceptionFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
+			log.info("AppExceptionFilter processing...");
 			doFilter(request, response, filterChain);
+			log.info("AppExceptionFilter process completed");
 		} catch (JwtException e) {
+			log.error("AppExceptionFilter filtered invalid token");
 			JsonResponseUtils.writeHttpErrorResponse(response, TOKEN_INVALID);
 		} catch (AppException e) {
+			log.error("unknown error appears in AppExceptionFilter");
 			JsonResponseUtils.writeHttpErrorResponse(response, e.getErrorCode());
 		}
 	}
