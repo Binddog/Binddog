@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 const SignUpPage = () => {
   const theme = useTheme();
@@ -11,13 +18,17 @@ const SignUpPage = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const validateEmail = () => {
     if (!/\S+@\S+\.\S+/.test(email)) {
       setEmailError("올바른 이메일 형식을 입력해주세요.");
-    } else {
-      setEmailError("");
+      return false;
     }
+    setEmailError("");
+    return true;
   };
 
   const validatePassword = () => {
@@ -27,17 +38,19 @@ const SignUpPage = () => {
       setPasswordError(
         "비밀번호는 최소 8자 이상이며 대소문자, 숫자 및 특수문자를 포함해야 합니다."
       );
-    } else {
-      setPasswordError("");
+      return false;
     }
+    setPasswordError("");
+    return true;
   };
 
   const validatePasswordConfirm = () => {
     if (password !== passwordConfirm) {
       setPasswordConfirmError("비밀번호가 일치하지 않습니다.");
-    } else {
-      setPasswordConfirmError("");
+      return false;
     }
+    setPasswordConfirmError("");
+    return true;
   };
 
   const handlePasswordChange = (e) => {
@@ -56,13 +69,23 @@ const SignUpPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    validateEmail();
-    validatePassword();
-    validatePasswordConfirm();
+    const isEmailValid = validateEmail();
+    const isPasswordValid = validatePassword();
+    const isPasswordConfirmValid = validatePasswordConfirm();
 
-    if (!emailError && !passwordError && !passwordConfirmError) {
+    if (isEmailValid && isPasswordValid && isPasswordConfirmValid) {
+      setSnackbarMessage("회원가입 성공");
+      setSnackbarSeverity("success");
       console.log("회원가입 성공:", { email, password });
+    } else {
+      setSnackbarMessage("회원가입 실패: 입력 정보를 확인해주세요.");
+      setSnackbarSeverity("error");
     }
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -212,6 +235,21 @@ const SignUpPage = () => {
           회원가입하기
         </Button>
       </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
