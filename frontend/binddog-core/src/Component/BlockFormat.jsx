@@ -1,13 +1,22 @@
 import React from "react";
 import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Handle, Position, NodeProps, Node } from '@xyflow/react';
+import { Handle, Position } from "@xyflow/react";
 
 // ReactFlow 안에 생기는 블록 커스텀 포맷
 export default function BlockFormat({ data }) {
   const theme = useTheme();
 
-  const { method, apiName, endpoint } = data;
+  // JSON 데이터에서 전달받은 추가적인 속성을 구조 분해 할당
+  const {
+    method,
+    apiName,
+    endpoint,
+    header,
+    parameter,
+    pathVariable,
+    response,
+  } = data;
 
   return (
     <Card
@@ -29,13 +38,7 @@ export default function BlockFormat({ data }) {
           gap: 1,
         }}
       >
-        <Typography
-          sx={{
-            ...theme.method,
-          }}
-        >
-          {method}
-        </Typography>
+        <Typography sx={theme.method}>{method}</Typography>
 
         <Box
           sx={{
@@ -58,26 +61,38 @@ export default function BlockFormat({ data }) {
               overflowWrap: "break-word",
             }}
           >
-            <Typography
-              sx={{
-                ...theme.api,
-              }}
-            >
-              {apiName}
-            </Typography>
+            <Typography sx={theme.api}>{apiName}</Typography>
           </Box>
-          <Typography
-            sx={{
-              ...theme.endpoint,
-              wordBreak: "keep-all",
-              overflowWrap: "break-word",
-              padding: "5px",
-            }}
-          >
+          <Typography sx={{ ...theme.endpoint, padding: "5px" }}>
             {endpoint}
           </Typography>
         </Box>
       </Box>
+
+      {/* 추가 속성 렌더링 */}
+      <Box>
+        {header && (
+          <Typography sx={theme.api}>
+            Header: {JSON.stringify(header)}
+          </Typography>
+        )}
+        {parameter && (
+          <Typography sx={theme.api}>
+            Parameter: {JSON.stringify(parameter)}
+          </Typography>
+        )}
+        {pathVariable && (
+          <Typography sx={theme.api}>
+            Path Variable: {JSON.stringify(pathVariable)}
+          </Typography>
+        )}
+        {response && (
+          <Typography sx={theme.api}>
+            Response: {JSON.stringify(response)}
+          </Typography>
+        )}
+      </Box>
+
       <Handle type="source" position={Position.Right} id="a" />
     </Card>
   );

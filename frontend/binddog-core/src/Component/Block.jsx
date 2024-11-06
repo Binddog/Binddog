@@ -28,13 +28,7 @@ export default function Block({ method, apiName, endpoint, id, addNode }) {
           gap: 1,
         }}
       >
-        <Typography
-          sx={{
-            ...theme.method,
-          }}
-        >
-          {method}
-        </Typography>
+        <Typography sx={{ ...theme.method }}>{method}</Typography>
 
         <Box
           sx={{
@@ -57,13 +51,7 @@ export default function Block({ method, apiName, endpoint, id, addNode }) {
               overflowWrap: "break-word",
             }}
           >
-            <Typography
-              sx={{
-                ...theme.api,
-              }}
-            >
-              {apiName}
-            </Typography>
+            <Typography sx={{ ...theme.api }}>{apiName}</Typography>
           </Box>
           <Typography
             sx={{
