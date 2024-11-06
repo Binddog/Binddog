@@ -11,7 +11,8 @@ function BlockList({ li = blocks, name, addNode }) {
     <Box
       sx={{
         width: "250px",
-        bgcolor: theme.palette.primary.dark,
+        height: "100%",
+        bgcolor: "#F7F7F7",
         display: "flex",
         flexDirection: "column",
         padding: "50px",
