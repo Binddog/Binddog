@@ -12,4 +12,6 @@ public interface ProjectService {
     SuccessResponse<NoneResponse> createProject(Long memberId, ProjectCreateReq request);
 
     SuccessResponse<List<ProjectSearchRes>> getProjects(Long memberId);
+
+    boolean existsByIdAndMemberId(Long projectId, Long memberId);
 }
