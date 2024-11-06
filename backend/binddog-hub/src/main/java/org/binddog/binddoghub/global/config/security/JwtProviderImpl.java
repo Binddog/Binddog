@@ -22,8 +22,7 @@ public class JwtProviderImpl implements JwtProvider {
 
 	private static final long ACCESS_TOKEN_EXPIRED_TIME = 1000L * 60 * 60;
 	private static final long REFRESH_TOKEN_EXPIRED_TIME = 1000L * 60 * 60 * 24 * 7;
-
-	@Value("${JWT_SECRET_KEY}") //TODO: 환경변수에 이거 추가하기
+	@Value("${JWT_SECRET_KEY}")
 	private String SIGNING_KEY;
 
 	@Override
@@ -42,13 +41,22 @@ public class JwtProviderImpl implements JwtProvider {
 		return Objects.equals(userId, extractedUserId) && !isTokenExpired(token);
 	}
 
-	private boolean isTokenExpired(String token) {
-		return extractExpiration(token).before(new Date());
-	}
-
 	@Override
 	public long parseUserId(String refreshToken) {
 		return Long.parseLong(extractClaim(refreshToken, Claims::getSubject));
+	}
+
+	private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
+		final Claims claims = extractAllClaims(token);
+		return claimsResolvers.apply(claims);
+	}
+
+	private Claims extractAllClaims(String token) {
+		return Jwts.parser()
+				   .verifyWith(getKey())
+				   .build()
+				   .parseSignedClaims(token)
+				   .getPayload();
 	}
 
 	private String generateAccessToken(Long memberId) {
@@ -71,21 +79,12 @@ public class JwtProviderImpl implements JwtProvider {
 		return compact;
 	}
 
-	private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
-		final Claims claims = extractAllClaims(token);
-		return claimsResolvers.apply(claims);
+	private boolean isTokenExpired(String token) {
+		return extractExpiration(token).before(new Date());
 	}
 
 	private Date extractExpiration(String token) {
 		return extractClaim(token, Claims::getExpiration);
-	}
-
-	private Claims extractAllClaims(String token) {
-		return Jwts.parser()
-				   .verifyWith(getKey())
-				   .build()
-				   .parseSignedClaims(token)
-				   .getPayload();
 	}
 
 	private SecretKey getKey() {
