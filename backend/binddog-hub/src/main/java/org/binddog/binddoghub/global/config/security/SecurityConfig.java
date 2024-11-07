@@ -109,8 +109,8 @@ public class SecurityConfig {
 				.exceptionHandling(handler ->
 						handler.accessDeniedHandler(accessDeniedHandler())
 				)
-				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-				.addFilterBefore(appExceptionFilter, JwtTokenFilter.class)
+				.addFilterBefore(appExceptionFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(jwtTokenFilter, AppExceptionFilter.class)
 				.build();
 	}
 
