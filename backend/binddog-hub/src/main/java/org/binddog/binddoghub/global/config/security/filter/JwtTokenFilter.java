@@ -36,9 +36,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	// 인증이 필요한 URL 패턴들
 	private static final String[] AUTHENTICATED_PATHS = {
 			"/api/auths/logout",
-			"/api/projects/",
-			"/api/projects/{projectId}/flows",
-			"/api/projects/{projectId}/flows/{flowId}"
+			"/api/projects",
 	};
 
 	// 인증이 필요없는 URL 패턴들
