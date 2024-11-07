@@ -1,10 +1,12 @@
 import {React, useState, useEffect} from "react";
 import SideNav from "../Component/SideNav";
-import { Box, Typography, IconButton, Menu, MenuItem, Modal } from "@mui/material";
+import { Box, Typography, IconButton, Menu, MenuItem, Modal, Input } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import HubBlock from "../Component/HubBlock";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import TextField from '@mui/material/TextField';
 
 function HubList() {
   const theme = useTheme();
@@ -97,7 +99,7 @@ function HubList() {
               ...theme.typography.h2,
             }}
           >
-            허브 확인 페이지 (허브 리스트)
+            허브 확인 페이지 (허브 리스트 - 프로젝트 리스트임) 추후 프로젝트 별 플로우 리스트가 필요
           </Typography>
           <IconButton sx={{color:theme.palette.common.grey}}>
             <MoreVertIcon />
@@ -186,14 +188,49 @@ function HubList() {
       >
         <Box
           sx={{
-            width: "300px",
-            height: "200px",
+            width: "600px",
+            height: "250px",
             bgcolor: theme.palette.common.white,
-
+            borderRadius: "8px",
+            display: "flex",
+            flexDirection: "column",
+            padding: "10px"
           }}
         >
-          내용임
-          <IconButton onClick={CloseModal}>닫는거야</IconButton>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              sx={[
+                theme.typography.h2,
+                {
+                  flexGrow: 4,
+                  display: "flex",
+                  justifyContent: "center",
+                }
+              ]}
+            >
+              프로젝트 생성
+            </Typography>
+            <IconButton
+              onClick={CloseModal}
+              sx={{
+                color: theme.palette.common.grey,
+                cursor: "pointer",
+                "&:hover": {
+                  bgcolor: theme.palette.common.lightgrey,
+                },
+              }}
+            >
+              <HighlightOffIcon/>
+            </IconButton>
+          </Box>
+          <Box>
+            <Input></Input>
+          </Box>
         </Box>
 
       </Modal>
