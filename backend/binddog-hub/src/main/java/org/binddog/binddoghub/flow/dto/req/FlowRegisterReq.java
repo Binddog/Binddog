@@ -13,6 +13,9 @@ import java.util.Map;
 @ToString
 public class FlowRegisterReq {
 
+    private String title;
+    private String description;
+
     private List<Block> blocks;
     private List<Link> links;
     private Mapping mapping;
