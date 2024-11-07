@@ -1,6 +1,7 @@
 package org.binddog.binddoghub.project.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.binddog.binddoghub.global.enums.NoneResponse;
 import org.binddog.binddoghub.global.response.SuccessResponse;
 import org.binddog.binddoghub.member.entity.Member;
@@ -17,6 +18,7 @@ import java.util.List;
 import static org.binddog.binddoghub.global.enums.SuccessCode.GET_PROJECT_SUCCESS;
 import static org.binddog.binddoghub.global.enums.SuccessCode.PROJECT_CREATED;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -35,6 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public SuccessResponse<List<ProjectSearchRes>> getProjects(Long memberId) {
+        log.info("ProjectServiceImpl.getProjects : ({})", memberId);
         List<Project> projectList = projectRepository.findByMemberIdOrderByUpdatedAtDesc(memberId);
         List<ProjectSearchRes> response
                 = projectList.stream()

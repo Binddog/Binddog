@@ -2,6 +2,7 @@ package org.binddog.binddoghub.member.repository;
 
 import java.util.Optional;
 
+import org.binddog.binddoghub.global.handler.AppException;
 import org.binddog.binddoghub.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,5 +14,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByEmail(final String email);
 
-	Optional<Member> findByEmail(String email);
+    Optional<Member> findByEmail(String email);
+
+    default Member getById(final Long memberId) {
+        return findById(memberId).orElseThrow(() -> new AppException(NOT_FOUND_MEMBER));
+    }
 }

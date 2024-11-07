@@ -82,6 +82,9 @@ public class FlowController {
             @PathVariable String flowId,
             @AuthenticationPrincipal Long memberId
     ) {
+        log.info("FlowController.deleteFlow (memberId : {})", memberId);
+        log.info("FlowController.deleteFlow (projectId : {})", projectId);
+        log.info("FlowController.deleteFlow (flowId : {})", flowId);
         SuccessResponse<NoneResponse> response
                 = flowService.deleteFlow(memberId, projectId, flowId);
         return Response.success(response);

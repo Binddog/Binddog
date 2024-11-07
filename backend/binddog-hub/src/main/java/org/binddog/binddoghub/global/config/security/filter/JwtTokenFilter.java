@@ -82,6 +82,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			log.info("filter process finished");
 		} catch (AppException e) {
+			log.info("filter throws AppException ({})", e.getMessage());
 			throw new AppException(ErrorCode.TOKEN_INVALID);
 		} catch (Exception e) {
 			log.info("error");
