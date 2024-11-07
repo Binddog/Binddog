@@ -13,6 +13,8 @@ import java.util.List;
 public interface FlowMapper {
 
     @Mapping(target = "flowId", source = "flowId")
+    @Mapping(target = "title", source = "flow.title")
+    @Mapping(target = "description", source = "flow.description")
     @Mapping(target = "blocks", source = "flow.blocks", qualifiedByName = "mapBlocks")
     @Mapping(target = "links", source = "flow.links", qualifiedByName = "mapLinks")
     @Mapping(target = "mapping", expression = "java(toMapping(flow.getMapping()))")
