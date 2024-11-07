@@ -1,19 +1,22 @@
 import {React, useState, useEffect} from "react";
 import SideNav from "../Component/SideNav";
-import { Box, Typography, IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, Typography, IconButton, Menu, MenuItem, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import HubBlock from "../Component/HubBlock";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 function HubList() {
   const theme = useTheme();
 
+  const [title, setTitle] = useState("기본제목");
+
   // 바로 생성될 때 확인을 위해 useState로 변경
   const [li, setLi] = useState([
-    { id: 1, title: "FLOW1" },
-    { id: 2, title: "FLOW2" },
-    { id: 3, title: "FLOW3" },
-    { id: 4, title: "FLOW4" },
+    // { id: 1, title: "FLOW1" },
+    // { id: 2, title: "FLOW2" },
+    // { id: 3, title: "FLOW3" },
+    // { id: 4, title: "FLOW4" },
   ]);
 
   // id 오름차순 정렬
@@ -53,6 +56,17 @@ function HubList() {
     handleKebabClose();
   };
 
+  // 모달 관련 로직
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const CloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const OpenModal = () => {
+    setIsModalOpen(true);
+  };
+
 
   return (
     <Box
@@ -85,7 +99,7 @@ function HubList() {
           >
             허브 확인 페이지 (허브 리스트)
           </Typography>
-          <IconButton onClick={handleKebabToggle} sx={{color:theme.palette.common.grey}}>
+          <IconButton sx={{color:theme.palette.common.grey}}>
             <MoreVertIcon />
           </IconButton>
           <Menu
@@ -100,24 +114,89 @@ function HubList() {
           </Menu>
 
         </Box>
+          {li.length > 0 ? (
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "grid",
+                gridTemplateColumns: {
+                  lg: "repeat(2, 1fr)",
+                  xl: "repeat(3, 1fr)",
+                },
+                gap: 5,
+                justifyItems: "center",
+                marginTop: "20px",
+              }}
+            >
+              {li.map((item) => (
+                <HubBlock key={item.id} inId={item.id} flowName={item.title} />
+                ))}
+            </Box>
+        ) : (
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                marginTop: "40px",
+              }}
+            >
+              <Box
+                sx={{
+                  width: "40%",
+                  height: "40%",
+                  display: "flex",
+                  border: `${theme.palette.common.lightgrey} dashed 2px`,
+                  borderRadius: "8px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <IconButton
+                  onClick={OpenModal}
+                  sx={[
+                    theme.typography.h3,
+                    {
+                      color: theme.palette.common.grey,
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "10px",
+                      border: "none",
+                      cursor: "pointer",
+                      "&:hover": {
+                        bgcolor: theme.palette.common.lightgrey,
+                      },
+                    },
+                  ]}
+                >
+                  <AddCircleOutlineIcon />
+                </IconButton>
+              </Box>
+            </Box>
+          )}
+      </Box>
 
+      <Modal
+        open={isModalOpen}
+        onClose={CloseModal}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
         <Box
           sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              lg: "repeat(2, 1fr)",
-              xl: "repeat(3, 1fr)",
-            },
-            gap: 5,
-            justifyItems: "center",
-            marginTop: "20px",
+            width: "300px",
+            height: "200px",
+            bgcolor: theme.palette.common.white,
+
           }}
         >
-          {li.map((item) => (
-            <HubBlock key={item.id} inId={item.id} flowName={item.title} />
-          ))}
+          내용임
+          <IconButton onClick={CloseModal}>닫는거야</IconButton>
         </Box>
-      </Box>
+
+      </Modal>
     </Box>
   );
 }
