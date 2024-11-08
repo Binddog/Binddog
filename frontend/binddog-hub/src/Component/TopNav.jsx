@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button, Popover } from "@mui/material";
 import Avatar from "boring-avatars";
 
-function TopNav({ userName = "UserNamema" }) {
+function TopNav({ isLogin, handleLogout, email }) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const isLogin = true;
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const buttons = [
     { label: "Home", onClick: () => navigate("/") },
@@ -17,8 +17,21 @@ function TopNav({ userName = "UserNamema" }) {
 
   const authButtons = [
     { label: "Login", onClick: () => navigate("/login") },
-    { label: "SignUp", onClick: () => navigate("/signup") },
+    { label: "SignUp", onClick: () => navigate("/signUp") },
   ];
+
+  const userName = email && email.includes("@") ? email.split("@")[0] : "User";
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "user-popover" : undefined;
 
   return (
     <Box
@@ -65,13 +78,54 @@ function TopNav({ userName = "UserNamema" }) {
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         {isLogin ? (
           <>
-            <Avatar
-              size={40}
-              name={userName}
-              variant="beam"
-              colors={["#FB6A4A", "#A1D99B", "#41B6C4", "#FDAE6B", "#C994C7"]}
-            />
-            <Typography sx={{ ...theme.typography.h3 }}>{userName}</Typography>
+            <Button
+              aria-describedby={id}
+              onClick={handlePopoverOpen}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                textTransform: "none",
+                color: theme.palette.text.primary,
+                background: "transparent",
+                "&:hover": { background: "transparent" },
+              }}
+            >
+              <Avatar
+                size={40}
+                name={userName}
+                variant="beam"
+                colors={["#FB6A4A", "#A1D99B", "#41B6C4", "#FDAE6B", "#C994C7"]}
+              />
+              <Typography sx={{ ...theme.typography.h3, marginLeft: "8px" }}>
+                {userName}
+              </Typography>
+            </Button>
+
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handlePopoverClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+            >
+              <Button
+                onClick={() => {
+                  handleLogout();
+                  handlePopoverClose();
+                }}
+                sx={{
+                  ...theme.typography,
+                  fontSize: theme.fontSize.medium,
+                  padding: "10px 20px",
+                  color: theme.palette.text.primary,
+                }}
+              >
+                Logout
+              </Button>
+            </Popover>
           </>
         ) : (
           authButtons.map((button, index) => (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import {
   Box,
@@ -8,29 +9,54 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { logIn } from "../api/user";
 
-const LoginPage = () => {
+const LoginPage = ({ onLogin }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const handleLogin = () => {
-    if (email === "test@example.com" && password === "password123") {
-      setSnackbarMessage("로그인 성공!");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-    } else {
-      setSnackbarMessage("로그인 실패! 이메일과 비밀번호를 확인하세요.");
+  const handleLogin = async () => {
+    try {
+      const response = await logIn(email, password);
+      if (response.resultCode === "SUCCESS") {
+        setSnackbarMessage("로그인 성공!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        onLogin(email);
+
+        navigate("/");
+
+        setTimeout(() => {
+          setSnackbarOpen(false);
+        }, 3000);
+      } else {
+        setSnackbarMessage("로그인 실패! 이메일과 비밀번호를 확인하세요.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      setSnackbarMessage("로그인 실패: 서버와의 통신에 문제가 있습니다.");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
+      console.log(email, password);
+      console.error("로그인 실패:", error);
     }
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
   };
 
   return (
@@ -41,6 +67,7 @@ const LoginPage = () => {
         justifyContent: "center",
         minHeight: "50vh",
       }}
+      onKeyDown={handleKeyDown}
     >
       <Box
         sx={{

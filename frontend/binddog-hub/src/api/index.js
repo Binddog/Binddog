@@ -1,14 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 // import Cookies from 'js-cookie';
 // import { enqueueSnackbar } from 'notistack';
-import { API_URL } from '../config';  // config.js 파일에서 API_URL을 가져옵니다.
 
 // Axios 인스턴스 생성 및 설정
 const Axios = axios.create({
-  baseURL: API_URL,  // API URL 설정
+  baseURL: process.env.REACT_APP_API_URL, // API URL 설정
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   // withCredentials: true,
 });

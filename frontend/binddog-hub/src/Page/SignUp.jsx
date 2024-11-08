@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import {
   Box,
@@ -8,9 +9,11 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { signUp } from "../api/user";
 
 const SignUpPage = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,21 +70,41 @@ const SignUpPage = () => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
     const isPasswordConfirmValid = validatePasswordConfirm();
 
     if (isEmailValid && isPasswordValid && isPasswordConfirmValid) {
-      setSnackbarMessage("회원가입 성공");
-      setSnackbarSeverity("success");
-      console.log("회원가입 성공:", { email, password });
+      try {
+        const response = await signUp(email, password);
+        if (response.data.resultCode === "SUCCESS") {
+          setSnackbarMessage("회원가입 성공");
+          setSnackbarSeverity("success");
+          console.log("회원가입 성공:", response.data);
+          setSnackbarOpen(true);
+
+          setTimeout(() => {
+            navigate("/login");
+          }, 1000);
+        } else {
+          setSnackbarMessage("회원가입 실패: 서버 에러가 발생했습니다.");
+          setSnackbarSeverity("error");
+          console.log("회원가입 실패:", response.data);
+          setSnackbarOpen(true);
+        }
+      } catch (error) {
+        setSnackbarMessage("회원가입 실패: 서버와의 통신에 문제가 있습니다.");
+        setSnackbarSeverity("error");
+        console.error("회원가입 실패:", error);
+        setSnackbarOpen(true);
+      }
     } else {
       setSnackbarMessage("회원가입 실패: 입력 정보를 확인해주세요.");
       setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
-    setSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => {
