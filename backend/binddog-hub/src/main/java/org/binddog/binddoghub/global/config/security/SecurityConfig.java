@@ -9,6 +9,7 @@ import java.util.Collections;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.binddog.binddoghub.global.config.security.filter.AppExceptionFilter;
 import org.binddog.binddoghub.global.config.security.filter.JwtTokenFilter;
@@ -42,6 +43,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -109,9 +111,32 @@ public class SecurityConfig {
 						.requestMatchers(AUTHENTICATED_PATHS).authenticated()
 						.anyRequest().permitAll()
 				)
+				.exceptionHandling(handler -> handler
+						.authenticationEntryPoint(authenticationEntryPoint())
+				)
 				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(appExceptionFilter, JwtTokenFilter.class)
 				.build();
+	}
+
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+		return (request, response, authException) -> {
+			ErrorCode errorCode;
+			Throwable cause = authException.getCause();
+			if (cause instanceof AppException) {
+				errorCode = ((AppException) cause).getErrorCode();
+				log.error("Authentication failed with AppException: {}", errorCode);
+			} else {
+				errorCode = ErrorCode.AUTHENTICATION_FAILED;  // 새로운 ErrorCode 추가 필요
+				log.error("Unexpected authentication error: {}", authException.getMessage());
+			}
+
+			Response<Void> errorResponse = Response.error(errorCode, null);
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			response.setContentType("application/json;charset=UTF-8");
+			response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+		};
 	}
 
 }

@@ -13,6 +13,7 @@ public enum ErrorCode implements ResponseCode {
     TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "Invalid or expired token."),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "Token not found."),
     TOKEN_EMPTY(HttpStatus.NOT_FOUND, "Token is required but empty."),
+    AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "Authentication failed."),
 
     // Member Error code
     EMAIL_DUPLICATED(HttpStatus.CONFLICT, "Email is duplicated"),
