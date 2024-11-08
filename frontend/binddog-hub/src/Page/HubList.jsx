@@ -20,7 +20,7 @@ function HubList() {
   ]);
 
   const handleCreate = () => {
-    setLi((prevLi) => [...prevLi, { id:li.length, title, description }]);
+    setLi((prevLi) => [...prevLi, { id:(li.length+1), title, description }]);
   };
 
 
@@ -28,9 +28,9 @@ function HubList() {
   const [description, setDescription] = useState("기본 설명");
 
   const makeProject = () => {
-    handleCreate();
     setTitle("기본 제목" + (li.length + 1));
     setDescription("기본 설명");
+    handleCreate();
     CloseModal();
   }
 

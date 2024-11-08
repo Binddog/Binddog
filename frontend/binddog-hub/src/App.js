@@ -7,6 +7,7 @@ import Home from "./Page/Home";
 import Docs from "./Page/Docs";
 import TopNav from "./Component/TopNav";
 import HubList from "./Page/HubList";
+import HubFlowList from './Page/HubFlowList';
 import Login from "./Page/Login";
 import SignUp from "./Page/SignUp";
 import Loading from "./Component/Loading";
@@ -44,6 +45,7 @@ function App() {
           <Route path="/hubList" element={<HubList />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUp />} />
+          <Route path="/hubList/:id" element={<HubFlowList />} />
         </Routes>
       </Box>
     </ThemeProvider>
