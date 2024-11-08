@@ -21,6 +21,7 @@ public enum SuccessCode implements ResponseCode {
     USER_CREATED(HttpStatus.CREATED, "Member creation has been completed."),
 
     // Flow API
+    GET_ALL_FLOW_SUCCESS(HttpStatus.OK, "All flow retrieval completed successfully."),
     GET_FLOW_SUCCESS(HttpStatus.OK, "Flow retrieval completed successfully."),
     REGISTER_FLOW_SUCCESS(HttpStatus.OK, "Flow registration completed successfully."),
     DELETE_FLOW_SUCCESS(HttpStatus.NO_CONTENT, "Flow deletion completed successfully."),
