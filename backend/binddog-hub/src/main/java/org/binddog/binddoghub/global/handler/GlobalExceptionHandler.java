@@ -60,10 +60,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     // INTERNAL_SERVER_ERROR error(500) handler
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> commonExceptionHandler() {
-        return makeErrorResponse(INTERNAL_SERVER_ERROR);
-    }
+    // @ExceptionHandler(Exception.class)
+    // public ResponseEntity<?> commonExceptionHandler() {
+    //     return makeErrorResponse(INTERNAL_SERVER_ERROR);
+    // }
 
     private ResponseEntity<Object> makeErrorResponse(ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getHttpStatus())
