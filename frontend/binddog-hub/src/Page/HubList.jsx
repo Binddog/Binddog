@@ -1,6 +1,6 @@
 import {React, useState, useEffect} from "react";
 import SideNav from "../Component/SideNav";
-import { Box, Typography, IconButton, Menu, MenuItem, Modal, Input } from "@mui/material";
+import { Box, Typography, IconButton, Menu, MenuItem, Modal, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import HubBlock from "../Component/HubBlock";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -11,8 +11,6 @@ import TextField from '@mui/material/TextField';
 function HubList() {
   const theme = useTheme();
 
-  const [title, setTitle] = useState("기본제목");
-
   // 바로 생성될 때 확인을 위해 useState로 변경
   const [li, setLi] = useState([
     // { id: 1, title: "FLOW1" },
@@ -20,6 +18,23 @@ function HubList() {
     // { id: 3, title: "FLOW3" },
     // { id: 4, title: "FLOW4" },
   ]);
+
+  const handleCreate = () => {
+    setLi((prevLi) => [...prevLi, { id:li.length, title, description }]);
+  };
+
+
+  const [title, setTitle] = useState("기본 제목" + (li.length+1));
+  const [description, setDescription] = useState("기본 설명");
+
+  const makeProject = () => {
+    console.log(title);
+    console.log(`설명은? : ${description}`);
+    handleCreate();
+    setTitle("기본 제목" + (li.length + 1));
+    setDescription("기본 설명");
+    CloseModal();
+  }
 
   // id 오름차순 정렬
   const sortByIdAsc = () => {
@@ -87,35 +102,76 @@ function HubList() {
           overflow: "auto",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography
+        {li.length > 0 ? (
+          <Box
             sx={{
-              ...theme.typography.h2,
+              height: "50px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            허브 확인 페이지 (허브 리스트 - 프로젝트 리스트임) 추후 프로젝트 별 플로우 리스트가 필요
-          </Typography>
-          <IconButton sx={{color:theme.palette.common.grey}}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={isKebabOpen}
-            onClose={handleKebabClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-          >
-            <MenuItem onClick={sortByIdDesc} sx={theme.typography.sub}>최신순</MenuItem>
-            <MenuItem onClick={sortByIdAsc} sx={theme.typography.sub}>오래된순</MenuItem>
-          </Menu>
-
-        </Box>
+            <Typography
+              sx={{
+                ...theme.typography.h2,
+              }}
+            >
+              허브 확인 페이지 (프로젝트 리스트임) 추후 프로젝트 별 플로우 리스트가 필요
+            </Typography>
+            <Box>
+              <Typography
+                component={Button}
+                onClick={OpenModal}
+                sx={[
+                  theme.typography.h3,
+                  {
+                    padding: "10px",
+                    borderRadius: "10px",
+                    border: "none",
+                    bgcolor: theme.palette.primary.main,
+                    cursor: "pointer",
+                    "&:hover": {
+                      bgcolor: theme.palette.primary.dark,
+                    },
+                  },
+                ]}
+              >
+                프로젝트 생성하기
+              </Typography>
+              <IconButton onClick={handleKebabToggle} sx={{color:theme.palette.common.grey}}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={isKebabOpen}
+                onClose={handleKebabClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              >
+                <MenuItem onClick={sortByIdDesc} sx={theme.typography.sub}>최신순</MenuItem>
+                <MenuItem onClick={sortByIdAsc} sx={theme.typography.sub}>오래된순</MenuItem>
+              </Menu>
+            </Box>
+          </Box>
+        ) : (
+            <Box
+              sx={{
+                height: "50px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                sx={{
+                  ...theme.typography.h2,
+                }}
+              >
+                허브 확인 페이지 (허브 리스트 - 프로젝트 리스트임) 추후 프로젝트 별 플로우 리스트가 필요
+              </Typography>
+            </Box>
+        )}
+        
           {li.length > 0 ? (
             <Box
               sx={{
@@ -228,8 +284,91 @@ function HubList() {
               <HighlightOffIcon/>
             </IconButton>
           </Box>
-          <Box>
-            <Input></Input>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              padding: "15px 60px",
+              gap : 2,
+            }}
+          >
+            <TextField
+              label="프로젝트 이름"
+              id="title"
+              type="text"
+              variant="outlined"
+              placeholder="프로젝트 이름을 입력해주세요"
+              onChange={(e) => setTitle(e.target.value)}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderRadius: "10px",
+                    borderColor: theme.palette.common.grey,
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: theme.palette.primary.main,
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: theme.palette.common.grey,
+                  fontSize: theme.fontSize.medium,
+                  fontWeight: theme.fontWeight.bold,
+                },
+                "& .MuiInputBase-input": {
+                  color: theme.palette.common.grey,
+                  fontSize: theme.fontSize.medium,
+                  fontWeight: theme.fontWeight.bold,
+                },
+              }}
+            />
+            <TextField
+              label="프로젝트 설명"
+              id="title"
+              type="text"
+              variant="outlined"
+              placeholder="프로젝트 설명을 입력해주세요"
+              onChange={(e) => setDescription(e.target.value)}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderRadius: "10px",
+                    borderColor: theme.palette.common.grey,
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: theme.palette.primary.main,
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: theme.palette.common.grey,
+                  fontSize: theme.fontSize.medium,
+                  fontWeight: theme.fontWeight.bold,
+                },
+                "& .MuiInputBase-input": {
+                  color: theme.palette.common.grey,
+                  fontSize: theme.fontSize.medium,
+                  fontWeight: theme.fontWeight.bold,
+                },
+              }}
+            />
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={makeProject}
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: "20px",
+                padding: "10px",
+                minHeight: "40px",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.dark,
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                },
+                fontWeight: theme.fontWeight.bold,
+              }}
+            >
+              생성하기
+            </Button>
           </Box>
         </Box>
 
