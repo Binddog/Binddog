@@ -28,8 +28,6 @@ function HubList() {
   const [description, setDescription] = useState("기본 설명");
 
   const makeProject = () => {
-    console.log(title);
-    console.log(`설명은? : ${description}`);
     handleCreate();
     setTitle("기본 제목" + (li.length + 1));
     setDescription("기본 설명");
