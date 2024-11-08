@@ -109,28 +109,9 @@ public class SecurityConfig {
 						.requestMatchers(AUTHENTICATED_PATHS).authenticated()
 						.anyRequest().permitAll()
 				)
-				.exceptionHandling(handler -> handler
-						.authenticationEntryPoint(authenticationEntryPoint())
-						.accessDeniedHandler(accessDeniedHandler())
-				)
 				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(appExceptionFilter, JwtTokenFilter.class)
 				.build();
-	}
-
-	@Bean
-	public AccessDeniedHandler accessDeniedHandler() {
-		return new CustomAccessDeniedHandler();
-	}
-
-	@Bean
-	public AuthenticationEntryPoint authenticationEntryPoint() {
-		return (request, response, authException) -> {
-			Response<Void> errorResponse = Response.error(TOKEN_NOT_FOUND, null);
-			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			response.setContentType("application/json;charset=UTF-8");
-			response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
-		};
 	}
 
 }
