@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.binddog.binddoghub.flow.dto.req.FlowCreateReq;
 import org.binddog.binddoghub.flow.dto.req.FlowRegisterReq;
 import org.binddog.binddoghub.flow.dto.res.FlowCreateRes;
+import org.binddog.binddoghub.flow.dto.res.FlowsSearchRes;
 import org.binddog.binddoghub.flow.service.FlowService;
 import org.binddog.binddoghub.global.enums.NoneResponse;
 import org.binddog.binddoghub.global.response.Response;
@@ -23,6 +24,19 @@ import static org.binddog.binddoghub.global.enums.SuccessCode.GET_FLOW_SUCCESS;
 public class FlowController {
 
     private final FlowService flowService;
+
+    @Operation(
+            summary = "Load all flow",
+            description = "load all of saved flows."
+    )
+    @GetMapping("/{projectId}/flows")
+    public ResponseEntity<Response<FlowsSearchRes>> getFlows(
+            @AuthenticationPrincipal Long memberId,
+            @PathVariable Long projectId
+    ) {
+        SuccessResponse<FlowsSearchRes> response = flowService.loadFlows(memberId, projectId);
+        return Response.success(response);
+    }
 
     @Operation(
             summary = "Load flow",
