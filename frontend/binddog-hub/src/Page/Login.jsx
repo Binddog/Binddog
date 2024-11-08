@@ -67,7 +67,7 @@ const LoginPage = ({ onLogin }) => {
         justifyContent: "center",
         minHeight: "50vh",
       }}
-      onKeyDown={handleKeyDown} // Enter 키를 감지하는 이벤트 추가
+      onKeyDown={handleKeyDown}
     >
       <Box
         sx={{
