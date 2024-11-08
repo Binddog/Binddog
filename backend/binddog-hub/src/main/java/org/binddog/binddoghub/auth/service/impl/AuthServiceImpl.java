@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public SuccessResponse<AuthResponse> refreshTokens(RefreshRequest request) {
-		log.info("enter the service layer");
+		validateRefreshRequest(request);
 
 		String accessToken = request.accessToken();
 		String refreshToken = redisRepository.findByAccessToken(accessToken)
@@ -91,6 +91,21 @@ public class AuthServiceImpl implements AuthService {
 							   .orElseThrow(
 									   () -> new AppException(ErrorCode.MEMBER_NOT_FOUND)
 							   );
+	}
+
+	private void validateRefreshRequest(RefreshRequest request) {
+		log.info("RefreshRequest validation processing...");
+
+		if (request.accessToken() == null || request.accessToken().isBlank()) {
+			log.error("Access token is missing in refresh request");
+			throw new AppException(TOKEN_EMPTY);
+		}
+		if (request.refreshToken() == null || request.refreshToken().isBlank()) {
+			log.error("Refresh token is missing in refresh request");
+			throw new AppException(TOKEN_EMPTY);
+		}
+
+		log.info("RefreshRequest validation process finish");
 	}
 
 }
