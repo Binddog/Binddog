@@ -31,6 +31,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <Box
         sx={{
+          height: "100%",
           display: "flex",
           flexDirection: "column",
           overflowX: "hidden",
