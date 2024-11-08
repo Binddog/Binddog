@@ -28,10 +28,10 @@ public class AppExceptionFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			log.info("AppExceptionFilter process completed");
 		} catch (JwtException e) {
-			log.error("AppExceptionFilter filtered invalid token");
+			log.error("JWT token error: {}", e.getMessage());
 			JsonResponseUtils.writeHttpErrorResponse(response, TOKEN_INVALID);
 		} catch (AppException e) {
-			log.error("unknown error appears in AppExceptionFilter");
+			log.error("AppException error: {}", e.getMessage());
 			JsonResponseUtils.writeHttpErrorResponse(response, e.getErrorCode());
 		}
 	}
