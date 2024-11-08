@@ -1,8 +1,9 @@
-package org.binddog.binddoghub.domain.auth.controller;
+package org.binddog.binddoghub.auth.controller;
 
-import org.binddog.binddoghub.domain.auth.dto.LoginRequest;
-import org.binddog.binddoghub.domain.auth.service.AuthService;
-import org.binddog.binddoghub.global.dto.Tokens;
+import org.binddog.binddoghub.auth.dto.AuthResponse;
+import org.binddog.binddoghub.auth.dto.LoginRequest;
+import org.binddog.binddoghub.auth.dto.RefreshRequest;
+import org.binddog.binddoghub.auth.service.AuthService;
 import org.binddog.binddoghub.global.enums.NoneResponse;
 import org.binddog.binddoghub.global.response.Response;
 import org.binddog.binddoghub.global.response.SuccessResponse;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/auths")
 @RequiredArgsConstructor
@@ -23,8 +26,8 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/login")
-	public ResponseEntity<Response<Tokens>> login(@RequestBody LoginRequest request) {
-		SuccessResponse<Tokens> response = authService.login(request);
+	public ResponseEntity<Response<AuthResponse>> login(@RequestBody LoginRequest request) {
+		SuccessResponse<AuthResponse> response = authService.login(request);
 		return Response.success(response);
 	}
 
@@ -37,10 +40,11 @@ public class AuthController {
 	}
 
 	@PostMapping("/refresh")
-	public ResponseEntity<Response<Tokens>> refreshTokens(
-			@RequestBody Tokens tokens
+	public ResponseEntity<Response<AuthResponse>> refreshTokens(
+			@RequestBody RefreshRequest request
 	) {
-		SuccessResponse<Tokens> response = authService.refreshTokens(tokens);
+		log.info("Refresh request: {}", request);
+		SuccessResponse<AuthResponse> response = authService.refreshTokens(request);
 		return Response.success(response);
 	}
 

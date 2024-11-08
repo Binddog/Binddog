@@ -1,5 +1,7 @@
 package org.binddog.binddoghub.global.config.security.filter;
 
+import static org.binddog.binddoghub.global.enums.ErrorCode.*;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,12 +41,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			"/api/projects",
 	};
 
-	// 인증이 필요없는 URL 패턴들
-	private static final String[] PUBLIC_PATHS = {
-			"/api/auth/login",
-			"/api/members/sign-up",
-	};
-
 	private final JwtProvider jwtProvider;
 	private final MemberRepository memberRepository;
 	private final RedisRepository redisRepository;
@@ -55,35 +51,29 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			HttpServletResponse response,
 			FilterChain filterChain
 	) throws ServletException, IOException {
-
 		try {
-			if (isPublicPath(request.getRequestURI())) {
-				log.info("publicPath access granted");
-				filterChain.doFilter(request, response);
-				return;
-			}
+			String token = extractToken(request);
+			boolean isAuthPath = isAuthenticatedPath(request.getRequestURI());
 
-			if (isAuthenticatedPath(request.getRequestURI())) {
-				log.info("AuthenticatedPath access checking...");
-
-				String token = extractToken(request);
-				if (token != null) {
-					processAuthentication(request, token);
-					log.info("AuthenticatedPath access granted");
-				} else {
-					log.error("AuthenticatedPath access denied");
-					throw new AppException(ErrorCode.TOKEN_INVALID);
+			if (token == null) {
+				if (isAuthPath) {
+					log.error("no token & authentication path: access denied");
+					throw new AppException(TOKEN_EMPTY);
 				}
+				log.info("no token & public path: access granted");
+			} else {
+				if (isAuthPath) {
+					log.info("token & authentication path");
+					processAuthentication(request, token);
+				}
+				log.info("token & public path: access granted");
 			}
 
-			log.info("filter processing...");
 			filterChain.doFilter(request, response);
-			log.info("filter process finished");
-		} catch (AppException e) {
-			log.info("filter throws AppException ({})", e.getMessage());
-			throw new AppException(ErrorCode.TOKEN_INVALID);
+
 		} catch (Exception e) {
-			log.info("error");
+			log.error("Exception occurred: {}", e.getMessage());
+			throw e;
 		}
 	}
 
@@ -96,6 +86,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	}
 
 	private void processAuthentication(HttpServletRequest request, String token) {
+		log.info("authentication processing...");
+
 		Long memberId;
 		try {
 			memberId = jwtProvider.parseUserId(token);
@@ -109,7 +101,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			log.info("Token found in Redis: {}", token);
 		} catch (Exception e) {
 			log.warn("Token not found in Redis or token is expired: {}", token);
-			throw new AppException(ErrorCode.TOKEN_NOT_FOUND);
+			throw new AppException(TOKEN_NOT_FOUND);
 		}
 
 		// 토큰 유효성 검증
@@ -137,11 +129,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		log.info("SecurityContext: {}", context);
 
 		SecurityContextHolder.setContext(context);
-	}
 
-	private boolean isPublicPath(String uri) {
-		return Arrays.stream(PUBLIC_PATHS)
-					 .anyMatch(uri::startsWith);
+		log.info("authentication process finish");
 	}
 
 	private boolean isAuthenticatedPath(String uri) {

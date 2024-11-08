@@ -25,7 +25,7 @@ public class AppExceptionFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		try {
 			log.info("AppExceptionFilter processing...");
-			doFilter(request, response, filterChain);
+			filterChain.doFilter(request, response);
 			log.info("AppExceptionFilter process completed");
 		} catch (JwtException e) {
 			log.error("AppExceptionFilter filtered invalid token");

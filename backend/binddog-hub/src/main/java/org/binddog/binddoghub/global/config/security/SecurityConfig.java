@@ -40,16 +40,18 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	private static final String[] AUTHENTICATED_PATHS = {
+	public static final String[] AUTHENTICATED_PATHS = {
 			"/api/auths/logout",
 			"/api/projects/**"
 	};
 
-	private static final String[] PUBLIC_PATHS = {
+	public static final String[] PUBLIC_PATHS = {
 			"/api/auth/login",
 			"/api/members/sign-up"
 	};
@@ -57,6 +59,7 @@ public class SecurityConfig {
 	private final MemberRepository memberRepository;
 	private final JwtTokenFilter jwtTokenFilter;
 	private final AppExceptionFilter appExceptionFilter;
+	private final ObjectMapper objectMapper;
 
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -106,17 +109,28 @@ public class SecurityConfig {
 						.requestMatchers(AUTHENTICATED_PATHS).authenticated()
 						.anyRequest().permitAll()
 				)
-				.exceptionHandling(handler ->
-						handler.accessDeniedHandler(accessDeniedHandler())
+				.exceptionHandling(handler -> handler
+						.authenticationEntryPoint(authenticationEntryPoint())
+						.accessDeniedHandler(accessDeniedHandler())
 				)
-				.addFilterBefore(appExceptionFilter, UsernamePasswordAuthenticationFilter.class)
-				.addFilterBefore(jwtTokenFilter, AppExceptionFilter.class)
+				.addFilterBefore(appExceptionFilter, JwtTokenFilter.class)
+				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
 
 	@Bean
 	public AccessDeniedHandler accessDeniedHandler() {
 		return new CustomAccessDeniedHandler();
+	}
+
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+		return (request, response, authException) -> {
+			Response<Void> errorResponse = Response.error(TOKEN_NOT_FOUND, null);
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			response.setContentType("application/json;charset=UTF-8");
+			response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+		};
 	}
 
 }

@@ -1,10 +1,12 @@
-package org.binddog.binddoghub.domain.auth.service.impl;
+package org.binddog.binddoghub.auth.service.impl;
 
 import static org.binddog.binddoghub.global.enums.ErrorCode.*;
 import static org.binddog.binddoghub.global.enums.SuccessCode.*;
 
-import org.binddog.binddoghub.domain.auth.dto.LoginRequest;
-import org.binddog.binddoghub.domain.auth.service.AuthService;
+import org.binddog.binddoghub.auth.dto.AuthResponse;
+import org.binddog.binddoghub.auth.dto.LoginRequest;
+import org.binddog.binddoghub.auth.dto.RefreshRequest;
+import org.binddog.binddoghub.auth.service.AuthService;
 import org.binddog.binddoghub.global.config.security.JwtProvider;
 import org.binddog.binddoghub.global.dto.Tokens;
 import org.binddog.binddoghub.global.enums.ErrorCode;
@@ -17,7 +19,6 @@ import org.binddog.binddoghub.member.repository.MemberRepository;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
 	private final RedisRepository redisRepository;
 
 	@Override
-	public SuccessResponse<Tokens> login(LoginRequest request){
+	public SuccessResponse<AuthResponse> login(LoginRequest request) {
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 				request.email(), request.password()
 		);
@@ -43,9 +44,9 @@ public class AuthServiceImpl implements AuthService {
 		Long memberId = getByEmail(request.email()).getId();
 		Tokens tokens = jwtProvider.generateTokens(memberId);
 		redisRepository.save(tokens);
-		log.info("Tokens saved to Redis: " + redisRepository.findByAccessToken(tokens.getAccessToken()) );
+		log.info("Tokens saved to Redis: " + redisRepository.findByAccessToken(tokens.getAccessToken()));
 
-		return new SuccessResponse<>(LOGIN_SUCCESS, tokens);
+		return new SuccessResponse<>(LOGIN_SUCCESS, new AuthResponse(tokens.getAccessToken(), tokens.getRefreshToken()));
 	}
 
 	@Override
@@ -53,31 +54,58 @@ public class AuthServiceImpl implements AuthService {
 		log.info("Header: " + header);
 		String accessToken = header.substring(TOKEN_SPLIT_INDEX);
 		log.info("Access token: " + accessToken);
-		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken) );
+		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken));
 		redisRepository.deleteByAccessToken(accessToken);
-		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken) );
+		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken));
 		return new SuccessResponse<>(LOGOUT_SUCCESS, NoneResponse.NONE);
 	}
 
 	@Override
-	public SuccessResponse<Tokens> refreshTokens(Tokens tokens) {
-		String accessToken = tokens.getAccessToken();
-		String refreshToken = redisRepository.findByAccessToken(accessToken).getRefreshToken();
-		if (!tokens.getRefreshToken().equals(refreshToken)) {
+	public SuccessResponse<AuthResponse> refreshTokens(RefreshRequest request) {
+		validateRefreshRequest(request);
+
+		String accessToken = request.accessToken();
+		String refreshToken = redisRepository.findByAccessToken(accessToken)
+											 .getRefreshToken();
+		if (!request.refreshToken()
+				   .equals(refreshToken)) {
+			log.error("Refresh token doesn't match: "+request.refreshToken()+" "+refreshToken);
 			throw new AppException(TOKEN_INVALID);
 		}
 
 		redisRepository.deleteByAccessToken(accessToken);
 		long memberId = jwtProvider.parseUserId(refreshToken);
 		Tokens newTokens = jwtProvider.generateTokens(memberId);
+		log.info("Succesfully generate new tokens: " + newTokens);
+
 		redisRepository.save(newTokens);
-		return new SuccessResponse<>(AUTH_TOKEN_CHANGE_SUCCESS, newTokens);
+		log.info("Updated tokens saved to Redis");
+
+		log.info("back to the controller layer");
+		return new SuccessResponse<>(AUTH_TOKEN_CHANGE_SUCCESS, new AuthResponse(newTokens.getAccessToken(),
+				newTokens.getRefreshToken()));
 	}
 
-	private Member getByEmail(final String email){
-		return memberRepository.findByEmail(email).orElseThrow(
-				()-> new AppException(ErrorCode.MEMBER_NOT_FOUND)
-		);
+	private Member getByEmail(final String email) {
+		return memberRepository.findByEmail(email)
+							   .orElseThrow(
+									   () -> new AppException(ErrorCode.MEMBER_NOT_FOUND)
+							   );
+	}
+
+	private void validateRefreshRequest(RefreshRequest request) {
+		log.info("RefreshRequest validation processing...");
+
+		if (request.accessToken() == null || request.accessToken().isBlank()) {
+			log.error("Access token is missing in refresh request");
+			throw new AppException(TOKEN_EMPTY);
+		}
+		if (request.refreshToken() == null || request.refreshToken().isBlank()) {
+			log.error("Refresh token is missing in refresh request");
+			throw new AppException(TOKEN_EMPTY);
+		}
+
+		log.info("RefreshRequest validation process finish");
 	}
 
 }
