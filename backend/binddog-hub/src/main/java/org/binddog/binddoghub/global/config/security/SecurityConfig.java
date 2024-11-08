@@ -113,8 +113,8 @@ public class SecurityConfig {
 						.authenticationEntryPoint(authenticationEntryPoint())
 						.accessDeniedHandler(accessDeniedHandler())
 				)
-				.addFilterBefore(appExceptionFilter, JwtTokenFilter.class)
 				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(appExceptionFilter, JwtTokenFilter.class)
 				.build();
 	}
 
