@@ -36,6 +36,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public SuccessResponse<AuthResponse> login(LoginRequest request) {
+		log.info("[Login service processing...]======");
+		log.info("Login request: {}", request);
+
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 				request.email(), request.password()
 		);
@@ -43,30 +46,40 @@ public class AuthServiceImpl implements AuthService {
 
 		Long memberId = getByEmail(request.email()).getId();
 		Tokens tokens = jwtProvider.generateTokens(memberId);
-		redisRepository.save(tokens);
+
+		redisRepository.save(tokens); //TODO: 문제 지점
+
 		log.info("Tokens saved to Redis: " + redisRepository.findByAccessToken(tokens.getAccessToken()));
 
+		log.info("[Login service process finish]======");
 		return new SuccessResponse<>(LOGIN_SUCCESS, new AuthResponse(tokens.getAccessToken(), tokens.getRefreshToken()));
 	}
 
 	@Override
 	public SuccessResponse<NoneResponse> logout(String header) {
+		log.info("[Logout service processing...]======");
+
 		log.info("Header: " + header);
 		String accessToken = header.substring(TOKEN_SPLIT_INDEX);
 		log.info("Access token: " + accessToken);
 		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken));
+
 		redisRepository.deleteByAccessToken(accessToken);
+
 		log.info("Tokens exist in db: " + redisRepository.findByAccessToken(accessToken));
+
+		log.info("[Logout service process finish]======");
 		return new SuccessResponse<>(LOGOUT_SUCCESS, NoneResponse.NONE);
 	}
 
 	@Override
 	public SuccessResponse<AuthResponse> refreshTokens(RefreshRequest request) {
+		log.info("[Refresh service processing...]======");
 		validateRefreshRequest(request);
 
 		String accessToken = request.accessToken();
 		String refreshToken = redisRepository.findByAccessToken(accessToken)
-											 .getRefreshToken();
+											 .get().getRefreshToken();
 		if (!request.refreshToken()
 				   .equals(refreshToken)) {
 			log.error("Refresh token doesn't match: "+request.refreshToken()+" "+refreshToken);
@@ -81,12 +94,15 @@ public class AuthServiceImpl implements AuthService {
 		redisRepository.save(newTokens);
 		log.info("Updated tokens saved to Redis");
 
-		log.info("back to the controller layer");
+		log.info("[Refresh service processing finish]======");
 		return new SuccessResponse<>(AUTH_TOKEN_CHANGE_SUCCESS, new AuthResponse(newTokens.getAccessToken(),
 				newTokens.getRefreshToken()));
 	}
 
 	private Member getByEmail(final String email) {
+
+		log.info("getByEmail result: "+ memberRepository.findByEmail(email).get());
+
 		return memberRepository.findByEmail(email)
 							   .orElseThrow(
 									   () -> new AppException(ErrorCode.MEMBER_NOT_FOUND)

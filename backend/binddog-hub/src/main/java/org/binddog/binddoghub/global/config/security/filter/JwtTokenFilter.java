@@ -104,16 +104,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			throw new AppException(TOKEN_NOT_FOUND);
 		}
 
-		// 토큰 유효성 검증
 		if (!jwtProvider.isValid(token, memberId)) {
 			throw new AppException(ErrorCode.TOKEN_INVALID);
 		}
-		log.info("Token valid: {}", token);
 
-		// 인증 정보 설정
 		Member member = memberRepository.findById(memberId)
-										.orElseThrow(() -> new AppException(ErrorCode.MEMBER_NOT_FOUND));
-		log.info("matching member in DB: {}", member);
+										.orElseThrow(() -> {
+											log.error("Token is valid but member not found. Possible deleted account. MemberId: {}", memberId);
+											return new AppException(ErrorCode.MEMBER_NOT_FOUND);
+										});
+		log.info("Member found in DB: {}", member);
 
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
 		UsernamePasswordAuthenticationToken authentication =
@@ -125,12 +125,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		context.setAuthentication(authentication);
-
-		log.info("SecurityContext: {}", context);
-
 		SecurityContextHolder.setContext(context);
 
-		log.info("authentication process finish");
+		log.info("Authentication process completed");
 	}
 
 	private boolean isAuthenticatedPath(String uri) {
