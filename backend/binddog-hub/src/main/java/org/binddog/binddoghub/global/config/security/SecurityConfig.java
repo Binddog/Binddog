@@ -107,6 +107,8 @@ public class SecurityConfig {
 				.sessionManagement(sessionManagement ->
 						sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				)
+				.cors()
+				.and()
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(AUTHENTICATED_PATHS).authenticated()
 						.anyRequest().permitAll()
