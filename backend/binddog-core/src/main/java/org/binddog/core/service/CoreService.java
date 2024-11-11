@@ -21,9 +21,8 @@ public class CoreService {
 
 	@Value("${binddog.hub.password}")
 	private String password;
-
-	@Value("${binddog.hub.login-url}")
-	private String loginUrl;
+	
+	private String loginUrl = "https://api.binddog.org/api/auths/login";
 
 	private final RestTemplate restTemplate = new RestTemplate();
 
