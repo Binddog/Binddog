@@ -6,6 +6,7 @@ import org.binddog.binddoghub.flow.document.Flow;
 import org.binddog.binddoghub.flow.dto.req.FlowCreateReq;
 import org.binddog.binddoghub.flow.dto.req.FlowRegisterReq;
 import org.binddog.binddoghub.flow.dto.res.FlowCreateRes;
+import org.binddog.binddoghub.flow.dto.res.FlowSearchRes;
 import org.binddog.binddoghub.flow.dto.res.FlowsSearchRes;
 import org.binddog.binddoghub.flow.mapper.FlowMapper;
 import org.binddog.binddoghub.flow.repository.FlowRepository;
@@ -16,6 +17,7 @@ import org.binddog.binddoghub.project.service.ProjectService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.binddog.binddoghub.global.enums.ErrorCode.PROJECT_INVALID;
 import static org.binddog.binddoghub.global.enums.SuccessCode.*;
@@ -60,8 +62,16 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
-    public SuccessResponse<NoneResponse> loadFlow(Long projectId, String flowId, FlowRegisterReq flowRegisterReq) {
-        return null;
+    public SuccessResponse<FlowSearchRes> loadFlow(
+            final Long memberId,
+            final Long projectId,
+            final String flowId
+    ) {
+        projectIdAndMemberIdValidation(projectId, memberId);
+
+        Flow flow = flowRepository.findById(flowId).get();
+        FlowSearchRes response = flowMapper.toFlowSearchRes(flow);
+        return new SuccessResponse<>(GET_FLOW_SUCCESS, response);
     }
 
     @Override
