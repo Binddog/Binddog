@@ -3,6 +3,9 @@ package org.binddog.core.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.binddog.core.dto.AuthData;
+import org.binddog.core.dto.AuthResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,11 +18,14 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/binddog/core")
 public class CoreController {
-	private String email = "jinniek48@gmail.com";
+	@Value("${binddog.hub.email}")
+	private String email;
 
-	private String password = "Password1!";
+	@Value("${binddog.hub.password}")
+	private String password;
 
-	private String loginUrl = "https://api.binddog.org/api/auths/login" ;
+	@Value("${binddog.hub.login-url}")
+	private String loginUrl;
 
 	private final RestTemplate restTemplate = new RestTemplate();
 
@@ -27,18 +33,21 @@ public class CoreController {
 	public ResponseEntity<?> login() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
+
 		Map<String, String> requestBody = new HashMap<>();
 		requestBody.put("email", email);
 		requestBody.put("password", password);
 		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
-		ResponseEntity<String> responseEntity = restTemplate.exchange(
+
+		ResponseEntity<AuthResponse> responseEntity = restTemplate.exchange(
 				loginUrl,
 				HttpMethod.POST,
 				requestEntity,
-				String.class
+				AuthResponse.class
 		);
 
-		return ResponseEntity.status(responseEntity.getStatusCode()).body(responseEntity.getBody());
+		AuthData authData = responseEntity.getBody().getData();
+		return ResponseEntity.status(responseEntity.getStatusCode()).body(authData);
 	}
 
 }
