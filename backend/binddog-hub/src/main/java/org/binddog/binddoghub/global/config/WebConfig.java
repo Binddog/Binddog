@@ -10,23 +10,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(
-                        "https://localhost:3000",
-                        "http://localhost:3000",
-                        "https://localhost:5173",
-                        "http://localhost:5173",
-                        "https://localhost:8080",
-                        "http://localhost:8080",
-                        "https://binddog.org",
-                        "http://binddog.org",
-                        "https://api.binddog.org",
-                        "http://api.binddog.org",
-                        "https://www.binddog.org",   
-                        "http://www.binddog.org"
-                )
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                .allowedOriginPatterns("*")
+                .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true)
+                .exposedHeaders("*")
                 .maxAge(3600);
     }
 }
