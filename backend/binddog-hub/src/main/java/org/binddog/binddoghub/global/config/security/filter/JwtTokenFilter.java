@@ -55,6 +55,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			String token = extractToken(request);
 			boolean isAuthPath = isAuthenticatedPath(request.getRequestURI());
 
+			if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+				filterChain.doFilter(request, response);
+				return;
+			}
+
 			if (token == null) {
 				if (isAuthPath) {
 					log.error("no token & authentication path: access denied");
