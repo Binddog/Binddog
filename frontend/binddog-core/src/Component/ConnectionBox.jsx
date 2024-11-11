@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Checkbox, Select, MenuItem } from "@mui/material";
+import { Box, Typography, Checkbox, Select, MenuItem, TextField } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
 const ConnectionBox = () => {
@@ -38,7 +38,7 @@ const ConnectionBox = () => {
         padding: "15px",
         backgroundColor: theme.palette.button.add,
         borderRadius: "12px",
-        width: "500px",
+        // width: "500px",
       }}
     >
       <Box
@@ -48,19 +48,6 @@ const ConnectionBox = () => {
           alignItems: "center",
         }}
       >
-        <Typography
-          sx={{
-            ...theme.method,
-            width: "50px",
-            textAlign: "center",
-            lineHeight: "30px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          deactivate
-        </Typography>
         <Typography
           sx={{
             ...theme.method,
@@ -87,19 +74,6 @@ const ConnectionBox = () => {
         >
           from where
         </Typography>
-        <Typography
-          sx={{
-            ...theme.method,
-            width: "150px",
-            textAlign: "center",
-            lineHeight: "30px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          사용방식
-        </Typography>
       </Box>
 
       {items.map((item) => (
@@ -110,24 +84,9 @@ const ConnectionBox = () => {
             gap: "10px",
             width: "100%",
             alignItems: "center",
+            margin: "3px 5px",
           }}
         >
-          <Box
-            sx={{
-              width: "50px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Checkbox
-              checked={item.deactivate}
-              onChange={(e) =>
-                handleChange(item.id, "deactivate", e.target.checked)
-              }
-              sx={{ color: "white", padding: "0" }}
-            />
-          </Box>
 
           <Typography
             sx={{
@@ -142,7 +101,7 @@ const ConnectionBox = () => {
             {item.input}
           </Typography>
 
-          <Select
+          <TextField
             value={item.fromWhere}
             onChange={(e) => handleChange(item.id, "fromWhere", e.target.value)}
             sx={{
@@ -154,34 +113,21 @@ const ConnectionBox = () => {
               display: "flex",
               alignItems: "center",
             }}
+            InputProps={{
+              sx: {
+                width: "200px",
+                height: "30px",
+                fontSize: theme.api
+              },
+            }}
           >
             {resList.map((res) => (
               <MenuItem key={res} value={res} sx={{ ...theme.api }}>
                 {res}
               </MenuItem>
             ))}
-          </Select>
+          </TextField>
 
-          <Select
-            value={item.usage}
-            onChange={(e) => handleChange(item.id, "usage", e.target.value)}
-            sx={{
-              ...theme.api,
-              backgroundColor: "white",
-              borderRadius: "4px",
-              width: "150px",
-              height: "30px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <MenuItem value="Param" sx={{ ...theme.api }}>
-              Param
-            </MenuItem>
-            <MenuItem value="Path" sx={{ ...theme.api }}>
-              Path
-            </MenuItem>
-          </Select>
         </Box>
       ))}
     </Box>
