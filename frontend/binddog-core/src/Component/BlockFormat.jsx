@@ -17,8 +17,8 @@ export default function BlockFormat({ data }) {
     setToggleParams(!toggleParams);
   }
 
-  const handleStyle1 = toggleParams ? { top: 45, left: 52 } : {};
-  const handleStyle2 = toggleParams ? { top: 45, right: 52 } : {};
+  const handleStyle1 = toggleParams ? { top: 45, left: 57 } : {};
+  const handleStyle2 = toggleParams ? { top: 45, right: 57 } : {};
 
   // JSON 데이터에서 전달받은 추가적인 속성을 구조 분해 할당
   const {
