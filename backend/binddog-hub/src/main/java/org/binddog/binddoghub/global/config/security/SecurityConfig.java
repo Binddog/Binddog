@@ -54,7 +54,7 @@ public class SecurityConfig {
 	};
 
 	public static final String[] PUBLIC_PATHS = {
-			"/api/auth/login",
+			"/api/auths/login",
 			"/api/members/sign-up"
 	};
 
