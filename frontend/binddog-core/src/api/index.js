@@ -1,91 +1,84 @@
-import axios from 'axios';
-// import Cookies from 'js-cookie';
-// import { enqueueSnackbar } from 'notistack';
+import axios from "axios";
+import Cookies from "js-cookie";
 
-// Axios 인스턴스 생성 및 설정
 const Axios = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,  // API URL 설정
+  baseURL: process.env.REACT_APP_API_URL,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
-  // withCredentials: true,
+  withCredentials: true,
 });
 
-// // 토큰 갱신 관리 상태 변수
-// let isRefreshing = false;
-// let refreshSubscribers = [];
+Axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-// // 토큰 갱신 후 대기 중이던 요청에 새로운 토큰 적용
-// function onRefreshed(token) {
-//   refreshSubscribers.forEach((callback) => callback(token));
-//   refreshSubscribers = [];
-// }
+let isRefreshing = false;
+let refreshSubscribers = [];
 
-// // Axios 요청 인터셉터
-// Axios.interceptors.request.use((config) => {
-//   const token = localStorage.getItem('accessToken');
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
+function onRefreshed(token) {
+  refreshSubscribers.map((callback) => callback(token));
+  refreshSubscribers = [];
+}
 
-// // Axios 응답 인터셉터
-// Axios.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
+Axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
 
-//     // 401 Unauthorized 오류 시 토큰 갱신 처리
-//     if (error.response && error.response.status === 401 && !originalRequest._retry) {
-//       if (isRefreshing) {
-//         return new Promise((resolve) => {
-//           refreshSubscribers.push((token) => {
-//             originalRequest.headers.Authorization = `Bearer ${token}`;
-//             resolve(Axios(originalRequest));
-//           });
-//         });
-//       }
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          refreshSubscribers.push((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            resolve(Axios(originalRequest));
+          });
+        });
+      }
 
-//       originalRequest._retry = true;
-//       isRefreshing = true;
+      originalRequest._retry = true;
+      isRefreshing = true;
 
-//       try {
-//         const refreshToken = Cookies.get('refreshToken');
-//         const accessToken = localStorage.getItem('accessToken');
+      try {
+        const refreshToken = Cookies.get("refreshToken");
+        const accessToken = localStorage.getItem("accessToken");
 
-//         const { data } = await axios.post(
-//           `${API_URL}/auths/refresh`,  // API URL 사용
-//           { accessToken, refreshToken },
-//         );
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_SERVER_URL}/auths/refresh`,
+          { accessToken, refreshToken }
+        );
 
-//         localStorage.setItem('accessToken', data.data.accessToken);
-//         Cookies.set('refreshToken', data.data.refreshToken);
+        localStorage.setItem("accessToken", data.data.accessToken);
+        Cookies.set("refreshToken", data.data.refreshToken);
 
-//         Axios.defaults.headers.Authorization = `Bearer ${data.data.accessToken}`;
+        Axios.defaults.headers.Authorization = `Bearer ${data.data.accessToken}`;
 
-//         onRefreshed(data.data.accessToken);
+        onRefreshed(data.data.accessToken);
 
-//         originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`;
 
-//         return Axios(originalRequest);
-//       } catch {
-//         enqueueSnackbar('로그인이 만료되었습니다. 다시 로그인해주세요.', {
-//           variant: 'info',
-//         });
-//         localStorage.clear();
-//         Cookies.remove('refreshToken');
-//         setTimeout(() => {
-//           window.location.href = '/';
-//         }, 500);
-//       } finally {
-//         isRefreshing = false;
-//       }
-//     }
+        return Axios(originalRequest);
+      } catch {
+        console.warn("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        localStorage.clear();
+        Cookies.remove("refreshToken");
+        setTimeout(() => (window.location.href = "/"), 500);
+      } finally {
+        isRefreshing = false;
+      }
+    }
 
-//     return Promise.reject(error);
-//   },
-// );
+    return Promise.reject(error);
+  }
+);
 
 export default Axios;
