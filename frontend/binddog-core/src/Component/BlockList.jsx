@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Block from "./Block";
-import { getDocs } from "../api/libraryFlow"
+import { getDocs } from "../api/libraryFlow";
 
 let idx = 0;
 
@@ -17,14 +17,14 @@ function parseRequest(params) {
 
   params.forEach((param) => {
     if (param.in === "path") {
-      parameters.push(param.name)
+      parameters.push(param.name);
     } else if (param.in === "query") {
       pathVariables.push(param.name);
     } else if (param.in == "header") {
-      headers.push(param.name)
+      headers.push(param.name);
     }
-  })
-  return { parameters, pathVariables, headers }
+  });
+  return { parameters, pathVariables, headers };
 }
 
 function createBlock(path, method, detail) {
@@ -44,22 +44,22 @@ function createBlock(path, method, detail) {
     parameter: parameters,
     pathVariable: pathVariables,
     request: detail.requestBody,
-    response: detail.responses
-  }
+    response: detail.responses,
+  };
 }
 
 function createBlockList(context, docs) {
   const blockList = new Array();
   Object.entries(docs).forEach(([path, value]) => {
     Object.entries(value).forEach(([method, detail]) => {
-      blockList.push(createBlock(`${context}${path}`, method, detail))
+      blockList.push(createBlock(`${context}${path}`, method, detail));
     });
   });
   return blockList;
 }
 
 function BlockList({ addNode }) {
-  const [name, setName] = useState("")
+  const [name, setName] = useState("");
   const theme = useTheme();
   const [li, setLi] = useState([]); // li를 빈 배열로 초기화
   useEffect(() => {
@@ -71,13 +71,13 @@ function BlockList({ addNode }) {
         const context = docsData.servers[0].url;
         const paths = docsData.paths;
 
-        console.log(docsData)
+        console.log(docsData);
         const temp = createBlockList(context, paths);
         setLi(temp || []);
-        console.log(temp)
-        console.log("li = ", li)
+        console.log(temp);
+        console.log("li = ", li);
         // setLi(createBlockList(context, paths) || []);
-        console.log("temp")
+        console.log("temp");
       } catch (error) {
         console.error("문서 데이터를 가져오는 중 오류 발생:", error);
       }
@@ -85,7 +85,6 @@ function BlockList({ addNode }) {
 
     fetchDocs();
   }, []);
-
 
   return (
     <Box
@@ -109,7 +108,7 @@ function BlockList({ addNode }) {
         {name}
       </Typography>
       {li.map((item) => (
-        < Block
+        <Block
           key={item.key}
           id={item.id}
           method={item.method}
