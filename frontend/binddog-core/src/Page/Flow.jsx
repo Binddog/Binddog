@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import blockData from "../block.json";
 import BlockFormat from "../Component/BlockFormat";
 import {
@@ -39,6 +39,11 @@ function Flow() {
   const theme = useTheme();
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
+  const [logBox, setLogBox] = useState([{title:'야호'}, {title:'안녕'}]);
+
+  const addLog = (newItem) => {
+    setLogBox((prevLog) => [...prevLog, newItem]);
+  }
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -64,6 +69,8 @@ function Flow() {
     customBlock: BlockFormat,
   };
 
+  console.log(logBox);
+
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
       <Box sx={{ height: "100%", overflow: "auto" }}>
@@ -86,6 +93,7 @@ function Flow() {
           style={{
             bgcolor: theme.palette.primary.main,
             display: "flex",
+            // flexDirection: "column",
             justifyContent: "flex-end",
           }}
         >
@@ -101,12 +109,57 @@ function Flow() {
               zIndex: 100,
             }}
           >
-            <RunButton />
+            <RunButton/>
             <SaveButton/>
           </Box>
           <Controls />
           <MiniMap />
           <Background variant="dots" gap={12} size={1} />
+          {logBox.length > 0 && (
+            <Box
+              sx={{
+                position: "fixed",
+                left: "33.5%",
+                bottom: "5%",
+                width: "60%",
+                height: "200px",
+                zIndex: 50,
+                border: `${theme.palette.common.grey} solid 1px`,
+                borderRadius: "10px",
+                overflowX: "hidden",
+                overflowY: "auto",
+                "&::-webkit-scrollbar": {
+                  width: "10px",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: theme.palette.common.grey,
+                  borderRadius: "10px",
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  bgcolor: theme.palette.common.white,
+                  opacity: "0.8",
+                  borderRadius: "10px",
+                  padding: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                }}
+              >
+                {logBox.map((item) => (
+                  <Typography
+                    sx={[theme.api]}
+                  >
+                    {item.title}
+                  </Typography>
+                ))}
+              </Box>
+            </Box>
+          )}
         </ReactFlow>
       </Box>
     </Box>
