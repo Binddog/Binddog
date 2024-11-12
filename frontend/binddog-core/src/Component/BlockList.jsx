@@ -2,84 +2,36 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Block from "./Block";
-import { getDocs } from "../api/libraryFlow";
+import { getDocs } from "../api/libraryFlow"
 
-const SCHEMA_PREFIX = "#/components/schemas/";
-const APPLICATION_JSON = "application/json"
 let idx = 0;
-const schemaMap = new Map();
 
-/**
- * 초기 스키마 전체 초기화
- * @param schemas 
- */
-function initSchema(schemas) {
-  Object.entries(schemas).forEach(([key, value]) => {
-    const objMap = new Map();
-    Object.entries(value.properties).forEach(([properties, obj]) => {
-      var res = obj.type
-      if (res == null) { //ref인 경우
-        res = obj['$ref'].replace(SCHEMA_PREFIX, "");
-      } else if (res === "array") {
-        const dto = obj.items['$ref'].replace(SCHEMA_PREFIX, "");
-        res = { type: res, object: dto }
-      }
-      objMap.set(properties, res);
-    })
-    schemaMap.set(key, objMap)
-  })
-  console.log(schemaMap)
-}
-
-/**
- * Response형식 매핑
- * @param  res 
- * @returns 
- */
 function parseResponse(res) {
-  const schema = res['200'].content['*/*'].schema
-  let dtoName = schema['$ref'].replace(SCHEMA_PREFIX, "");
-  if (dtoName === null) {
-    return;
-  }
-  return schemaMap.get(dtoName);
+  //TODO: res 200일 때의 response 세팅
 }
 
-function parseRequest(req) {
-  if (req['requestBody'] == null) return
-  const schema = req.requestBody.content[APPLICATION_JSON].schema
-  let dtoName = schema['$ref'].replace(SCHEMA_PREFIX, "");
-  if (dtoName === null) {
-    return;
-  }
-  return schemaMap.get(dtoName);
-}
-
-function parseParams(params) {
-  const parameters = new Map();
-  const pathVariables = new Map();
-  const headers = new Map();
+function parseRequest(params) {
+  const parameters = [];
+  const pathVariables = [];
+  const headers = [];
 
   params.forEach((param) => {
     if (param.in === "path") {
-      pathVariables.set(param.name, param.schema.type)
+      pathVariables.push(param.name)
     } else if (param.in === "query") {
-      parameters.set(param.name, param.schema.type);
+      parameters.push(param.name);
     } else if (param.in == "header") {
-      headers.set(param.name, param.schema.type)
+      headers.push(param.name);
     }
   });
   return { parameters, pathVariables, headers };
 }
 
 function createBlock(path, method, detail) {
-
-  const parsedParams = parseParams(detail.parameters || []);
-  const parameters = parsedParams.parameters;
-  const pathVariables = parsedParams.pathVariables;
-  const headers = parsedParams.headers;
-  const parsedRequest = parseRequest(detail) || [];
-  const parsedResponse = parseResponse(detail.responses)
+  const parsedRequest = parseRequest(detail.parameters || []);
+  const parameters = parsedRequest.parameters;
+  const pathVariables = parsedRequest.pathVariables;
+  const headers = parsedRequest.headers;
 
   return {
     key: idx,
@@ -91,9 +43,9 @@ function createBlock(path, method, detail) {
     header: headers,
     parameter: parameters,
     pathVariable: pathVariables,
-    request: parsedRequest,
-    response: parsedResponse
-  }
+    request: detail.requestBody,
+    response: detail.responses,
+  };
 }
 
 function createBlockList(context, docs) {
@@ -106,22 +58,26 @@ function createBlockList(context, docs) {
   return blockList;
 }
 
-function BlockList({ name, addNode }) {
-  console.log(name)
+function BlockList({ addNode }) {
+  const [name, setName] = useState("");
   const theme = useTheme();
   const [li, setLi] = useState([]); // li를 빈 배열로 초기화
   useEffect(() => {
     const fetchDocs = async () => {
       try {
         const docsData = await getDocs();
-        const context = docsData.servers[0].url;
+        setName(docsData.info.title);
 
-        initSchema(docsData.components.schemas);
+        const context = docsData.servers[0].url;
         const paths = docsData.paths;
 
+        console.log(docsData);
         const temp = createBlockList(context, paths);
-        console.log(temp)
         setLi(temp || []);
+        console.log(temp);
+        console.log("li = ", li);
+        // setLi(createBlockList(context, paths) || []);
+        console.log("temp");
       } catch (error) {
         console.error("문서 데이터를 가져오는 중 오류 발생:", error);
       }
