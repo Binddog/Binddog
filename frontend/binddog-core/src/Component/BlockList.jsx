@@ -4,34 +4,82 @@ import { useTheme } from "@mui/material/styles";
 import Block from "./Block";
 import { getDocs } from "../api/libraryFlow";
 
+const SCHEMA_PREFIX = "#/components/schemas/";
+const APPLICATION_JSON = "application/json"
 let idx = 0;
+const schemaMap = new Map();
 
-function parseResponse(res) {
-  //TODO: res 200일 때의 response 세팅
+/**
+ * 초기 스키마 전체 초기화
+ * @param schemas 
+ */
+function initSchema(schemas) {
+  Object.entries(schemas).forEach(([key, value]) => {
+    const objMap = new Map();
+    Object.entries(value.properties).forEach(([properties, obj]) => {
+      var res = obj.type
+      if (res == null) { //ref인 경우
+        res = obj['$ref'].replace(SCHEMA_PREFIX, "");
+      } else if (res === "array") {
+        const dto = obj.items['$ref'].replace(SCHEMA_PREFIX, "");
+        res = { type: res, object: dto }
+      }
+      objMap.set(properties, res);
+    })
+    schemaMap.set(key, objMap)
+  })
+  console.log(schemaMap)
 }
 
-function parseRequest(params) {
-  const parameters = [];
-  const pathVariables = [];
-  const headers = [];
+/**
+ * Response형식 매핑
+ * @param  res 
+ * @returns 
+ */
+function parseResponse(res) {
+  const schema = res['200'].content['*/*'].schema
+  let dtoName = schema['$ref'].replace(SCHEMA_PREFIX, "");
+  if (dtoName === null) {
+    return;
+  }
+  return schemaMap.get(dtoName);
+}
+
+function parseRequest(req) {
+  if (req['requestBody'] == null) return
+  const schema = req.requestBody.content[APPLICATION_JSON].schema
+  let dtoName = schema['$ref'].replace(SCHEMA_PREFIX, "");
+  if (dtoName === null) {
+    return;
+  }
+  return schemaMap.get(dtoName);
+}
+
+function parseParams(params) {
+  const parameters = new Map();
+  const pathVariables = new Map();
+  const headers = new Map();
 
   params.forEach((param) => {
     if (param.in === "path") {
-      parameters.push(param.name);
+      pathVariables.set(param.name, param.schema.type)
     } else if (param.in === "query") {
-      pathVariables.push(param.name);
+      parameters.set(param.name, param.schema.type);
     } else if (param.in == "header") {
-      headers.push(param.name);
+      headers.set(param.name, param.schema.type)
     }
   });
   return { parameters, pathVariables, headers };
 }
 
 function createBlock(path, method, detail) {
-  const parsedRequest = parseRequest(detail.parameters || []);
-  const parameters = parsedRequest.parameters;
-  const pathVariables = parsedRequest.pathVariables;
-  const headers = parsedRequest.headers;
+
+  const parsedParams = parseParams(detail.parameters || []);
+  const parameters = parsedParams.parameters;
+  const pathVariables = parsedParams.pathVariables;
+  const headers = parsedParams.headers;
+  const parsedRequest = parseRequest(detail) || [];
+  const parsedResponse = parseResponse(detail.responses)
 
   return {
     key: idx,
@@ -43,9 +91,9 @@ function createBlock(path, method, detail) {
     header: headers,
     parameter: parameters,
     pathVariable: pathVariables,
-    request: detail.requestBody,
-    response: detail.responses,
-  };
+    request: parsedRequest,
+    response: parsedResponse
+  }
 }
 
 function createBlockList(context, docs) {
@@ -66,15 +114,13 @@ function BlockList({ name, addNode }) {
       try {
         const docsData = await getDocs();
         const context = docsData.servers[0].url;
+
+        initSchema(docsData.components.schemas);
         const paths = docsData.paths;
 
-        console.log(docsData);
         const temp = createBlockList(context, paths);
+        console.log(temp)
         setLi(temp || []);
-        console.log(temp);
-        console.log("li = ", li);
-        // setLi(createBlockList(context, paths) || []);
-        console.log("temp");
       } catch (error) {
         console.error("문서 데이터를 가져오는 중 오류 발생:", error);
       }
