@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { Handle, Position } from "@xyflow/react";
 
 const StartSign = () => {
   const theme = useTheme();
@@ -22,6 +23,7 @@ const StartSign = () => {
       >
         Start
       </Typography>
+      <Handle type="source" position={Position.Right} />
     </Box>
   );
 };
