@@ -14,7 +14,7 @@ export default function Block({ method, apiName, endpoint, id, addNode }) {
       sx={{
         bgcolor: theme.palette.block[method],
         borderRadius: "8px",
-        width: "220px",
+        width: "240px",
         padding: "8px 8px 2px",
         cursor: "grab",
       }}
@@ -28,7 +28,7 @@ export default function Block({ method, apiName, endpoint, id, addNode }) {
           gap: 1,
         }}
       >
-        <Typography sx={{ ...theme.method }}>{method}</Typography>
+        <Typography sx={{ ...theme.method, width: "110px", textAlign: "center" }}>{method}</Typography>
 
         <Box
           sx={{
