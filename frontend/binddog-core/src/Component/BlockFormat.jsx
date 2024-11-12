@@ -17,8 +17,8 @@ export default function BlockFormat({ data }) {
     setToggleParams(!toggleParams);
   }
 
-  const handleStyle1 = toggleParams ? { top: 45, left: 57 } : {};
-  const handleStyle2 = toggleParams ? { top: 45, right: 57 } : {};
+  const handleStyle1 = toggleParams ? { top: 45, left: 45 } : {};
+  const handleStyle2 = toggleParams ? { top: 45, right: 45 } : {};
 
   // JSON 데이터에서 전달받은 추가적인 속성을 구조 분해 할당
   const {
@@ -44,8 +44,8 @@ export default function BlockFormat({ data }) {
         sx={{
           bgcolor: theme.palette.block[method],
           borderRadius: "8px",
-          width: "220px",
-          padding: "8px 8px 2px",
+          width: "240px",
+          padding: "8px 10px 2px",
           cursor: "grab",
           boxShadow: "-4px 4px 2px rgba(0, 0, 0, 0.4)",
         }}
@@ -59,7 +59,15 @@ export default function BlockFormat({ data }) {
             gap: 1,
           }}
         >
-          <Typography sx={theme.method}>{method}</Typography>
+          <Typography
+            sx={{
+              ...theme.method,
+              width: "110px",
+              textAlign: "center"
+            }}
+          >
+            {method}
+          </Typography>
 
           <Box
             sx={{
@@ -86,11 +94,19 @@ export default function BlockFormat({ data }) {
             </Box>
             <Box
               sx={{
+                width: "100%",
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "space-between"
               }}
             >
-              <Typography sx={{ ...theme.endpoint, padding: "5px" }}>
+              <Typography
+                sx={{
+                ...theme.endpoint, padding: "5px",
+                overflow: "hidden", textOverflow: "ellipsis",
+                whiteSpace: "nowrap", maxWidth: "150px",
+                }}
+              >
                 {endpoint}
               </Typography>
               <IconButton sx={{color: theme.palette.common.white, scale: "70%", }} onClick={clickToggle}>
