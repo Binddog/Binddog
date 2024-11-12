@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 import BlockFormat from "../Component/BlockFormat";
 import {
@@ -24,6 +24,7 @@ function Flow() {
   const theme = useTheme();
   const location = useLocation();
   const flowName = location.state?.flowName;
+  const { projectId, flowId } = useParams();
   console.log("Received flowName:", flowName);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
@@ -97,7 +98,7 @@ function Flow() {
             }}
           >
             <RunButton />
-            <SaveButton />
+            <SaveButton projectId={projectId} flowId={flowId} />
           </Box>
           <Controls />
           <MiniMap />
