@@ -13,7 +13,7 @@ public record MemberRegisterReq(
         String email,
 
         @Pattern(
-                regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,16}$",
+                regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[~!@#$%^&*?.])[A-Za-z\\d~!@#$%^&*?.]{8,16}$",
                 message = "Password format is invalid."
         )
         String password
