@@ -59,7 +59,7 @@ function FlowList() {
   return (
     // 프로젝트의 모든 플로우 확인
     <Box sx={{ display: "flex", flexGrow: 1 }}>
-      <SideNav li={li} />
+      <SideNav li={li} projectId={projectId} />
 
       <Box
         sx={{

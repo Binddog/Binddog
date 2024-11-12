@@ -32,9 +32,7 @@ function FlowBlock({ inId, flowName, projectId }) {
   };
 
   const handleModify = () => {
-    navigate(`/projects/${projectId}/flows/${inId}`, {
-      state: { flowName },
-    });
+    navigate(`/projects/${projectId}/flows/${inId}`, { state: { flowName } });
     handleKebabClose();
   };
 
