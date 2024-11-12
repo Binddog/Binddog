@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
-import blockData from "../block.json";
 import BlockFormat from "../Component/BlockFormat";
 import {
   ReactFlow,
@@ -15,6 +14,8 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useTheme } from "@mui/material/styles";
 import BlockList from "../Component/BlockList";
+import RunButton from './../Component/Buttons/RunButton';
+import SaveButton from '../Component/Buttons/SaveButton';
 
 const parsedBlocks = [];
 const parsedLinks = [];
@@ -54,7 +55,7 @@ function Flow() {
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
       <Box sx={{ height: "100%", overflow: "auto" }}>
-        <BlockList name={flowName} li={blockData.blocks} addNode={addNode} />
+        <BlockList name={flowName} addNode={addNode} />
       </Box>
       <Box
         sx={{
@@ -72,8 +73,25 @@ function Flow() {
           nodeTypes={nodeTypes}
           style={{
             bgcolor: theme.palette.primary.main,
+            display: "flex",
+            justifyContent: "flex-end",
           }}
         >
+          <Box
+            sx={{
+              borderRadius: "8px",
+              padding: "10px 20px",
+              width: "20%",
+              height: "50px",
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
+              zIndex: 100,
+            }}
+          >
+            <RunButton />
+            <SaveButton/>
+          </Box>
           <Controls />
           <MiniMap />
           <Background variant="dots" gap={12} size={1} />
