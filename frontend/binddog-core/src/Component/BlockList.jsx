@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Block from "./Block";
-import { getDocs } from "../api/libraryFlow"
+import { getDocs } from "../api/libraryFlow";
 
 const SCHEMA_PREFIX = "#/components/schemas/";
 const APPLICATION_JSON = "application/json"
@@ -68,8 +68,8 @@ function parseParams(params) {
     } else if (param.in == "header") {
       headers.set(param.name, param.schema.type)
     }
-  })
-  return { parameters, pathVariables, headers }
+  });
+  return { parameters, pathVariables, headers };
 }
 
 function createBlock(path, method, detail) {
@@ -100,7 +100,7 @@ function createBlockList(context, docs) {
   const blockList = new Array();
   Object.entries(docs).forEach(([path, value]) => {
     Object.entries(value).forEach(([method, detail]) => {
-      blockList.push(createBlock(`${context}${path}`, method, detail))
+      blockList.push(createBlock(`${context}${path}`, method, detail));
     });
   });
   return blockList;
@@ -130,7 +130,6 @@ function BlockList({ name, addNode }) {
     fetchDocs();
   }, []);
 
-
   return (
     <Box
       sx={{
@@ -153,7 +152,7 @@ function BlockList({ name, addNode }) {
         {name}
       </Typography>
       {li.map((item) => (
-        < Block
+        <Block
           key={item.key}
           id={item.id}
           method={item.method}
