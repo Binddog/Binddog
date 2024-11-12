@@ -22,11 +22,20 @@ function BlockList({ li = blocksData.blocks, name, addNode }) {
     >
       <Typography
         sx={{
-          ...theme.typography.h3,
+          fontSize: "14px",
           marginBottom: "20px",
         }}
       >
-        {name}
+        현재 Flowname : {"  "}
+        <Box
+          component="span"
+          sx={{
+            ...theme.typography.h3,
+            fontWeight: "bold",
+          }}
+        >
+          [{name}]
+        </Box>
       </Typography>
       {li.map((item) => (
         <Block
