@@ -11,16 +11,20 @@ public record FlowSearchRes(
         String title,
         String description,
         List<BlockResponse> blocks,
-        List<LinkResponse> links,
-        MappingResponse mapping
+        List<LinkResponse> links
 ) {
+
+    public record Position(
+            Float x,
+            Float y
+    ) { }
 
     public record BlockResponse(
             Long blockId,
             String method,
             String endpoint,
             String name,
-            String position,
+            Position position,
             Map<String, String> header,
             Map<String, String> parameter,
             Map<String, String> pathVariable,

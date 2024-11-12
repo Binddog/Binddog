@@ -29,7 +29,6 @@ public interface FlowMapper {
     @Mapping(target = "description", source = "flow.description")
     @Mapping(target = "blocks", source = "flow.blocks", qualifiedByName = "mapBlocks")
     @Mapping(target = "links", source = "flow.links", qualifiedByName = "mapLinks")
-    @Mapping(target = "mapping", expression = "java(toMapping(flow.getMapping()))")
     Flow toFlow(Long projectId, String flowId, FlowRegisterReq flow);
 
     @Mapping(target = "title", source = "flowCreateReq.title")
@@ -38,6 +37,7 @@ public interface FlowMapper {
 
     Flow.Block toBlock(FlowRegisterReq.Block blocks);
 
+    @Mapping(source = "links.mappings", target = "mappings", qualifiedByName = "mapMappings")
     Flow.Link toLink(FlowRegisterReq.Link links);
 
     Flow.Mapping toMapping(FlowRegisterReq.Mapping mapping);
@@ -47,12 +47,19 @@ public interface FlowMapper {
     @Mapping(target = "description", source = "flow.description")
     @Mapping(target = "blocks", source = "flow.blocks")
     @Mapping(target = "links", source = "flow.links")
-    @Mapping(target = "mapping", source = "flow.mapping")
     FlowSearchRes toFlowSearchRes(Flow flow);
 
     FlowSearchRes.BlockResponse toBlockResponse(Flow.Block block);
+
+    @Mapping(target = "mappings", source = "link.mappings", qualifiedByName = "mapMappingsDto")
     FlowSearchRes.LinkResponse toLinkResponse(Flow.Link link);
-    FlowSearchRes.MappingResponse toMappingResponse(Flow.Mapping mapping);
+
+    @Named("mapMappings")
+    default List<Flow.Mapping> mapMappings(List<FlowRegisterReq.Mapping> mappings) {
+        return mappings.stream()
+                       .map(this::toMapping)
+                       .toList();
+    }
 
     @Named("mapBlocks")
     default List<Flow.Block> mapBlocks(List<FlowRegisterReq.Block> blocks) {
@@ -79,4 +86,15 @@ public interface FlowMapper {
                                                .toList();
         return new FlowsSearchRes(flowSummaries.size(), flowSummaries);
     }
+
+    @Named("mapMappingsDto")
+    default List<FlowSearchRes.MappingResponse> mapMappingsDto(List<Flow.Mapping> mappings) {
+        List<FlowSearchRes.MappingResponse> mappingResponses
+                = mappings.stream()
+                          .map(this::mapMappingDto)
+                          .toList();
+        return mappingResponses;
+    }
+
+    FlowSearchRes.MappingResponse mapMappingDto(Flow.Mapping mapping);
 }

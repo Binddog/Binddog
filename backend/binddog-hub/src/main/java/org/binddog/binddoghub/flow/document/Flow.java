@@ -23,7 +23,16 @@ public class Flow extends BaseDocument {
     private Long projectId;
     private List<Block> blocks;
     private List<Link> links;
-    private Mapping mapping;
+
+    @Getter
+    @Builder
+    @ToString
+    @AllArgsConstructor
+    public static class Position {
+        private Float x;
+        private Float y;
+    }
+
 
     @Getter
     @Builder
@@ -34,7 +43,7 @@ public class Flow extends BaseDocument {
         private String method;
         private String endpoint;
         private String name;
-        private String position;
+        private Position position;
         private Map<String, String> header;
         private Map<String, String> parameter;
         private Map<String, String> pathVariable;
