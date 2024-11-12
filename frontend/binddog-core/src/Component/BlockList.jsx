@@ -19,7 +19,7 @@ function initSchema(schemas) {
     Object.entries(value.properties).forEach(([properties, obj]) => {
       var res = obj.type
       if (res == null) { //ref인 경우
-        res = obj['$ref'].replace(SCHEMA_PREFIX, "");
+        res = { type: obj['$ref'].replace(SCHEMA_PREFIX, "") };
       } else if (res === "array") {
         const dto = obj.items['$ref'].replace(SCHEMA_PREFIX, "");
         res = { type: res, object: dto }
@@ -29,6 +29,25 @@ function initSchema(schemas) {
     schemaMap.set(key, objMap)
   })
   console.log(schemaMap)
+}
+
+function parsingInnerObject(obj) {
+  const objMap = new Map();
+  obj.forEach((value, key) => {
+    if (value.type === "array") {
+      objMap.set(key, parsingInnerObject(schemaMap.get(value.object)))
+      console.log(value.type)
+
+    } else if (schemaMap.get(value.type)) {
+      console.log("key : ", key)
+      console.log("value : ", value)
+      objMap.set(key, parsingInnerObject(schemaMap.get(value.type)))
+    } else {
+      objMap.set(key, value);
+    }
+  })
+  console.log(objMap)
+  return objMap;
 }
 
 /**
@@ -42,7 +61,9 @@ function parseResponse(res) {
   if (dtoName === null) {
     return;
   }
-  return schemaMap.get(dtoName);
+  const requestMap = schemaMap.get(dtoName)
+  console.log(schemaMap.get(dtoName))
+  return parsingInnerObject(schemaMap.get(dtoName));
 }
 
 function parseRequest(req) {
@@ -52,7 +73,8 @@ function parseRequest(req) {
   if (dtoName === null) {
     return;
   }
-  return schemaMap.get(dtoName);
+  console.log(schemaMap.get(dtoName))
+  return parsingInnerObject(schemaMap.get(dtoName));
 }
 
 function parseParams(params) {
@@ -115,6 +137,7 @@ function BlockList({ name, addNode }) {
       try {
         const docsData = await getDocs();
         const context = docsData.servers[0].url;
+        console.log(docsData)
 
         initSchema(docsData.components.schemas);
         const paths = docsData.paths;
