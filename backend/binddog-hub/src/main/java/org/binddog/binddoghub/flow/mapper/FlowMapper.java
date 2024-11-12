@@ -3,6 +3,7 @@ package org.binddog.binddoghub.flow.mapper;
 import org.binddog.binddoghub.flow.document.Flow;
 import org.binddog.binddoghub.flow.dto.req.FlowCreateReq;
 import org.binddog.binddoghub.flow.dto.req.FlowRegisterReq;
+import org.binddog.binddoghub.flow.dto.res.FlowSearchRes;
 import org.binddog.binddoghub.flow.dto.res.FlowSummary;
 import org.binddog.binddoghub.flow.dto.res.FlowsSearchRes;
 import org.mapstruct.Mapper;
@@ -40,6 +41,18 @@ public interface FlowMapper {
     Flow.Link toLink(FlowRegisterReq.Link links);
 
     Flow.Mapping toMapping(FlowRegisterReq.Mapping mapping);
+
+    @Mapping(target = "flowId", source = "flow.flowId")
+    @Mapping(target = "title", source = "flow.title")
+    @Mapping(target = "description", source = "flow.description")
+    @Mapping(target = "blocks", source = "flow.blocks")
+    @Mapping(target = "links", source = "flow.links")
+    @Mapping(target = "mapping", source = "flow.mapping")
+    FlowSearchRes toFlowSearchRes(Flow flow);
+
+    FlowSearchRes.BlockResponse toBlockResponse(Flow.Block block);
+    FlowSearchRes.LinkResponse toLinkResponse(Flow.Link link);
+    FlowSearchRes.MappingResponse toMappingResponse(Flow.Mapping mapping);
 
     @Named("mapBlocks")
     default List<Flow.Block> mapBlocks(List<FlowRegisterReq.Block> blocks) {

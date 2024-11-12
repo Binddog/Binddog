@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.binddog.binddoghub.flow.dto.req.FlowCreateReq;
 import org.binddog.binddoghub.flow.dto.req.FlowRegisterReq;
 import org.binddog.binddoghub.flow.dto.res.FlowCreateRes;
+import org.binddog.binddoghub.flow.dto.res.FlowSearchRes;
 import org.binddog.binddoghub.flow.dto.res.FlowsSearchRes;
 import org.binddog.binddoghub.flow.service.FlowService;
 import org.binddog.binddoghub.global.enums.NoneResponse;
@@ -14,8 +15,6 @@ import org.binddog.binddoghub.global.response.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import static org.binddog.binddoghub.global.enums.SuccessCode.GET_FLOW_SUCCESS;
 
 @Slf4j
 @RestController
@@ -34,7 +33,8 @@ public class FlowController {
             @AuthenticationPrincipal Long memberId,
             @PathVariable Long projectId
     ) {
-        SuccessResponse<FlowsSearchRes> response = flowService.loadFlows(memberId, projectId);
+        SuccessResponse<FlowsSearchRes> response
+                = flowService.loadFlows(memberId, projectId);
         return Response.success(response);
     }
 
@@ -43,11 +43,13 @@ public class FlowController {
             description = "Load a saved flow."
     )
     @GetMapping("/{projectId}/flows/{flowId}")
-    public ResponseEntity<Response<NoneResponse>> getFlow(
+    public ResponseEntity<Response<FlowSearchRes>> getFlow(
+            @AuthenticationPrincipal Long memberId,
             @PathVariable Long projectId,
             @PathVariable String flowId
     ) {
-        SuccessResponse<NoneResponse> response = new SuccessResponse<>(GET_FLOW_SUCCESS, NoneResponse.NONE);
+        SuccessResponse<FlowSearchRes> response
+                = flowService.loadFlow(memberId, projectId, flowId);
         return Response.success(response);
     }
 
