@@ -3,15 +3,15 @@ import React from "react";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
-function SideNav({ li, projectId }) {
+function SideNav({ li, projectId, projectName }) {
   const theme = useTheme();
   const navigate = useNavigate();
+  console.log(projectName);
 
   return (
     <Box
       sx={{
         width: "250px",
-        // bgcolor: "#F7F7F7",
         borderRight: `1px solid lightgrey`,
         display: "flex",
         flexDirection: "column",
@@ -20,9 +20,36 @@ function SideNav({ li, projectId }) {
         gap: 3,
       }}
     >
-      <Typography component="div" sx={theme.typography.h3}>
-        유저의 라이브러리
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 1,
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "14px",
+          }}
+        >
+          현재 프로젝트 이름
+        </Typography>
+        <Typography
+          sx={{
+            ...theme.typography.h3,
+            fontWeight: "bold",
+            bgcolor: theme.palette.primary.main,
+            textAlign: "center",
+            padding: "5px",
+          }}
+        >
+          {projectName}
+        </Typography>
+      </Box>
+
       <Box
         sx={{
           color: theme.palette.text.secondary,
@@ -30,6 +57,7 @@ function SideNav({ li, projectId }) {
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          alignItems: "flex-start",
         }}
       >
         {li.map((item) => (
@@ -45,6 +73,8 @@ function SideNav({ li, projectId }) {
               cursor: "pointer",
               textDecoration: "none",
               color: theme.palette.text.secondary,
+              width: "100%",
+              textAlign: "left",
             }}
           >
             {item.title}
