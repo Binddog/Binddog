@@ -16,8 +16,16 @@ import { useTheme } from "@mui/material/styles";
 import BlockList from "../Component/BlockList";
 import RunButton from "./../Component/Buttons/RunButton";
 import SaveButton from "../Component/Buttons/SaveButton";
+import StartSign from '../Component/Buttons/StartSign';
 
-const parsedBlocks = [];
+const parsedBlocks = [
+  {
+    id: "start-sign", // StartSign 노드의 고유 ID
+    type: "startSign",
+    position: { x: 50, y: 50 },
+    data: {},
+  },
+];
 const parsedLinks = [];
 
 function Flow() {
@@ -38,6 +46,7 @@ function Flow() {
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+  
 
   function addNode(item) {
     const newNode = {
@@ -54,11 +63,25 @@ function Flow() {
     setNodes((nds) => [...nds, newNode]);
   }
 
+  const handleNodesChange = useCallback(
+    (changes) => {
+      // StartSign 노드를 삭제하는 change는 제외
+      const filteredChanges = changes.filter(
+        (change) => !(change.type === "remove" && change.id === "start-sign")
+      );
+  
+      // 필터링된 changes만 기존 onNodesChange에 전달
+      onNodesChange(filteredChanges);
+    },
+    [onNodesChange]
+  );
+
   const nodeTypes = {
     customBlock: BlockFormat,
+    startSign: StartSign,
   };
 
-  console.log(logBox);
+  console.log(nodes);
 
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
@@ -81,7 +104,7 @@ function Flow() {
         <ReactFlow
           nodes={nodes}
           edges={edges}
-          onNodesChange={onNodesChange}
+          onNodesChange={handleNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
