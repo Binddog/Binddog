@@ -71,9 +71,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/docs" element={<Docs />} />
-          <Route path="/flowList" element={<FlowList />} />
           <Route path="/projects" element={<Projects />} />
-          <Route path="/flow/:id" element={<Flow />} />
+          <Route path="/projects/:projectId" element={<FlowList />} />
+          <Route path="/projects/:projectId/flows/:flowId" element={<Flow />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
         </Routes>
 
