@@ -17,6 +17,7 @@ public interface ProjectMapper {
     Project toEntity(Member member, ProjectCreateReq request);
 
 
+    @Mapping(target = "projectId", source = "project.id")
     @Mapping(target = "title", source = "project.title")
     @Mapping(target = "description", source = "project.description")
     @Mapping(target = "createdDate", source = "project.createdAt")
