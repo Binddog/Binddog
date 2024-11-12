@@ -35,7 +35,7 @@ function parsingInnerObject(obj) {
   const objMap = new Map();
   obj.forEach((value, key) => {
     if (value.type === "array") {
-      objMap.set(key, parsingInnerObject(schemaMap.get(value.object)))
+      objMap.set(key, [parsingInnerObject(schemaMap.get(value.object))])
       console.log(value.type)
 
     } else if (schemaMap.get(value.type)) {
