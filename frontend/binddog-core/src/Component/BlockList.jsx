@@ -58,16 +58,13 @@ function createBlockList(context, docs) {
   return blockList;
 }
 
-function BlockList({ addNode }) {
-  const [name, setName] = useState("");
+function BlockList({ name, addNode }) {
   const theme = useTheme();
-  const [li, setLi] = useState([]); // li를 빈 배열로 초기화
+  const [li, setLi] = useState([]);
   useEffect(() => {
     const fetchDocs = async () => {
       try {
         const docsData = await getDocs();
-        setName(docsData.info.title);
-
         const context = docsData.servers[0].url;
         const paths = docsData.paths;
 
@@ -91,31 +88,39 @@ function BlockList({ addNode }) {
       sx={{
         width: "250px",
         // height: "100%",
-        bgcolor: "#F7F7F7",
+        // bgcolor: "#F7F7F7",
         display: "flex",
         flexDirection: "column",
         padding: "50px",
-        alignItems: "flex-start",
+        alignItems: "center",
         gap: 3,
       }}
     >
-      <Typography
+      <Box
         sx={{
-          fontSize: "14px",
-          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 1,
         }}
       >
-        현재 Flowname : {"  "}
-        <Box
-          component="span"
+        <Typography
+          sx={{
+            fontSize: "14px",
+          }}
+        >
+          현재 Flowname
+        </Typography>
+        <Typography
           sx={{
             ...theme.typography.h3,
             fontWeight: "bold",
+            bgcolor: theme.palette.primary.main,
           }}
         >
-          [{name}]
-        </Box>
-      </Typography>
+          {name}
+        </Typography>
+      </Box>
       {li.map((item) => (
         <Block
           key={item.key}

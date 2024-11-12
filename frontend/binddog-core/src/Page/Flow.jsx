@@ -14,8 +14,8 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useTheme } from "@mui/material/styles";
 import BlockList from "../Component/BlockList";
-import RunButton from './../Component/Buttons/RunButton';
-import SaveButton from '../Component/Buttons/SaveButton';
+import RunButton from "./../Component/Buttons/RunButton";
+import SaveButton from "../Component/Buttons/SaveButton";
 
 const parsedBlocks = [];
 const parsedLinks = [];
@@ -24,6 +24,7 @@ function Flow() {
   const theme = useTheme();
   const location = useLocation();
   const flowName = location.state?.flowName;
+  console.log("Received flowName:", flowName);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
@@ -90,7 +91,7 @@ function Flow() {
             }}
           >
             <RunButton />
-            <SaveButton/>
+            <SaveButton />
           </Box>
           <Controls />
           <MiniMap />
