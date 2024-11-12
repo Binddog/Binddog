@@ -1,16 +1,18 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 import { useTheme } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function SideNav({ li, title }) {
+function SideNav({ li, projectId }) {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Box
       sx={{
         width: "250px",
-        bgcolor: "#F7F7F7",
+        // bgcolor: "#F7F7F7",
+        borderRight: `1px solid lightgrey`,
         display: "flex",
         flexDirection: "column",
         padding: "50px",
@@ -31,18 +33,22 @@ function SideNav({ li, title }) {
         }}
       >
         {li.map((item) => (
-          <Link
-            to={`/flow/${item.id}`}
-            key={item.id}
-            style={{
+          <Typography
+            key={item.flowId}
+            onClick={() =>
+              navigate(`/projects/${projectId}/flows/${item.flowId}`, {
+                state: { flowName: item.title },
+              })
+            }
+            sx={{
+              ...theme.typography,
+              cursor: "pointer",
               textDecoration: "none",
               color: theme.palette.text.secondary,
             }}
           >
-            <Typography component="li" sx={theme.typography}>
-              {item.title}
-            </Typography>
-          </Link>
+            {item.title}
+          </Typography>
         ))}
       </Box>
     </Box>
