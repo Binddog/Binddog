@@ -6,9 +6,8 @@ import docsAxios from "./docsAxios";
 // 해당 프로젝트의 API 목록 조회
 export const getDocs = async () => {
   const response = await docsAxios(`/api/v3/api-docs`);
-  console.log(response);
   return response.data;
-}
+};
 
 // 특정 프로젝트의 단일 플로우 조회
 export const getFlow = async (projectId, flowId) => {
@@ -38,11 +37,6 @@ export const modifyFlow = async (projectId, flowId, blocks, links, mapping) => {
     links,
     mapping,
   });
-  console.log(projectId);
-  console.log(flowId);
-  console.log(blocks);
-  console.log(links);
-  console.log(mapping);
   return response.data;
 };
 
