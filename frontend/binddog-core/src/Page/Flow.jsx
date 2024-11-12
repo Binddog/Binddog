@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import blockData from "../block.json";
 import BlockFormat from "../Component/BlockFormat";
@@ -15,26 +16,14 @@ import "@xyflow/react/dist/style.css";
 import { useTheme } from "@mui/material/styles";
 import BlockList from "../Component/BlockList";
 
-function parseBlocks(blocks) {
-  return blocks.map((block, index) => ({
-    id: block.blockId.toString(),
-    position: { x: 50, y: index * 70 },
-    data: {
-      label: block.name,
-      method: block.method,
-      endpoint: block.endpoint,
-      description: block.description,
-      tags: block.tags,
-    },
-    type: "customBlock",
-  }));
-}
-
 const parsedBlocks = [];
 const parsedLinks = [];
 
 function Flow() {
   const theme = useTheme();
+  const location = useLocation();
+  const flowName = location.state?.flowName;
+
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
 
@@ -65,7 +54,7 @@ function Flow() {
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
       <Box sx={{ height: "100%", overflow: "auto" }}>
-        <BlockList name={"APIs"} li={blockData.blocks} addNode={addNode} />
+        <BlockList name={flowName} li={blockData.blocks} addNode={addNode} />
       </Box>
       <Box
         sx={{
