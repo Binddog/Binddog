@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { Box, Typography } from "@mui/material";
-import blockData from "../block.json";
 import BlockFormat from "../Component/BlockFormat";
 import {
   ReactFlow,
@@ -74,7 +73,7 @@ function Flow() {
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
       <Box sx={{ height: "100%", overflow: "auto" }}>
-        <BlockList name={"APIs"} li={blockData.blocks} addNode={addNode} />
+        <BlockList addNode={addNode} />
       </Box>
       <Box
         sx={{
