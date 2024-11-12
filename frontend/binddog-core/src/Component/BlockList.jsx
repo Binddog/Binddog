@@ -28,7 +28,6 @@ function initSchema(schemas) {
     })
     schemaMap.set(key, objMap)
   })
-  console.log(schemaMap)
 }
 
 function parsingInnerObject(obj) {
@@ -36,17 +35,13 @@ function parsingInnerObject(obj) {
   obj.forEach((value, key) => {
     if (value.type === "array") {
       objMap.set(key, [parsingInnerObject(schemaMap.get(value.object))])
-      console.log(value.type)
 
     } else if (schemaMap.get(value.type)) {
-      console.log("key : ", key)
-      console.log("value : ", value)
       objMap.set(key, parsingInnerObject(schemaMap.get(value.type)))
     } else {
       objMap.set(key, value);
     }
   })
-  console.log(objMap)
   return objMap;
 }
 
@@ -61,8 +56,6 @@ function parseResponse(res) {
   if (dtoName === null) {
     return;
   }
-  const requestMap = schemaMap.get(dtoName)
-  console.log(schemaMap.get(dtoName))
   return parsingInnerObject(schemaMap.get(dtoName));
 }
 
@@ -73,7 +66,6 @@ function parseRequest(req) {
   if (dtoName === null) {
     return;
   }
-  console.log(schemaMap.get(dtoName))
   return parsingInnerObject(schemaMap.get(dtoName));
 }
 
@@ -129,7 +121,6 @@ function createBlockList(context, docs) {
 }
 
 function BlockList({ name, addNode }) {
-  console.log(name)
   const theme = useTheme();
   const [li, setLi] = useState([]); // li를 빈 배열로 초기화
   useEffect(() => {
@@ -137,13 +128,11 @@ function BlockList({ name, addNode }) {
       try {
         const docsData = await getDocs();
         const context = docsData.servers[0].url;
-        console.log(docsData)
 
         initSchema(docsData.components.schemas);
         const paths = docsData.paths;
 
         const temp = createBlockList(context, paths);
-        console.log(temp)
         setLi(temp || []);
       } catch (error) {
         console.error("문서 데이터를 가져오는 중 오류 발생:", error);
