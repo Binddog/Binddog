@@ -42,6 +42,10 @@ function Flow() {
     setLogBox((prevLog) => [...prevLog, newItem]);
   }
 
+  const restartLog = () => {
+    setLogBox([]);
+  }
+
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
@@ -136,10 +140,10 @@ function Flow() {
           {logBox.length > 0 && (
             <Box
               sx={{
-                position: "fixed",
-                left: "33.5%",
+                position: "absolute",
+                left: "16%",
                 bottom: "5%",
-                width: "60%",
+                width: "70%",
                 height: "200px",
                 zIndex: 50,
                 border: `${theme.palette.common.grey} solid 1px`,
