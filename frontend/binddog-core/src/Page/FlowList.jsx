@@ -1,5 +1,6 @@
-import { React, useState } from "react";
-import SideNav from "../Component/SideNav";
+import React, { useState, useEffect } from "react";
+import { useTheme } from "@mui/material/styles";
+import { useParams } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -8,27 +9,31 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import SideNav from "../Component/SideNav";
 import FlowBlock from "../Component/FlowBlock";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { createProject } from "../api/project";
+import { getAllFlow, createFlow } from "../api/libraryFlow";
 
 function FlowList() {
   const theme = useTheme();
-
-  const [num, setNum] = useState(5);
-  const [titleName, setTitleName] = useState("FLOW5");
-  const [description, setDescription] = useState("기본 설명");
-
-  const [li, setLi] = useState([
-    { id: 1, title: "FLOW1" },
-    { id: 2, title: "FLOW2" },
-    { id: 3, title: "FLOW3" },
-    { id: 4, title: "FLOW4" },
-  ]);
-
-  // 모달 관련 상태
+  const { projectId } = useParams();
+  const [li, setLi] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [titleName, setTitleName] = useState("FLOW");
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    const fetchFlows = async () => {
+      try {
+        const flows = await getAllFlow(projectId);
+        setLi(Array.isArray(flows) ? flows : []);
+      } catch (error) {
+        console.error("Failed to fetch flows:", error);
+        setLi([]);
+      }
+    };
+    fetchFlows();
+  }, [projectId]);
 
   const CloseModal = () => {
     setIsModalOpen(false);
@@ -38,40 +43,30 @@ function FlowList() {
     setIsModalOpen(true);
   };
 
-  // 프로젝트 생성 함수
   const handleCreate = async () => {
     try {
-      const newProject = await createProject(titleName, description);
-      setLi((prevLi) => [
-        ...prevLi,
-        {
-          id: newProject.id,
-          title: newProject.title,
-          description: newProject.description,
-        },
-      ]);
-      setNum(num + 1);
-      setTitleName("FLOW" + (num + 1));
+      await createFlow(projectId, titleName, description);
+      const updatedFlows = await getAllFlow(projectId);
+      setLi(Array.isArray(updatedFlows) ? updatedFlows : []);
+
+      setTitleName(`FLOW${updatedFlows.length + 1}`);
       CloseModal();
     } catch (error) {
-      console.error("Failed to create project:", error);
+      console.error("Failed to create flow:", error);
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexGrow: 1,
-      }}
-    >
+    // 프로젝트의 모든 플로우 확인
+    <Box sx={{ display: "flex", flexGrow: 1 }}>
       <SideNav li={li} />
+
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           flexGrow: 1,
-          padding: "20px 40px",
+          padding: "40px 60px",
           overflow: "auto",
         }}
       >
@@ -82,11 +77,7 @@ function FlowList() {
             alignItems: "center",
           }}
         >
-          <Typography
-            sx={{
-              ...theme.typography.h2,
-            }}
-          >
+          <Typography sx={theme.typography.h2}>
             플로우 확인 페이지 (플로우 리스트)
           </Typography>
           <Box>
@@ -101,9 +92,7 @@ function FlowList() {
                   border: "none",
                   bgcolor: theme.palette.common.lightgrey,
                   cursor: "pointer",
-                  "&:hover": {
-                    bgcolor: theme.palette.primary.dark,
-                  },
+                  "&:hover": { bgcolor: theme.palette.primary.dark },
                 },
               ]}
             >
@@ -115,17 +104,20 @@ function FlowList() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: {
-              lg: "repeat(2, 1fr)",
-              xl: "repeat(3, 1fr)",
-            },
+            gridTemplateColumns: { md: "repeat(2, 1fr)", xl: "repeat(3, 1fr)" },
             gap: 5,
             justifyItems: "center",
             marginTop: "20px",
           }}
         >
           {li.map((item) => (
-            <FlowBlock key={item.id} inId={item.id} flowName={item.title} />
+            <FlowBlock
+              key={item.flowId}
+              inId={item.flowId}
+              projectId={projectId}
+              flowName={item.title}
+              description={item.description}
+            />
           ))}
         </Box>
       </Box>
@@ -195,6 +187,18 @@ function FlowList() {
               variant="outlined"
               placeholder="플로우 이름을 입력해주세요"
               onChange={(e) => setTitleName(e.target.value)}
+              InputProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -204,12 +208,6 @@ function FlowList() {
                   "&.Mui-focused fieldset": {
                     borderColor: theme.palette.common.grey,
                   },
-                },
-                "& .MuiInputLabel-root": {
-                  color: theme.palette.common.grey,
-                },
-                "& .MuiInputBase-input": {
-                  color: theme.palette.common.grey,
                 },
               }}
             />
@@ -219,6 +217,18 @@ function FlowList() {
               variant="outlined"
               placeholder="플로우 설명을 입력해주세요"
               onChange={(e) => setDescription(e.target.value)}
+              InputProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -228,12 +238,6 @@ function FlowList() {
                   "&.Mui-focused fieldset": {
                     borderColor: theme.palette.common.grey,
                   },
-                },
-                "& .MuiInputLabel-root": {
-                  color: theme.palette.common.grey,
-                },
-                "& .MuiInputBase-input": {
-                  color: theme.palette.common.grey,
                 },
               }}
             />
