@@ -24,17 +24,18 @@ const ConnectionBox = ({pathVariable, parameter}) => {
     setItems(initialItems);
   }, []);
 
+
   useEffect(() => {
-    // pathVariable을 기반으로 reqList를 초기화
-    const initialItems = (pathVariable || []).map((input, index) => ({
+    // Map을 배열로 변환하여 초기 items를 설정
+    const initialItems = Array.from(pathVariable || []).map(([key, value], index) => ({
       id: index + 1,
       deactivate: false,
-      input: input, // pathVariable의 각 항목을 input으로 설정
-      fromWhere: "",
+      input: key,  // Map의 key를 input으로 설정
+      fromWhere: "",  // Map의 value를 fromWhere로 설정
       usage: "Param",
     }));
     setItems(initialItems);
-  }, [pathVariable]); // pathVariable 변경 시 재실행
+  }, [pathVariable]); // pathVariable이 변경될 때마다 실행
 
   const handleChange = (id, field, value) => {
     setItems((prevItems) =>

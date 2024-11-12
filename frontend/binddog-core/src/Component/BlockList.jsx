@@ -128,7 +128,7 @@ function BlockList({ name, addNode }) {
         const docsData = await getDocs();
         const context = docsData.servers[0].url;
 
-        initSchema(docsData.components.schemas);
+        if(docsData.components.schemas!=null)initSchema(docsData.components.schemas);
         const paths = docsData.paths;
 
         const temp = createBlockList(context, paths);
