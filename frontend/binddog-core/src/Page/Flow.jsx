@@ -55,7 +55,13 @@ function Flow() {
 
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
-      <Box sx={{ height: "100%", overflow: "auto" }}>
+      <Box
+        sx={{
+          height: "100%",
+          overflow: "auto",
+          borderRight: "1px solid lightgrey",
+        }}
+      >
         <BlockList name={flowName} addNode={addNode} />
       </Box>
       <Box
