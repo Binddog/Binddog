@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -17,6 +17,9 @@ import { getAllFlow, createFlow } from "../api/libraryFlow";
 function FlowList() {
   const theme = useTheme();
   const { projectId } = useParams();
+  const location = useLocation();
+  const projectName = location.state?.projectName;
+
   const [li, setLi] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [titleName, setTitleName] = useState("FLOW");
@@ -59,7 +62,7 @@ function FlowList() {
   return (
     // 프로젝트의 모든 플로우 확인
     <Box sx={{ display: "flex", flexGrow: 1 }}>
-      <SideNav li={li} projectId={projectId} />
+      <SideNav li={li} projectId={projectId} projectName={projectName} />
 
       <Box
         sx={{
@@ -77,9 +80,7 @@ function FlowList() {
             alignItems: "center",
           }}
         >
-          <Typography sx={theme.typography.h2}>
-            플로우 확인 페이지 (플로우 리스트)
-          </Typography>
+          <Typography sx={theme.typography.h2}>나의 플로우 리스트</Typography>
           <Box>
             <Typography
               component="button"
