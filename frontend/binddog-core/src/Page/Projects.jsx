@@ -85,7 +85,11 @@ function Projects() {
         {projects.map((project, index) => (
           <Box
             key={project.projectId}
-            onClick={() => navigate(`/projects/${project.projectId}`)}
+            onClick={() =>
+              navigate(`/projects/${project.projectId}`, {
+                state: { projectName: project.title },
+              })
+            }
             sx={{
               position: "relative",
               padding: "20px",
