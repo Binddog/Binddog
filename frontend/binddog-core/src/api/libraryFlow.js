@@ -18,10 +18,11 @@ export const getFlow = async (projectId, flowId) => {
 // 특정 프로젝트의 모든 플로우 조회
 export const getAllFlow = async (projectId) => {
   const response = await Axios(`projects/${projectId}/flows`);
-  return response.data;
+  console.log("data: ", response.data.data.flows);
+  return response.data.data.flows;
 };
 
-// 특정 프로젝트의 플로우 생성
+// api/libraryFlow.js
 export const createFlow = async (projectId, title, description) => {
   const response = await Axios.post(`projects/${projectId}/flows`, {
     title,

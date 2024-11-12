@@ -1,45 +1,75 @@
-import {React, useState, useEffect} from "react";
-import SideNav from "../Component/SideNav";
-import { Box, Typography, IconButton, Menu, MenuItem } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
+import { useParams, useLocation } from "react-router-dom";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Modal,
+  Button,
+  TextField,
+} from "@mui/material";
+import SideNav from "../Component/SideNav";
 import FlowBlock from "../Component/FlowBlock";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { getAllFlow, createFlow } from "../api/libraryFlow";
 
 function FlowList() {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const isKebabOpen = Boolean(anchorEl);
+  const { projectId } = useParams();
+  const location = useLocation();
+  const projectName = location.state?.projectName;
 
-  const [num, setNum] = useState(5);
-  const [titleName, setTitleName] = useState('FLOW5');
+  const [li, setLi] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [titleName, setTitleName] = useState("FLOW");
+  const [description, setDescription] = useState("");
 
-  // 바로 생성될 때 확인을 위해 useState로 변경
-  const [li, setLi] = useState([
-    { id: 1, title: "FLOW1" },
-    { id: 2, title: "FLOW2" },
-    { id: 3, title: "FLOW3" },
-    { id: 4, title: "FLOW4" },
-  ]);
+  useEffect(() => {
+    const fetchFlows = async () => {
+      try {
+        const flows = await getAllFlow(projectId);
+        setLi(Array.isArray(flows) ? flows : []);
+      } catch (error) {
+        console.error("Failed to fetch flows:", error);
+        setLi([]);
+      }
+    };
+    fetchFlows();
+  }, [projectId]);
 
-  const handleCreate = () => {
-    setLi((prevLi) => [...prevLi, { id: num, title: titleName }]);
-    setNum(num + 1);
-    setTitleName('FLOW' + (num + 1));
+  const CloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const OpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCreate = async () => {
+    try {
+      await createFlow(projectId, titleName, description);
+      const updatedFlows = await getAllFlow(projectId);
+      setLi(Array.isArray(updatedFlows) ? updatedFlows : []);
+
+      setTitleName(`FLOW${updatedFlows.length + 1}`);
+      CloseModal();
+    } catch (error) {
+      console.error("Failed to create flow:", error);
+    }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexGrow: 1,
-      }}
-    >
-      <SideNav li={li} />
+    // 프로젝트의 모든 플로우 확인
+    <Box sx={{ display: "flex", flexGrow: 1 }}>
+      <SideNav li={li} projectId={projectId} projectName={projectName} />
+
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           flexGrow: 1,
-          padding: "20px 40px",
+          padding: "40px 60px",
           overflow: "auto",
         }}
       >
@@ -50,17 +80,11 @@ function FlowList() {
             alignItems: "center",
           }}
         >
-          <Typography
-            sx={{
-              ...theme.typography.h2,
-            }}
-          >
-            플로우 확인 페이지 (플로우 리스트)
-          </Typography>
+          <Typography sx={theme.typography.h2}>나의 플로우 리스트</Typography>
           <Box>
             <Typography
               component="button"
-              onClick={handleCreate}
+              onClick={OpenModal}
               sx={[
                 theme.typography.sub,
                 {
@@ -69,35 +93,176 @@ function FlowList() {
                   border: "none",
                   bgcolor: theme.palette.common.lightgrey,
                   cursor: "pointer",
-                  "&:hover": {
-                    bgcolor: theme.palette.primary.dark,
-                  },
+                  "&:hover": { bgcolor: theme.palette.primary.dark },
                 },
               ]}
             >
               생성하기
             </Typography>
           </Box>
-
         </Box>
 
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: {
-              lg: "repeat(2, 1fr)",
-              xl: "repeat(3, 1fr)",
-            },
+            gridTemplateColumns: { md: "repeat(2, 1fr)", xl: "repeat(3, 1fr)" },
             gap: 5,
             justifyItems: "center",
             marginTop: "20px",
           }}
         >
           {li.map((item) => (
-            <FlowBlock key={item.id} inId={item.id} flowName={item.title} />
+            <FlowBlock
+              key={item.flowId}
+              inId={item.flowId}
+              projectId={projectId}
+              flowName={item.title}
+              description={item.description}
+            />
           ))}
         </Box>
       </Box>
+
+      <Modal
+        open={isModalOpen}
+        onClose={CloseModal}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "600px",
+            height: "250px",
+            bgcolor: theme.palette.common.white,
+            borderRadius: "8px",
+            display: "flex",
+            flexDirection: "column",
+            padding: "10px 10px 30px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              sx={[
+                theme.typography.h2,
+                {
+                  flexGrow: 4,
+                  display: "flex",
+                  justifyContent: "center",
+                },
+              ]}
+            >
+              플로우 생성
+            </Typography>
+            <IconButton
+              onClick={CloseModal}
+              sx={{
+                color: theme.palette.common.grey,
+                cursor: "pointer",
+                "&:hover": {
+                  bgcolor: theme.palette.common.lightgrey,
+                },
+              }}
+            >
+              <HighlightOffIcon />
+            </IconButton>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              padding: "15px 60px",
+              gap: 2,
+            }}
+          >
+            <TextField
+              label="플로우 이름"
+              type="text"
+              variant="outlined"
+              placeholder="플로우 이름을 입력해주세요"
+              onChange={(e) => setTitleName(e.target.value)}
+              InputProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderRadius: "10px",
+                    borderColor: theme.palette.common.grey,
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: theme.palette.common.grey,
+                  },
+                },
+              }}
+            />
+            <TextField
+              label="플로우 설명"
+              type="text"
+              variant="outlined"
+              placeholder="플로우 설명을 입력해주세요"
+              onChange={(e) => setDescription(e.target.value)}
+              InputProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderRadius: "10px",
+                    borderColor: theme.palette.common.grey,
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: theme.palette.common.grey,
+                  },
+                },
+              }}
+            />
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleCreate}
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: "20px",
+                padding: "10px",
+                minHeight: "40px",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.dark,
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                },
+              }}
+            >
+              생성하기
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Box>
   );
 }
