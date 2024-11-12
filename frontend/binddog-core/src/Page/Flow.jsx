@@ -36,7 +36,7 @@ function Flow() {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
-  const [logBox, setLogBox] = useState([{title:'야호'}, {title:'안녕'}]);
+  const [logBox, setLogBox] = useState([]);
 
   const addLog = (newItem) => {
     setLogBox((prevLog) => [...prevLog, newItem]);
