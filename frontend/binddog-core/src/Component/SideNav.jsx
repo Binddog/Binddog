@@ -1,16 +1,18 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 import { useTheme } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function SideNav({ li, title }) {
+function SideNav({ li, projectId, projectName }) {
   const theme = useTheme();
+  const navigate = useNavigate();
+  console.log(projectName);
 
   return (
     <Box
       sx={{
         width: "250px",
-        bgcolor: "#F7F7F7",
+        borderRight: `1px solid lightgrey`,
         display: "flex",
         flexDirection: "column",
         padding: "50px",
@@ -18,12 +20,36 @@ function SideNav({ li, title }) {
         gap: 3,
       }}
     >
-      <Typography component="div" sx={theme.typography}>
-        나중에 햄버거 버튼 들어갈 곳(안들어가도 되긴함)
-      </Typography>
-      <Typography component="div" sx={theme.typography.h3}>
-        유저의 라이브러리
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 1,
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "14px",
+          }}
+        >
+          현재 프로젝트 이름
+        </Typography>
+        <Typography
+          sx={{
+            ...theme.typography.h3,
+            fontWeight: "bold",
+            bgcolor: theme.palette.primary.main,
+            textAlign: "center",
+            padding: "5px",
+          }}
+        >
+          {projectName}
+        </Typography>
+      </Box>
+
       <Box
         sx={{
           color: theme.palette.text.secondary,
@@ -31,21 +57,28 @@ function SideNav({ li, title }) {
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          alignItems: "flex-start",
         }}
       >
         {li.map((item) => (
-          <Link
-            to={`/flow/${item.id}`}
-            key={item.id}
-            style={{
+          <Typography
+            key={item.flowId}
+            onClick={() =>
+              navigate(`/projects/${projectId}/flows/${item.flowId}`, {
+                state: { flowName: item.title },
+              })
+            }
+            sx={{
+              ...theme.typography,
+              cursor: "pointer",
               textDecoration: "none",
               color: theme.palette.text.secondary,
+              width: "100%",
+              textAlign: "left",
             }}
           >
-            <Typography component="li" sx={theme.typography}>
-              {item.title}
-            </Typography>
-          </Link>
+            {item.title}
+          </Typography>
         ))}
       </Box>
     </Box>

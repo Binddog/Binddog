@@ -1,10 +1,17 @@
-import {React, useState} from "react";
-import { Typography, Box, IconButton, Menu, MenuItem, Skeleton } from "@mui/material";
+import { React, useState } from "react";
+import {
+  Typography,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Skeleton,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Link, useNavigate } from "react-router-dom";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useNavigate } from "react-router-dom";
 
-function FlowBlock({ inId, flowName }) {
+function FlowBlock({ inId, flowName, projectId }) {
   const theme = useTheme();
 
   const navigate = useNavigate();
@@ -25,12 +32,12 @@ function FlowBlock({ inId, flowName }) {
   };
 
   const handleModify = () => {
-    navigate(`/flow/${inId}`);
+    navigate(`/projects/${projectId}/flows/${inId}`, { state: { flowName } });
     handleKebabClose();
   };
 
   const handleDelete = () => {
-    alert('삭제하기 클릭');
+    alert("삭제하기 클릭");
     handleKebabClose();
   };
 
@@ -38,7 +45,11 @@ function FlowBlock({ inId, flowName }) {
     <Box
       onClick={(event) => {
         // 케밥버튼이 아닌 경우에만 수정하기 실행 + 케밥 버튼 누른 후 리스트 밖에 눌러도 수정하기 막기 추가
-        if (!event.target.closest('button') && !event.target.closest('.MuiMenuItem-root') && !event.target.closest('.MuiMenu-root')) {
+        if (
+          !event.target.closest("button") &&
+          !event.target.closest(".MuiMenuItem-root") &&
+          !event.target.closest(".MuiMenu-root")
+        ) {
           handleModify();
         }
       }}
@@ -63,14 +74,15 @@ function FlowBlock({ inId, flowName }) {
         }}
       >
         {!imageLoaded && (
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            height="100%"
-          />
+          <Skeleton variant="rectangular" width="100%" height="100%" />
         )}
         <img
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: imageLoaded ? 'block' : 'none' }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: imageLoaded ? "block" : "none",
+          }}
           src="https://picsum.photos/500/233?random=1"
           alt=""
           // 이미지 로드 완료 시 상태 업데이트
@@ -94,17 +106,22 @@ function FlowBlock({ inId, flowName }) {
         >
           <Typography sx={theme.typography.sub}>이름: {flowName}</Typography>
         </Box>
-        <IconButton onClick={handleKebabToggle} sx={{color:theme.palette.common.grey}}>
+        <IconButton
+          onClick={handleKebabToggle}
+          sx={{ color: theme.palette.common.grey }}
+        >
           <MoreVertIcon />
         </IconButton>
         <Menu
           anchorEl={anchorEl}
           open={isKebabOpen}
           onClose={handleKebabClose}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          transformOrigin={{ vertical: "bottom", horizontal: "right" }}
         >
-          <MenuItem onClick={handleDelete} sx={theme.typography.sub}>삭제하기</MenuItem>
+          <MenuItem onClick={handleDelete} sx={theme.typography.sub}>
+            삭제하기
+          </MenuItem>
         </Menu>
       </Box>
     </Box>

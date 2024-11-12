@@ -5,13 +5,13 @@ import Block from "./Block";
 import { getDocs } from "../api/libraryFlow";
 
 const SCHEMA_PREFIX = "#/components/schemas/";
-const APPLICATION_JSON = "application/json"
+const APPLICATION_JSON = "application/json";
 let idx = 0;
 const schemaMap = new Map();
 
 /**
  * 초기 스키마 전체 초기화
- * @param schemas 
+ * @param schemas
  */
 function initSchema(schemas) {
   Object.entries(schemas).forEach(([key, value]) => {
@@ -21,8 +21,8 @@ function initSchema(schemas) {
       if (res == null) { //ref인 경우
         res = { type: obj['$ref'].replace(SCHEMA_PREFIX, "") };
       } else if (res === "array") {
-        const dto = obj.items['$ref'].replace(SCHEMA_PREFIX, "");
-        res = { type: res, object: dto }
+        const dto = obj.items["$ref"].replace(SCHEMA_PREFIX, "");
+        res = { type: res, object: dto };
       }
       objMap.set(properties, res);
     })
@@ -47,12 +47,12 @@ function parsingInnerObject(obj) {
 
 /**
  * Response형식 매핑
- * @param  res 
- * @returns 
+ * @param  res
+ * @returns
  */
 function parseResponse(res) {
-  const schema = res['200'].content['*/*'].schema
-  let dtoName = schema['$ref'].replace(SCHEMA_PREFIX, "");
+  const schema = res["200"].content["*/*"].schema;
+  let dtoName = schema["$ref"].replace(SCHEMA_PREFIX, "");
   if (dtoName === null) {
     return;
   }
@@ -60,9 +60,9 @@ function parseResponse(res) {
 }
 
 function parseRequest(req) {
-  if (req['requestBody'] == null) return
-  const schema = req.requestBody.content[APPLICATION_JSON].schema
-  let dtoName = schema['$ref'].replace(SCHEMA_PREFIX, "");
+  if (req["requestBody"] == null) return;
+  const schema = req.requestBody.content[APPLICATION_JSON].schema;
+  let dtoName = schema["$ref"].replace(SCHEMA_PREFIX, "");
   if (dtoName === null) {
     return;
   }
@@ -76,24 +76,23 @@ function parseParams(params) {
 
   params.forEach((param) => {
     if (param.in === "path") {
-      pathVariables.set(param.name, param.schema.type)
+      pathVariables.set(param.name, param.schema.type);
     } else if (param.in === "query") {
       parameters.set(param.name, param.schema.type);
     } else if (param.in == "header") {
-      headers.set(param.name, param.schema.type)
+      headers.set(param.name, param.schema.type);
     }
   });
   return { parameters, pathVariables, headers };
 }
 
 function createBlock(path, method, detail) {
-
   const parsedParams = parseParams(detail.parameters || []);
   const parameters = parsedParams.parameters;
   const pathVariables = parsedParams.pathVariables;
   const headers = parsedParams.headers;
   const parsedRequest = parseRequest(detail) || [];
-  const parsedResponse = parseResponse(detail.responses)
+  const parsedResponse = parseResponse(detail.responses);
 
   return {
     key: idx,
@@ -106,8 +105,8 @@ function createBlock(path, method, detail) {
     parameter: parameters,
     pathVariable: pathVariables,
     request: parsedRequest,
-    response: parsedResponse
-  }
+    response: parsedResponse,
+  };
 }
 
 function createBlockList(context, docs) {
@@ -122,7 +121,7 @@ function createBlockList(context, docs) {
 
 function BlockList({ name, addNode }) {
   const theme = useTheme();
-  const [li, setLi] = useState([]); // li를 빈 배열로 초기화
+  const [li, setLi] = useState([]);
   useEffect(() => {
     const fetchDocs = async () => {
       try {
@@ -147,22 +146,39 @@ function BlockList({ name, addNode }) {
       sx={{
         width: "250px",
         // height: "100%",
-        bgcolor: "#F7F7F7",
+        // bgcolor: "#F7F7F7",
         display: "flex",
         flexDirection: "column",
         padding: "50px",
-        alignItems: "flex-start",
+        alignItems: "center",
         gap: 3,
       }}
     >
-      <Typography
+      <Box
         sx={{
-          ...theme.typography.h3,
-          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 1,
         }}
       >
-        {name}
-      </Typography>
+        <Typography
+          sx={{
+            fontSize: "14px",
+          }}
+        >
+          현재 플로우 이름
+        </Typography>
+        <Typography
+          sx={{
+            ...theme.typography.h3,
+            fontWeight: "bold",
+            bgcolor: theme.palette.primary.main,
+          }}
+        >
+          {name}
+        </Typography>
+      </Box>
       {li.map((item) => (
         <Block
           key={item.key}
