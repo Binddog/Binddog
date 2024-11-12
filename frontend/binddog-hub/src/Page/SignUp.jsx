@@ -36,7 +36,7 @@ const SignUpPage = () => {
 
   const validatePassword = () => {
     const passwordRequirements =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~!@#$%^&*?.])[A-Za-z\d~!@#$%^&*?.]{8,}$/;
     if (!passwordRequirements.test(password)) {
       setPasswordError(
         "비밀번호는 최소 8자 이상이며 대소문자, 숫자 및 특수문자를 포함해야 합니다."
