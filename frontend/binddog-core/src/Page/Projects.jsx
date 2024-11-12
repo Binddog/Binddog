@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   Box,
@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { createProject } from "../api/project";
+import { getProjects, createProject } from "../api/project";
 
 function Projects() {
   const theme = useTheme();
@@ -18,6 +18,18 @@ function Projects() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+      } catch (error) {
+        console.error("프로젝트 목록을 불러오는데 실패했습니다:", error);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -39,49 +51,103 @@ function Projects() {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ko-KR", {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
   return (
     <Box
       sx={{
-        padding: "30px",
+        padding: "50px",
       }}
     >
       <Typography sx={theme.typography.h2}>프로젝트 목록</Typography>
 
-      {projects.length > 0 ? (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              lg: "repeat(2, 1fr)",
-              xl: "repeat(3, 1fr)",
-            },
-            gap: 5,
-            marginTop: "20px",
-          }}
-        >
-          {projects.map((project, index) => (
+      {/* 프로젝트 목록 */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "repeat(2, 1fr)",
+          },
+          gap: 5,
+          marginTop: "20px",
+        }}
+      >
+        {projects.map((project, index) => (
+          <Box
+            key={index}
+            sx={{
+              position: "relative",
+              padding: "20px",
+              border: `1px solid ${theme.palette.common.grey}`,
+              borderRadius: "8px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
             <Box
-              key={index}
               sx={{
-                padding: "20px",
-                border: "1px solid gray",
-                borderRadius: "8px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                marginBottom: "20px",
               }}
             >
-              <Typography>{project.title}</Typography>
+              <Typography
+                sx={{
+                  fontSize: theme.fontSize.medium,
+                }}
+              >
+                {index + 1}번 프로젝트
+              </Typography>
+              <Box sx={{ textAlign: "right" }}>
+                <Typography
+                  sx={{
+                    fontSize: theme.fontSize.small,
+                    color: theme.palette.text.secondary,
+                  }}
+                >
+                  시작일: {formatDate(project.createdDate)}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: theme.fontSize.small,
+                    color: theme.palette.text.secondary,
+                  }}
+                >
+                  수정일: {formatDate(project.lastModifiedDate)}
+                </Typography>
+              </Box>
             </Box>
-          ))}
-        </Box>
-      ) : (
+
+            {/* 프로젝트 이름과 설명 */}
+            <Box>
+              <Typography sx={{ ...theme.typography.h3 }}>
+                {project.title}
+              </Typography>
+              <Typography sx={{ ...theme.typography, marginTop: "10px" }}>
+                {project.description}
+              </Typography>
+            </Box>
+          </Box>
+        ))}
+
+        {/* 프로젝트 추가 버튼 */}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            marginTop: "40px",
             border: `2px dashed ${theme.palette.common.lightgrey}`,
             borderRadius: "8px",
-            padding: "40px",
+            padding: "10px",
           }}
         >
           <IconButton
@@ -96,11 +162,12 @@ function Projects() {
               },
             }}
           >
-            <AddCircleOutlineIcon sx={{ fontSize: "40px" }} />
+            <AddCircleOutlineIcon sx={{ fontSize: "25px" }} />
           </IconButton>
         </Box>
-      )}
+      </Box>
 
+      {/* 모달 */}
       <Modal
         open={isModalOpen}
         onClose={handleCloseModal}
@@ -161,10 +228,10 @@ function Projects() {
             }}
           >
             <TextField
-              label="플로우 이름"
+              label="프로젝트 이름"
               type="text"
               variant="outlined"
-              placeholder="플로우 이름을 입력해주세요"
+              placeholder="프로젝트 이름을 입력해주세요"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               sx={{
@@ -186,10 +253,10 @@ function Projects() {
               }}
             />
             <TextField
-              label="플로우 설명"
+              label="프로젝트 설명"
               type="text"
               variant="outlined"
-              placeholder="플로우 설명을 입력해주세요"
+              placeholder="프로젝트 설명을 입력해주세요"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               sx={{
