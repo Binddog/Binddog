@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -14,6 +15,8 @@ import { getProjects, createProject } from "../api/project";
 
 function Projects() {
   const theme = useTheme();
+  const navigate = useNavigate();
+
   const [projects, setProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -81,7 +84,8 @@ function Projects() {
       >
         {projects.map((project, index) => (
           <Box
-            key={index}
+            key={project.projectId}
+            onClick={() => navigate(`/projects/${project.projectId}`)}
             sx={{
               position: "relative",
               padding: "20px",
@@ -185,7 +189,7 @@ function Projects() {
             borderRadius: "8px",
             display: "flex",
             flexDirection: "column",
-            padding: "10px 10px 30px",
+            padding: "10px 5px 30px",
           }}
         >
           <Box
@@ -196,7 +200,7 @@ function Projects() {
           >
             <Typography
               sx={[
-                theme.typography.h2,
+                theme.typography.h3,
                 {
                   flexGrow: 4,
                   display: "flex",
@@ -234,6 +238,18 @@ function Projects() {
               placeholder="프로젝트 이름을 입력해주세요"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              InputProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -243,12 +259,6 @@ function Projects() {
                   "&.Mui-focused fieldset": {
                     borderColor: theme.palette.common.grey,
                   },
-                },
-                "& .MuiInputLabel-root": {
-                  color: theme.palette.common.grey,
-                },
-                "& .MuiInputBase-input": {
-                  color: theme.palette.common.grey,
                 },
               }}
             />
@@ -259,6 +269,18 @@ function Projects() {
               placeholder="프로젝트 설명을 입력해주세요"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              InputProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -268,12 +290,6 @@ function Projects() {
                   "&.Mui-focused fieldset": {
                     borderColor: theme.palette.common.grey,
                   },
-                },
-                "& .MuiInputLabel-root": {
-                  color: theme.palette.common.grey,
-                },
-                "& .MuiInputBase-input": {
-                  color: theme.palette.common.grey,
                 },
               }}
             />
