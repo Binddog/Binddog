@@ -17,18 +17,32 @@ function initSchema(schemas) {
   Object.entries(schemas).forEach(([key, value]) => {
     const objMap = new Map();
     Object.entries(value.properties).forEach(([properties, obj]) => {
-      var res = obj.type;
-      if (res == null) {
-        res = obj["$ref"].replace(SCHEMA_PREFIX, "");
+      var res = obj.type
+      if (res == null) { //ref인 경우
+        res = { type: obj['$ref'].replace(SCHEMA_PREFIX, "") };
       } else if (res === "array") {
         const dto = obj.items["$ref"].replace(SCHEMA_PREFIX, "");
         res = { type: res, object: dto };
       }
       objMap.set(properties, res);
-    });
-    schemaMap.set(key, objMap);
-  });
-  console.log(schemaMap);
+    })
+    schemaMap.set(key, objMap)
+  })
+}
+
+function parsingInnerObject(obj) {
+  const objMap = new Map();
+  obj.forEach((value, key) => {
+    if (value.type === "array") {
+      objMap.set(key, [parsingInnerObject(schemaMap.get(value.object))])
+
+    } else if (schemaMap.get(value.type)) {
+      objMap.set(key, parsingInnerObject(schemaMap.get(value.type)))
+    } else {
+      objMap.set(key, value);
+    }
+  })
+  return objMap;
 }
 
 /**
@@ -42,7 +56,7 @@ function parseResponse(res) {
   if (dtoName === null) {
     return;
   }
-  return schemaMap.get(dtoName);
+  return parsingInnerObject(schemaMap.get(dtoName));
 }
 
 function parseRequest(req) {
@@ -52,7 +66,7 @@ function parseRequest(req) {
   if (dtoName === null) {
     return;
   }
-  return schemaMap.get(dtoName);
+  return parsingInnerObject(schemaMap.get(dtoName));
 }
 
 function parseParams(params) {
@@ -118,7 +132,6 @@ function BlockList({ name, addNode }) {
         const paths = docsData.paths;
 
         const temp = createBlockList(context, paths);
-        console.log(temp);
         setLi(temp || []);
       } catch (error) {
         console.error("문서 데이터를 가져오는 중 오류 발생:", error);
