@@ -83,6 +83,7 @@ function Flow() {
   );
 
   function addNode(item) {
+    // console.log("addnode item",item);
     const newNode = {
       id: `${Date.now()}`,
       type: "customBlock",
@@ -91,6 +92,8 @@ function Flow() {
         method: item.method,
         apiName: item.apiName,
         endpoint: item.endpoint,
+        pathVariable: item.pathVariable,  
+        parameter: item.parameter         
       },
     };
 
@@ -185,7 +188,8 @@ function Flow() {
               zIndex: 100,
             }}
           >
-            <RunButton />
+            <RunButton nodes={nodes} edges={edges} 
+            addLog={addLog} restartLog={restartLog}/>
             <SaveButton projectId={projectId} flowId={flowId} />
           </Box>
           <Controls />
@@ -226,8 +230,13 @@ function Flow() {
                   gap: 1,
                 }}
               >
-                {logBox.map((item) => (
-                  <Typography sx={[theme.api]}>{item.title}</Typography>
+                {logBox.map((item, index) => (
+                  <Typography
+                    key={index}
+                    sx={[theme.api]}
+                  >
+                    {JSON.stringify(item)}
+                  </Typography>
                 ))}
               </Box>
             </Box>

@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Checkbox, Select, MenuItem, TextField } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
-const ConnectionBox = () => {
+const ConnectionBox = ({pathVariable, parameter}) => {
   const theme = useTheme();
-  const reqList = ["id", "password"];
+  const reqList = ["test"];
   const resList = ["res1", "res2"];
-
+  // console.log("connectionbox path", pathVariable);
+  
   const [items, setItems] = useState([]);
+
+  // URI와 파라미터를 파싱하는 함수
 
   useEffect(() => {
     // reqList를 기반으로 초기 items를 설정합니다.
@@ -20,6 +23,19 @@ const ConnectionBox = () => {
     }));
     setItems(initialItems);
   }, []);
+
+
+  useEffect(() => {
+    // Map을 배열로 변환하여 초기 items를 설정
+    const initialItems = Array.from(pathVariable || []).map(([key, value], index) => ({
+      id: index + 1,
+      deactivate: false,
+      input: key,  // Map의 key를 input으로 설정
+      fromWhere: "",  // Map의 value를 fromWhere로 설정
+      usage: "Param",
+    }));
+    setItems(initialItems);
+  }, [pathVariable]); // pathVariable이 변경될 때마다 실행
 
   const handleChange = (id, field, value) => {
     setItems((prevItems) =>
