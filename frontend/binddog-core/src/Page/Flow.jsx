@@ -53,6 +53,7 @@ function Flow() {
   
 
   function addNode(item) {
+    // console.log("addnode item",item);
     const newNode = {
       id: `${Date.now()}`,
       type: "customBlock",
@@ -61,6 +62,8 @@ function Flow() {
         method: item.method,
         apiName: item.apiName,
         endpoint: item.endpoint,
+        pathVariable: item.pathVariable,  
+        parameter: item.parameter         
       },
     };
 

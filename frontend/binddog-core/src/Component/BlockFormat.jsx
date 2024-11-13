@@ -30,7 +30,7 @@ export default function BlockFormat({ data }) {
     pathVariable,
     response,
   } = data;
-
+  // console.log("blockformat", data);
   return (
     <Box
       sx={{
@@ -123,7 +123,7 @@ export default function BlockFormat({ data }) {
               Header: {JSON.stringify(header)}
             </Typography>
           )}
-          {parameter && (
+          {/* {parameter && (
             <Typography sx={theme.api}>
               Parameter: {JSON.stringify(parameter)}
             </Typography>
@@ -132,7 +132,7 @@ export default function BlockFormat({ data }) {
             <Typography sx={theme.api}>
               Path Variable: {JSON.stringify(pathVariable)}
             </Typography>
-          )}
+          )} */}
           {response && (
             <Typography sx={theme.api}>
               Response: {JSON.stringify(response)}
@@ -143,7 +143,7 @@ export default function BlockFormat({ data }) {
         <Handle type="source" position={Position.Right} style={handleStyle2} id="a" />
       </Card>
 
-      {toggleParams && <ConnectionBox />}
+      {toggleParams && (<ConnectionBox pathVariable={pathVariable} parameter = {parameter}/>)}
       
     </Box>
   );

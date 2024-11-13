@@ -128,10 +128,11 @@ function BlockList({ name, addNode }) {
         const docsData = await getDocs();
         const context = docsData.servers[0].url;
 
-        initSchema(docsData.components.schemas);
+        if(docsData.components.schemas!=null)initSchema(docsData.components.schemas);
         const paths = docsData.paths;
 
         const temp = createBlockList(context, paths);
+        console.log(temp)
         setLi(temp || []);
       } catch (error) {
         console.error("문서 데이터를 가져오는 중 오류 발생:", error);
