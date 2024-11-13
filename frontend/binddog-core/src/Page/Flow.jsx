@@ -32,7 +32,7 @@ function Flow() {
   const theme = useTheme();
   const location = useLocation();
   const flowName = location.state?.flowName;
-  console.log("Received flowName:", flowName);
+  // console.log("Received flowName:", flowName);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
@@ -88,8 +88,6 @@ function Flow() {
     startSign: StartSign,
   };
 
-  console.log(nodes);
-
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
       <Box
@@ -134,7 +132,8 @@ function Flow() {
               zIndex: 100,
             }}
           >
-            <RunButton />
+            <RunButton nodes={nodes} edges={edges} 
+            addLog={addLog} restartLog={restartLog}/>
             <SaveButton />
           </Box>
           <Controls />
@@ -175,11 +174,12 @@ function Flow() {
                   gap: 1,
                 }}
               >
-                {logBox.map((item) => (
+                {logBox.map((item, index) => (
                   <Typography
+                    key={index}
                     sx={[theme.api]}
                   >
-                    {item.title}
+                    {JSON.stringify(item)}
                   </Typography>
                 ))}
               </Box>

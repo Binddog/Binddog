@@ -140,7 +140,7 @@ export default function BlockFormat({ data }) {
           )}
         </Box>
 
-        <Handle type="source" position={Position.Right} style={handleStyle2} id="a" />
+        <Handle type="source" position={Position.Right} style={handleStyle2} />
       </Card>
 
       {toggleParams && (<ConnectionBox pathVariable={pathVariable} parameter = {parameter}/>)}

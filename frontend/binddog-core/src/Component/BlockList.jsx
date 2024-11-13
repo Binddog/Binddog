@@ -20,10 +20,10 @@ function initSchema(schemas) {
       var res = obj.type
       if (res == null) { //ref인 경우
         res = { type: obj['$ref'].replace(SCHEMA_PREFIX, "") };
-      } else if (res === "array") {
+      } else if (res === "array" && obj.items.hasOwnProperty("$ref")) {
         const dto = obj.items["$ref"].replace(SCHEMA_PREFIX, "");
         res = { type: res, object: dto };
-      }
+      } 
       objMap.set(properties, res);
     })
     schemaMap.set(key, objMap)
