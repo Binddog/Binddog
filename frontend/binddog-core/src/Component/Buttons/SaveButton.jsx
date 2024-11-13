@@ -37,8 +37,6 @@ const SaveButton = ({ projectId, flowId }) => {
     }));
 
     return {
-      title: "Flow Title", // 필요한 경우 동적으로 설정
-      description: "Flow Description", // 필요한 경우 동적으로 설정
       blocks,
       links,
     };
@@ -52,11 +50,7 @@ const SaveButton = ({ projectId, flowId }) => {
     // React Flow 노드 파싱
     const nodeElements = document.querySelectorAll(".react-flow__node");
     nodeElements.forEach((nodeElement) => {
-      console.log(nodeElement);
       if (nodeElement.classList.contains("react-flow__node-customBlock")) {
-        console.log("================node");
-        console.log(nodeElement);
-
         const id = nodeElement.getAttribute("data-id");
         const transformStyle = nodeElement.style.transform;
         const positionMatch = transformStyle.match(/translate\((.+?)\)/);
@@ -122,15 +116,12 @@ const SaveButton = ({ projectId, flowId }) => {
     const rawData = parseReactFlow();
     const filteredData = { ...rawData };
     const requestBody = transformData(filteredData);
-    console.log("Request Body:", JSON.stringify(requestBody, null, 2));
 
     try {
       const response = await modifyFlow(projectId, flowId, requestBody);
-      console.log("Flow modified successfully!", response);
-      alert("Flow modified successfully!");
+      alert("저장 완료");
     } catch (error) {
-      console.error("Flow modification failed:", error);
-      alert("Flow modification failed. Please try again.");
+      alert("저장 실패");
     }
   };
 
