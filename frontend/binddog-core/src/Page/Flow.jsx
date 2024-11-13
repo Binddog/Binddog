@@ -17,7 +17,9 @@ import BlockList from "../Component/BlockList";
 import RunButton from "./../Component/Buttons/RunButton";
 import SaveButton from "../Component/Buttons/SaveButton";
 import StartSign from "../Component/Buttons/StartSign";
-import { getFlow } from "../api/libraryFlow"; // getFlow 함수 import
+import { getFlow } from "../api/libraryFlow";
+import Divider from '@mui/material/Divider';
+
 
 const parsedBlocks = [
   {
@@ -220,23 +222,33 @@ function Flow() {
               <Box
                 sx={{
                   width: "100%",
-                  height: "100%",
                   bgcolor: theme.palette.common.white,
                   opacity: "0.8",
                   borderRadius: "10px",
                   padding: "20px",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 1,
+                  gap: 2,
                 }}
               >
                 {logBox.map((item, index) => (
-                  <Typography
-                    key={index}
-                    sx={[theme.api]}
-                  >
-                    {JSON.stringify(item)}
-                  </Typography>
+                  <Box>
+                    <Box
+                      sx={{
+                        paddingBottom: "20px",
+                      }}
+                    >
+                      <Typography
+                        key={index}
+                        sx={[theme.api]}
+                      >
+                        {JSON.stringify(item)}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Divider sx={{ borderBottomWidth: 2, bgcolor: theme.palette.common.lightgrey }} />
+                    </Box>
+                  </Box>
                 ))}
               </Box>
             </Box>
