@@ -52,48 +52,63 @@ const SaveButton = ({ projectId, flowId }) => {
     // React Flow 노드 파싱
     const nodeElements = document.querySelectorAll(".react-flow__node");
     nodeElements.forEach((nodeElement) => {
-      const id = nodeElement.getAttribute("data-id");
-      const transformStyle = nodeElement.style.transform;
-      const positionMatch = transformStyle.match(/translate\((.+?)\)/);
-      const [x, y] = positionMatch[1]
-        .split(",")
-        .map((value) => parseFloat(value.trim()));
-      const method =
-        nodeElement.querySelector(".MuiTypography-root:nth-of-type(1)")
-          ?.textContent || "";
-      const description =
-        nodeElement.querySelector(".css-duksxc-MuiTypography-root")
-          ?.textContent || "";
-      const endpoint =
-        nodeElement.querySelector(".css-hhcfp5-MuiTypography-root")
-          ?.textContent || "";
+      console.log(nodeElement);
+      if (nodeElement.classList.contains("react-flow__node-customBlock")) {
+        const id = nodeElement.getAttribute("data-id");
+        const transformStyle = nodeElement.style.transform;
+        const positionMatch = transformStyle.match(/translate\((.+?)\)/);
+        const [x, y] = positionMatch[1]
+          .split(",")
+          .map((value) => parseFloat(value.trim()));
+        const method =
+          nodeElement.querySelector(".MuiTypography-root:nth-of-type(1)")
+            ?.textContent || "";
+        const description =
+          nodeElement.querySelector(".css-duksxc-MuiTypography-root")
+            ?.textContent || "";
+        const endpoint =
+          nodeElement.querySelector(".css-hhcfp5-MuiTypography-root")
+            ?.textContent || "";
 
-      nodes.push({
-        id, // React Flow 노드의 고유 ID를 그대로 사용
-        position: { x, y },
-        data: { method, description, endpoint },
-        type: "customBlock",
-      });
+        nodes.push({
+          id, // React Flow 노드의 고유 ID를 그대로 사용
+          position: { x, y },
+          data: { method, description, endpoint },
+          type: "customBlock",
+        });
+      }
     });
 
-    // React Flow 엣지 파싱
     const edgeElements = document.querySelectorAll(".react-flow__edge");
+    const edgeSet = new Set(); // 중복 방지를 위한 Set
+
     edgeElements.forEach((edgeElement) => {
-      const id = edgeElement.getAttribute("data-id");
+      const id = edgeElement.getAttribute("data-id"); // React Flow의 고유 엣지 ID
       const ariaLabel = edgeElement.getAttribute("aria-label");
 
-      // aria-label에서 fromBlockId와 toBlockId 추출
-      const fromBlockIdMatch = ariaLabel.match(/from (\d+)/);
-      const toBlockIdMatch = ariaLabel.match(/to (\d+)/);
+      // aria-label에서 fromBlockId와 toBlockId 추출 (start-sign도 포함)
+      const fromBlockIdMatch = ariaLabel?.match(/from (start-sign|\d+)/);
+      const toBlockIdMatch = ariaLabel?.match(/to (start-sign|\d+)/);
 
       const fromBlockId = fromBlockIdMatch ? fromBlockIdMatch[1] : null;
       const toBlockId = toBlockIdMatch ? toBlockIdMatch[1] : null;
 
-      edges.push({
-        id,
-        fromBlockId,
-        toBlockId,
-      });
+      // linkId를 data-id로 사용
+      const linkId = id;
+
+      // 유효성 검사: fromBlockId와 toBlockId가 있어야만 추가
+      if (fromBlockId && toBlockId) {
+        const edgeKey = `${fromBlockId}-${toBlockId}`; // 중복 체크 키
+        if (!edgeSet.has(edgeKey)) {
+          edgeSet.add(edgeKey); // 중복 방지용 Set에 추가
+          edges.push({
+            linkId, //long 타입에 string 저장하려 해서 null 뜨는 듯
+            fromBlockId,
+            toBlockId,
+            mappings: [], // 기본값 추가
+          });
+        }
+      }
     });
 
     return { nodes, edges };
@@ -102,13 +117,11 @@ const SaveButton = ({ projectId, flowId }) => {
   // Save 버튼 클릭 핸들러
   const handleSave = async () => {
     const rawData = parseReactFlow();
-    const requestBody = transformData(rawData);
-
-    console.log(projectId + " " + flowId);
+    const filteredData = { ...rawData };
+    const requestBody = transformData(filteredData);
     console.log("Request Body:", JSON.stringify(requestBody, null, 2));
 
     try {
-      // modifyFlow 함수 호출
       const response = await modifyFlow(projectId, flowId, requestBody);
       console.log("Flow modified successfully!", response);
       alert("Flow modified successfully!");
