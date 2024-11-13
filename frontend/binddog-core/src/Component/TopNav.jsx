@@ -17,7 +17,6 @@ function TopNav({ isLogin, handleLogout, email }) {
 
   const authButtons = [
     { label: "Login", onClick: () => navigate("/login") },
-    { label: "SignUp", onClick: () => navigate("/signUp") },
   ];
 
   const userName = email && email.includes("@") ? email.split("@")[0] : "User";
