@@ -16,7 +16,7 @@ const SaveButton = ({ projectId, flowId }) => {
       blockId: parseInt(node.id, 10), // ID를 Long 타입에 맞게 변환
       method: node.data.method,
       endpoint: node.data.endpoint,
-      name: node.data.description,
+      name: node.data.apiName,
       position: {
         x: parseFloat(node.position.x), // Position을 Float 타입으로 변환
         y: parseFloat(node.position.y),
@@ -54,6 +54,9 @@ const SaveButton = ({ projectId, flowId }) => {
     nodeElements.forEach((nodeElement) => {
       console.log(nodeElement);
       if (nodeElement.classList.contains("react-flow__node-customBlock")) {
+        console.log("================node");
+        console.log(nodeElement);
+
         const id = nodeElement.getAttribute("data-id");
         const transformStyle = nodeElement.style.transform;
         const positionMatch = transformStyle.match(/translate\((.+?)\)/);
@@ -63,17 +66,17 @@ const SaveButton = ({ projectId, flowId }) => {
         const method =
           nodeElement.querySelector(".MuiTypography-root:nth-of-type(1)")
             ?.textContent || "";
-        const description =
+        const apiName =
           nodeElement.querySelector(".css-duksxc-MuiTypography-root")
             ?.textContent || "";
         const endpoint =
-          nodeElement.querySelector(".css-hhcfp5-MuiTypography-root")
+          nodeElement.querySelector(".css-r10zpx-MuiTypography-root")
             ?.textContent || "";
 
         nodes.push({
           id, // React Flow 노드의 고유 ID를 그대로 사용
           position: { x, y },
-          data: { method, description, endpoint },
+          data: { method, apiName, endpoint },
           type: "customBlock",
         });
       }

@@ -52,7 +52,7 @@ function Flow() {
       data: {
         method: block.method,
         endpoint: block.endpoint,
-        apiName: block.apiName,
+        apiName: block.name,
       },
     }));
 
