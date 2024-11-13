@@ -32,12 +32,11 @@ export const createFlow = async (projectId, title, description) => {
 };
 
 // 특정 프로젝트의 단일 플로우 수정
-export const modifyFlow = async (projectId, flowId, blocks, links, mapping) => {
-  const response = await Axios.put(`projects/${projectId}/flows/${flowId}`, {
-    blocks,
-    links,
-    mapping,
-  });
+export const modifyFlow = async (projectId, flowId, requestBody) => {
+  const response = await Axios.put(
+    `projects/${projectId}/flows/${flowId}`,
+    requestBody
+  );
   return response.data;
 };
 
