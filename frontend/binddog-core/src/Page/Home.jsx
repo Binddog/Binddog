@@ -4,7 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 
-function Docs() {
+function Home() {
   const theme = useTheme();
 
   const documents = [
@@ -107,4 +107,4 @@ function Docs() {
   );
 }
 
-export default Docs;
+export default Home;
