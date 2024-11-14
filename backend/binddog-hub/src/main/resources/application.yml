@@ -13,3 +13,29 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+  data:
+    mongodb:
+      host: ${MONGODB_HOST}
+      username: ${MONGODB_USER}
+      password: ${MONGODB_PASSWORD}
+      database: ${MONGODB_DB}
+      authentication-database: ${MONGODB_AUTH_DB}
+      port: ${MONGODB_PORT}
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+
+server:
+  port: ${HUB_PORT}
+  servlet:
+    context-path: /api
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
