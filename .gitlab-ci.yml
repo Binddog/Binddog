@@ -1,0 +1,161 @@
+image: node:17.1-alpine3.14
+
+stages:
+  - tag
+  - release
+
+create_tag:
+  stage: tag
+  script:
+    - echo "Installing git..."
+    - apk add --no-cache git
+
+    - echo "Fetching existing tags..."
+    - git fetch --tags
+
+    - echo "Getting the latest tag..."
+    - LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "v0.0.0")
+
+    - echo "Last tag is ${LAST_TAG}"
+
+    - |
+      if [ -z "${LAST_TAG}" ]; then
+        TAG_NAME="v0.0.1";  # 최초 태그가 없을 경우 기본값 설정
+        echo "${TAG_NAME}"
+      else
+        # 기존 태그에서 버전 숫자 추출
+        VERSION=${LAST_TAG:1}  # 'v' 제거
+        echo "VERSION: ${VERSION}"
+        # IFS를 설정하고 read로 배열에 분리
+        OLD_IFS=$IFS
+        IFS='.'
+        set -- ${VERSION}  # 공백으로 분리된 인수로 설정
+        MAJOR=$1
+        MINOR=$2
+        PATCH=$3
+        IFS=$OLD_IFS
+
+        echo "Major version: ${MAJOR}"
+        echo "Minor version: ${MINOR}"
+        echo "Patch version: ${PATCH}"
+
+        # 수정 버전 증가
+        PATCH=$((PATCH + 1))
+        TAG_NAME="v${MAJOR}.${MINOR}.${PATCH}"  # 새로운 태그 생성
+        echo "New tag name:${TAG_NAME}"
+      fi
+      
+
+    - git tag $TAG_NAME
+    - git push https://wnso.kim:${CI_JOB_TOKEN}@lab.ssafy.com/s11-final/S11P31A401.git $TAG_NAME
+
+    # 새로운 태그와 마지막 태그를 파일에 저장
+    - echo "TAG_NAME=${TAG_NAME}" > tag_name.env
+    - echo "LAST_TAG=${LAST_TAG}" >> tag_name.env
+    
+  # master 브랜치에 Merge될 때만 실행
+  rules:
+   - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push"'
+  artifacts:
+    paths:
+      - tag_name.env  # 생성된 태그 파일을 아티팩트로 저장
+  tags:
+    - binddog
+
+
+release_job:
+  stage: release
+  needs: 
+    - create_tag  # create_tag 작업이 완료된 후에 실행
+  script:
+    - echo "Installing git..."
+    - apk add --no-cache git
+
+    - echo "Installing curl..."
+    - apk add --no-cache curl  # curl 설치
+
+    - echo "Loading tag name from file..."
+    - source tag_name.env  # 파일에서 변수 불러오기
+
+    # 모든 커밀 불러오기
+    # - COMMITS=$(git log --merges $LAST_TAG..HEAD --pretty=%B)
+    # - echo "ALL COMMITS\n$COMMITS"
+
+    # Commit 메시지 추출 및 description 자동 생성
+    - echo "Running release job for tag $TAG_NAME"
+    - echo "Generating release description..."
+    - |
+      # 이전 태그 이후 Commit 내역을 불러오거나 빈 문자열 반환
+      COMMITS=$(git log --merges $LAST_TAG..HEAD --pretty=%B | awk '/\[.*\]/ {title=$0; getline; getline; issue=$4; print title " in " issue;}' || echo "")
+
+      DESCRIPTION="### 📝 릴리즈 노트 ${TAG_NAME}\n"
+      # 현재 날짜를 YYYY-MM-DD 형식으로 가져오기
+      DEPLOY_DATE=$(date +'%Y-%m-%d')
+      DESCRIPTION="$DESCRIPTION\nRelease date: ${DEPLOY_DATE}\n"  # 배포 날짜 추가
+      DESCRIPTION="$DESCRIPTION > 🚨 현재 Binddog은 베타 버전입니다.<br>곧 안정화 버전이 나올 예정이니 기다려 주세요!\n"
+
+      FEAT_COMMITS=""
+      FIX_COMMITS=""
+      REFACTOR_COMMITS=""
+
+      # 커밋 메시지 분석 및 분류
+      echo "Commits list ${COMMITS}"
+      OLD_IFS=$IFS
+      IFS=$'\n'  # 줄바꿈으로 분리
+      for COMMIT in $COMMITS; do
+        case "$COMMIT" in
+          *"[기능 개발]"*)
+            FEAT_COMMITS="${FEAT_COMMITS}- $COMMIT\n"
+            ;;
+          *"[기능 수정]"*)
+            REFACTOR_COMMITS="${REFACTOR_COMMITS}- $COMMIT\n"
+            ;;
+          *"[버그 수정]"*)
+            FIX_COMMITS="${FIX_COMMITS}- $COMMIT\n"
+            ;;
+        esac
+      done
+      IFS=$OLD_IFS  # 기본 IFS로 복원
+
+      # 카테고리별로 DESCRIPTION에 추가
+      if [ -n "$FEAT_COMMITS" ]; then
+        DESCRIPTION="$DESCRIPTION---\n### 🆕 새로운 기능\n$FEAT_COMMITS\n"
+      fi
+      if [ -n "$REFACTOR_COMMITS" ]; then
+        DESCRIPTION="$DESCRIPTION---\n### ♻️ 리팩토링\n$REFACTOR_COMMITS\n"
+      fi
+      if [ -n "$FIX_COMMITS" ]; then
+        DESCRIPTION="$DESCRIPTION---\n### 🐛 버그 수정\n$FIX_COMMITS\n"
+      fi
+
+      echo "FEAT COMMITS---\n$FEAT_COMMITS"
+      echo "REFACTOR COMMITS---\n$REFACTOR_COMMITS"
+      echo "FIX COMMITS---\n$FIX_COMMITS"
+      echo "DESCRIPTION---\n$DESCRIPTION"
+
+
+
+    - |
+      curl --header 'Content-Type: application/json' \
+       --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" \
+       --data '{
+         "name": "Binddog '"${TAG_NAME:1}"'",
+         "tag_name": "'"$TAG_NAME"'",
+         "description": "'"${DESCRIPTION}"'",
+         "assets": {
+           "links": [
+              {
+                "name": "🚀 Binddog Hub Site",
+                "url": "https://binddog.org",
+                "link_type": "other"
+              }
+            ]
+         }
+       }' \
+       --request POST "https://lab.ssafy.com/api/v4/projects/821944/releases"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push"'
+  
+  tags:
+    - binddog
+
