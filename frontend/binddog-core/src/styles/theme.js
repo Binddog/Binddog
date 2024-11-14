@@ -88,6 +88,7 @@ const theme = createTheme({
       delete: "#C40000",
       run: "#187A23",
       add: "#6076C4",
+      box: "#e4e5eb",
     },
     // 텍스트 색상 정의
     text: {

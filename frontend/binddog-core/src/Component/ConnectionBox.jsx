@@ -18,6 +18,7 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, updateNodeD
       id: index + 1,
       deactivate: false,
       input: input, // reqList에서 input 설정
+      type: "",
       fromWhere: "",
       usage: "Param",
     }));
@@ -27,15 +28,21 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, updateNodeD
 
   useEffect(() => {
     // Map을 배열로 변환하여 초기 items를 설정
-    const initialItems = Array.from(pathVariable || []).map(([key, value], index) => ({
-      id: index + 1,
-      deactivate: false,
-      input: key,  // Map의 key를 input으로 설정
-      fromWhere: "",  // Map의 value를 fromWhere로 설정
-      usage: "Param",
-    }));
+    const initialItems = Array.from(pathVariable || []).map(([key, value], index) => {
+      const matchedPathValue = pathValue?.get(key) || ""; // pathValue에서 key에 해당하는 value를 가져옴
+      return {
+        id: index + 1,
+        deactivate: false,
+        input: key,  // Map의 key를 input으로 설정
+        type: value,
+        fromWhere: matchedPathValue,  // pathValue의 value를 fromWhere로 설정
+        usage: "Param",
+      };
+    });
     setItems(initialItems);
-  }, [pathVariable]); // pathVariable이 변경될 때마다 실행
+  }, [pathVariable, pathValue]); // pathVariable 또는 pathValue가 변경될 때마다 실행
+  
+  
 
   // 입력 값 변경 시 즉시 items 업데이트
   const handleInputChange = (id, field, value) => {
@@ -56,8 +63,6 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, updateNodeD
     updateNodeData(item.input, item.fromWhere, apiName);
   };
 
-  // console.log(items);
-
   return (
     <Box
       sx={{
@@ -65,9 +70,9 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, updateNodeD
         flexDirection: "column",
         alignItems: "center",
         padding: "15px",
-        backgroundColor: theme.palette.button.add,
+        backgroundColor: theme.palette.button.box,
         borderRadius: "12px",
-        // width: "500px",
+        boxShadow: "-4px 4px 2px rgba(0, 0, 0, 0.2)",
       }}
     >
       <Box
@@ -86,6 +91,7 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, updateNodeD
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            color: theme.palette.common.black,
           }}
         >
           Input
@@ -99,6 +105,7 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, updateNodeD
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            color: theme.palette.common.black,
           }}
         >
           from where
@@ -116,19 +123,34 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, updateNodeD
             margin: "3px 5px",
           }}
         >
-
-          <Typography
+          <Box
             sx={{
-              ...theme.method,
               width: "100px",
               height: "30px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              gap: 1,
             }}
           >
-            {item.input}
-          </Typography>
+            <Typography
+              sx={{
+                ...theme.method,
+                color: theme.palette.common.black,
+              }}
+            >
+              {item.input}
+            </Typography>
+            <Typography
+              sx={{
+                ...theme.method,
+                fontSize: theme.fontSize.small,
+                color: theme.palette.common.grey,
+              }}
+            >
+              ({item.type})
+            </Typography>
+          </Box>
 
           <TextField
             value={item.fromWhere}
