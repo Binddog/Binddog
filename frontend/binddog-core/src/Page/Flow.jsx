@@ -61,7 +61,7 @@ function Flow() {
       id: `edge-${link.fromBlockId}-${link.toBlockId}`, // Unique edge ID
       source: `${link.fromBlockId}`, // Source node ID
       target: `${link.toBlockId}`, // Target node ID
-      type: "smoothstep", // Optional edge type
+      type: "bezier", // Optional edge type
     }));
 
   const reloadNode = (newNodes, newEdges) => {
@@ -92,8 +92,8 @@ function Flow() {
         method: item.method,
         apiName: item.apiName,
         endpoint: item.endpoint,
-        pathVariable: item.pathVariable,  
-        parameter: item.parameter         
+        pathVariable: item.pathVariable,
+        parameter: item.parameter
       },
     };
 
@@ -132,8 +132,8 @@ function Flow() {
       try {
         const response = await getFlow(projectId, flowId);
         const flowData = response.data; // Assuming `flowData` is under `data`
-        const newNodes = convertToNodes(flowData.blocks);
-        const newEdges = convertToEdges(flowData.links);
+        const newNodes = convertToNodes(flowData.blocks || []);
+        const newEdges = convertToEdges(flowData.links || []);
         reloadNode(newNodes, newEdges);
       } catch (error) {
         console.error("Error fetching flow data:", error);
@@ -188,8 +188,8 @@ function Flow() {
               zIndex: 100,
             }}
           >
-            <RunButton nodes={nodes} edges={edges} 
-            addLog={addLog} restartLog={restartLog}/>
+            <RunButton nodes={nodes} edges={edges}
+              addLog={addLog} restartLog={restartLog} />
             <SaveButton projectId={projectId} flowId={flowId} />
           </Box>
           <Controls />
