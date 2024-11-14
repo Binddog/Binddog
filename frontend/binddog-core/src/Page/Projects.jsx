@@ -46,8 +46,9 @@ function Projects() {
 
   const handleAddProject = async () => {
     try {
-      const newProject = await createProject(title, description);
-      setProjects((prevProjects) => [...prevProjects, newProject]);
+      await createProject(title, description);
+      const updatedProjects = await getProjects();
+      setProjects(updatedProjects);
       handleCloseModal();
     } catch (error) {
       console.error("프로젝트 생성 실패:", error);

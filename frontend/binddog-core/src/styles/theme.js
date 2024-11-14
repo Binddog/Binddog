@@ -78,8 +78,8 @@ const theme = createTheme({
       light: "#FDFBE9",
     },
     block: {
-      GET: "#008726",
-      POST: "#005CB8",
+      GET: "#005CB8",
+      POST: "#008726",
       DELETE: "#C70000",
       PUT: "#E7872E",
     },
