@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Checkbox, Select, MenuItem, TextField } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
-const ConnectionBox = ({pathVariable, parameter, updateNodeData}) => {
+const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, updateNodeData}) => {
   const theme = useTheme();
   const reqList = ["test"];
   const resList = ["res1", "res2"];
   // console.log("connectionbox path", pathVariable);
-  
+
   const [items, setItems] = useState([]);
 
   // URI와 파라미터를 파싱하는 함수
@@ -37,20 +37,6 @@ const ConnectionBox = ({pathVariable, parameter, updateNodeData}) => {
     setItems(initialItems);
   }, [pathVariable]); // pathVariable이 변경될 때마다 실행
 
-  const handleChange = (id, field, value) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
-      )
-    );
-
-    // updateNodeData 함수 호출
-    const updatedItem = items.find((item) => item.id === id);
-    if (updatedItem) {
-      updateNodeData(updatedItem.input, value);
-    }
-  };
-
   // 입력 값 변경 시 즉시 items 업데이트
   const handleInputChange = (id, field, value) => {
     setItems((prevItems) =>
@@ -62,7 +48,12 @@ const ConnectionBox = ({pathVariable, parameter, updateNodeData}) => {
 
   // 포커스를 잃을 때 updateNodeData 호출
   const handleInputBlur = (item) => {
-    updateNodeData(item.input, item.fromWhere);
+    setItems((prevItems) =>
+      prevItems.map((prevItem) =>
+        prevItem.id === item.id ? { ...prevItem, fromWhere: item.fromWhere } : prevItem
+      )
+    );
+    updateNodeData(item.input, item.fromWhere, apiName);
   };
 
   // console.log(items);

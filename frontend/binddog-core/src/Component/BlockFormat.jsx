@@ -9,8 +9,6 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 export default function BlockFormat({ data }) {
   const theme = useTheme();
 
-  
-
   const [toggleParams, setToggleParams] = useState(false);
 
   const clickToggle = () => {
@@ -29,9 +27,11 @@ export default function BlockFormat({ data }) {
     parameter,
     pathVariable,
     response,
+    pathValue,
     updateNodeData,
   } = data;
   // console.log("blockformat", data);
+
   return (
     <Box
       sx={{
@@ -124,16 +124,6 @@ export default function BlockFormat({ data }) {
               Header: {JSON.stringify(header)}
             </Typography>
           )}
-          {/* {parameter && (
-            <Typography sx={theme.api}>
-              Parameter: {JSON.stringify(parameter)}
-            </Typography>
-          )}
-          {pathVariable && (
-            <Typography sx={theme.api}>
-              Path Variable: {JSON.stringify(pathVariable)}
-            </Typography>
-          )} */}
           {response && (
             <Typography sx={theme.api}>
               Response: {JSON.stringify(response)}
@@ -144,7 +134,15 @@ export default function BlockFormat({ data }) {
         <Handle type="source" position={Position.Right} style={handleStyle2} />
       </Card>
 
-      {toggleParams && (<ConnectionBox pathVariable={pathVariable} parameter = {parameter} updateNodeData={updateNodeData}/>)}
+      {toggleParams &&
+        (<ConnectionBox
+        apiName={apiName}
+        pathVariable={pathVariable}
+        parameter={parameter}
+        pathValue={pathValue}
+        updateNodeData={updateNodeData}
+        />)
+      }
       
     </Box>
   );
