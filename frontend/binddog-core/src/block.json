@@ -1,0 +1,61 @@
+{
+  "blocks": [
+    {
+      "blockId": 1,
+      "method": "GET",
+      "endpoint": "/api/{category-id}/{product-id}",
+      "name": "로그인",
+      "position": "5",
+      "header": {
+        "key": "value"
+      },
+      "parameter": {
+        "key": "value"
+      },
+      "pathVariable": {
+        "key": "value"
+      },
+      "request": {},
+      "response": {}
+    },
+    {
+      "blockId": 2,
+      "method": "GET",
+      "endpoint": "/api/{category-id}/{product-id}",
+      "name": "게시글 조회",
+      "position": "6",
+      "header": {
+        "token": "token"
+      },
+      "parameter": {
+        "key": "value"
+      },
+      "pathVariable": {
+        "key": "value"
+      },
+      "request": {},
+      "response": {}
+    }
+  ],
+  "links": [
+    {
+      "linkId": 1,
+      "fromBlockId": 1,
+      "toBlockId": 2,
+      "mappings": [
+        {
+          "fromFieldType": "header",
+          "fromField": "data.userId",
+          "toFieldType": "header",
+          "toField": "data.memberId"
+        }
+      ]
+    }
+  ],
+  "mapping": {
+    "fromFieldType": "enum(manual | header | parameter | path_variable | request | response)",
+    "fromField": "data.userId",
+    "toFieldType": "enum(header | parameter | path_variable | request | response)",
+    "toField": "data.memberId"
+  }
+}
