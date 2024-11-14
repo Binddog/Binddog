@@ -14,16 +14,17 @@ const schemaMap = new Map();
  * @param schemas
  */
 function initSchema(schemas) {
-  Object.entries(schemas).forEach(([key, value]) => {
+  Object.entries(schemas || []).forEach(([key, value]) => {
     const objMap = new Map();
-    Object.entries(value.properties).forEach(([properties, obj]) => {
+    if (value.properties == null) return;
+    Object.entries(value.properties || []).forEach(([properties, obj]) => {
       var res = obj.type
       if (res == null) { //ref인 경우
         res = { type: obj['$ref'].replace(SCHEMA_PREFIX, "") };
       } else if (res === "array" && obj.items.hasOwnProperty("$ref")) {
         const dto = obj.items["$ref"].replace(SCHEMA_PREFIX, "");
         res = { type: res, object: dto };
-      } 
+      }
       objMap.set(properties, res);
     })
     schemaMap.set(key, objMap)
@@ -32,6 +33,7 @@ function initSchema(schemas) {
 
 function parsingInnerObject(obj) {
   const objMap = new Map();
+  if (obj == null) return
   obj.forEach((value, key) => {
     if (value.type === "array") {
       objMap.set(key, [parsingInnerObject(schemaMap.get(value.object))])
@@ -111,8 +113,8 @@ function createBlock(path, method, detail) {
 
 function createBlockList(context, docs) {
   const blockList = new Array();
-  Object.entries(docs).forEach(([path, value]) => {
-    Object.entries(value).forEach(([method, detail]) => {
+  Object.entries(docs || []).forEach(([path, value]) => {
+    Object.entries(value || []).forEach(([method, detail]) => {
       blockList.push(createBlock(`${context}${path}`, method, detail));
     });
   });
@@ -128,7 +130,7 @@ function BlockList({ name, addNode }) {
         const docsData = await getDocs();
         const context = docsData.servers[0].url;
 
-        if(docsData.components.schemas!=null)initSchema(docsData.components.schemas);
+        if (docsData.components.schemas != null) initSchema(docsData.components.schemas);
         const paths = docsData.paths;
 
         const temp = createBlockList(context, paths);
