@@ -42,6 +42,25 @@ function Flow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
   const [logBox, setLogBox] = useState([]);
 
+  const updateNodeData = (inputKey, value) => {
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        const updatedPathVariable = new Map(node.data.pathVariable);
+        if (updatedPathVariable.has(inputKey)) {
+          updatedPathVariable.set(inputKey, value);
+        }
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            pathVariable: updatedPathVariable,
+          },
+        };
+      })
+    );
+  };
+  
+
   // Convert flowData to ReactFlow nodes and edges
   const convertToNodes = (blocks) =>
     blocks.map((block) => ({
@@ -95,7 +114,8 @@ function Flow() {
         apiName: item.apiName,
         endpoint: item.endpoint,
         pathVariable: item.pathVariable,  
-        parameter: item.parameter         
+        parameter: item.parameter,
+        updateNodeData,
       },
     };
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Checkbox, Select, MenuItem, TextField } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
-const ConnectionBox = ({pathVariable, parameter}) => {
+const ConnectionBox = ({pathVariable, parameter, updateNodeData}) => {
   const theme = useTheme();
   const reqList = ["test"];
   const resList = ["res1", "res2"];
@@ -43,7 +43,29 @@ const ConnectionBox = ({pathVariable, parameter}) => {
         item.id === id ? { ...item, [field]: value } : item
       )
     );
+
+    // updateNodeData 함수 호출
+    const updatedItem = items.find((item) => item.id === id);
+    if (updatedItem) {
+      updateNodeData(updatedItem.input, value);
+    }
   };
+
+  // 입력 값 변경 시 즉시 items 업데이트
+  const handleInputChange = (id, field, value) => {
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    );
+  };
+
+  // 포커스를 잃을 때 updateNodeData 호출
+  const handleInputBlur = (item) => {
+    updateNodeData(item.input, item.fromWhere);
+  };
+
+  // console.log(items);
 
   return (
     <Box
@@ -119,7 +141,8 @@ const ConnectionBox = ({pathVariable, parameter}) => {
 
           <TextField
             value={item.fromWhere}
-            onChange={(e) => handleChange(item.id, "fromWhere", e.target.value)}
+            onChange={(e) => handleInputChange(item.id, "fromWhere", e.target.value)}
+            onBlur={() => handleInputBlur(item)}
             sx={{
               ...theme.api,
               backgroundColor: "white",

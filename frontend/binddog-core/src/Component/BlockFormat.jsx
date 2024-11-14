@@ -29,6 +29,7 @@ export default function BlockFormat({ data }) {
     parameter,
     pathVariable,
     response,
+    updateNodeData,
   } = data;
   // console.log("blockformat", data);
   return (
@@ -143,7 +144,7 @@ export default function BlockFormat({ data }) {
         <Handle type="source" position={Position.Right} style={handleStyle2} />
       </Card>
 
-      {toggleParams && (<ConnectionBox pathVariable={pathVariable} parameter = {parameter}/>)}
+      {toggleParams && (<ConnectionBox pathVariable={pathVariable} parameter = {parameter} updateNodeData={updateNodeData}/>)}
       
     </Box>
   );
