@@ -11,13 +11,10 @@ function TopNav({ isLogin, handleLogout, email }) {
 
   const buttons = [
     { label: "Home", onClick: () => navigate("/") },
-    { label: "Docs", onClick: () => navigate("/docs") },
     { label: "Projects", onClick: () => navigate("/projects") },
   ];
 
-  const authButtons = [
-    { label: "Login", onClick: () => navigate("/login") },
-  ];
+  const authButtons = [{ label: "Login", onClick: () => navigate("/login") }];
 
   const userName = email && email.includes("@") ? email.split("@")[0] : "User";
 
@@ -36,11 +33,12 @@ function TopNav({ isLogin, handleLogout, email }) {
     <Box
       sx={{
         height: "50px",
-        bgcolor: theme.palette.primary.main,
+        bgcolor: theme.palette.common.white,
         padding: "10px 20px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        borderBottom: "1px solid lightgrey",
       }}
     >
       <Box
@@ -56,15 +54,15 @@ function TopNav({ isLogin, handleLogout, email }) {
             component="button"
             onClick={button.onClick}
             sx={[
-              theme.typography.h3,
+              theme.typography.sub,
               {
                 padding: "10px",
                 borderRadius: "10px",
                 border: "none",
-                bgcolor: theme.palette.primary.main,
+                bgcolor: theme.palette.common.white,
                 cursor: "pointer",
                 "&:hover": {
-                  bgcolor: theme.palette.primary.dark,
+                  bgcolor: theme.palette.primary.main,
                 },
               },
             ]}
@@ -95,7 +93,7 @@ function TopNav({ isLogin, handleLogout, email }) {
                 variant="beam"
                 colors={["#FB6A4A", "#A1D99B", "#41B6C4", "#FDAE6B", "#C994C7"]}
               />
-              <Typography sx={{ ...theme.typography.h3, marginLeft: "8px" }}>
+              <Typography sx={{ ...theme.typography.sub, marginLeft: "8px" }}>
                 {userName}
               </Typography>
             </Button>
@@ -117,8 +115,8 @@ function TopNav({ isLogin, handleLogout, email }) {
                 }}
                 sx={{
                   ...theme.typography,
-                  fontSize: theme.fontSize.medium,
-                  padding: "10px 20px",
+                  fontSize: theme.fontSize.small,
+                  padding: "10px",
                   color: theme.palette.text.primary,
                 }}
               >
@@ -133,15 +131,15 @@ function TopNav({ isLogin, handleLogout, email }) {
               component="button"
               onClick={button.onClick}
               sx={[
-                theme.typography.h3,
+                theme.typography.sub,
                 {
-                  padding: "10px",
+                  padding: "13px",
                   borderRadius: "10px",
                   border: "none",
-                  bgcolor: theme.palette.primary.main,
+                  bgcolor: theme.palette.common.white,
                   cursor: "pointer",
                   "&:hover": {
-                    bgcolor: theme.palette.primary.dark,
+                    bgcolor: theme.palette.primary.main,
                   },
                 },
               ]}
