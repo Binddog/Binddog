@@ -20,8 +20,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter:3.3.5'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.3.5'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.5'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     api 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 }
