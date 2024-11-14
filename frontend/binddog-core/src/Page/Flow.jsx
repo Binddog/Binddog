@@ -17,7 +17,9 @@ import BlockList from "../Component/BlockList";
 import RunButton from "./../Component/Buttons/RunButton";
 import SaveButton from "../Component/Buttons/SaveButton";
 import StartSign from "../Component/Buttons/StartSign";
-import { getFlow } from "../api/libraryFlow"; // getFlow 함수 import
+import { getFlow } from "../api/libraryFlow";
+import Divider from '@mui/material/Divider';
+
 
 const parsedBlocks = [
   {
@@ -39,6 +41,31 @@ function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
   const [logBox, setLogBox] = useState([]);
+
+  const updateNodeData = (inputKey, value, targetApiName) => {
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        // 해당 node의 apiName이 targetApiName과 일치하는지 확인
+        if (node.data.apiName === targetApiName) {
+          const updatedPathValue = new Map(node.data.pathValue);
+          // 기존의 pathValue가 inputKey를 포함하면 값만 수정, 포함하지 않으면 새로 추가
+          updatedPathValue.set(inputKey, value);
+  
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              pathValue: updatedPathValue,
+            },
+          };
+        }
+        // apiName이 일치하지 않으면 기존 node를 그대로 반환
+        return node;
+      })
+    );
+  };
+  
+  
 
   // Convert flowData to ReactFlow nodes and edges
   const convertToNodes = (blocks) =>
@@ -92,8 +119,10 @@ function Flow() {
         method: item.method,
         apiName: item.apiName,
         endpoint: item.endpoint,
-        pathVariable: item.pathVariable,
-        parameter: item.parameter
+        pathVariable: item.pathVariable,  
+        parameter: item.parameter,
+        pathValue: new Map(),   // pathVariable 입력한 값들이 들어갈 예정
+        updateNodeData,
       },
     };
 
@@ -220,23 +249,33 @@ function Flow() {
               <Box
                 sx={{
                   width: "100%",
-                  height: "100%",
                   bgcolor: theme.palette.common.white,
                   opacity: "0.8",
                   borderRadius: "10px",
                   padding: "20px",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 1,
+                  gap: 2,
                 }}
               >
                 {logBox.map((item, index) => (
-                  <Typography
-                    key={index}
-                    sx={[theme.api]}
-                  >
-                    {JSON.stringify(item)}
-                  </Typography>
+                  <Box>
+                    <Box
+                      sx={{
+                        paddingBottom: "20px",
+                      }}
+                    >
+                      <Typography
+                        key={index}
+                        sx={[theme.api]}
+                      >
+                        {JSON.stringify(item)}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Divider sx={{ borderBottomWidth: 2, bgcolor: theme.palette.common.lightgrey }} />
+                    </Box>
+                  </Box>
                 ))}
               </Box>
             </Box>

@@ -12,7 +12,7 @@ const RunButton = ({nodes, edges, addLog, restartLog}) => {
     
     if(edges && edges.length > 0){
       console.log(edges)
-      let currentEdge = edges.find(edge => edge.source === 'start-sign');
+      let currentEdge = edges.find(edge => edge.source === '0');
       if (!currentEdge) {
         return;
       }
@@ -29,7 +29,6 @@ const RunButton = ({nodes, edges, addLog, restartLog}) => {
         );
         
         addLog(result.response);
-        addLog("-----------------------------------------------------------------------------")
         if(!result.success){
           break;
         }
