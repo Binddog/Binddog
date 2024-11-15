@@ -31,11 +31,20 @@ const RunButton = ({nodes, edges, addLog, restartLog}) => {
         });
 
         console.log(newEndpoint);
+
+        console.log(currentNode.data.paramValue);
+        // Map을 일반 객체로 변환
+        let paramObject = currentNode.data.paramValue;
+        if (paramObject instanceof Map) {
+            paramObject = Object.fromEntries(paramObject); // Map -> Object 변환
+        }
+        console.log(paramObject);
       
         const result = await runFlow(
           newEndpoint,
           currentNode.data.method,
-          currentNode.data.pathValue,
+          paramObject,
+          currentNode.data.paramValue,
           // currentEdge.data.pathVariable,
           // currentEdge.data.parameter
         );
