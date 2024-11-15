@@ -2,10 +2,28 @@ import React from "react";
 import { Card, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-export default function Block({ method, apiName, endpoint, id, addNode, pathVariable, parameter }) {
+export default function Block({
+  method,
+  apiName,
+  endpoint,
+  id,
+  addNode,
+  pathVariable,
+  parameter,
+  request,
+  response,
+}) {
   const theme = useTheme();
   const handleClick = () => {
-    addNode({ apiName, method, endpoint, pathVariable, parameter });
+    addNode({
+      apiName,
+      method,
+      endpoint,
+      pathVariable,
+      parameter,
+      request,
+      response,
+    });
   };
 
   return (
@@ -27,7 +45,11 @@ export default function Block({ method, apiName, endpoint, id, addNode, pathVari
           gap: 1,
         }}
       >
-        <Typography sx={{ ...theme.method, width: "110px", textAlign: "center" }}>{method}</Typography>
+        <Typography
+          sx={{ ...theme.method, width: "110px", textAlign: "center" }}
+        >
+          {method}
+        </Typography>
 
         <Box
           sx={{
