@@ -42,6 +42,7 @@ function Flow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
   const [logBox, setLogBox] = useState([]);
 
+  // pathValue 수정하는 로직
   const updateNodeData = (inputKey, value, targetApiName) => {
     setNodes((prevNodes) =>
       prevNodes.map((node) => {
@@ -56,6 +57,30 @@ function Flow() {
             data: {
               ...node.data,
               pathValue: updatedPathValue,
+            },
+          };
+        }
+        // apiName이 일치하지 않으면 기존 node를 그대로 반환
+        return node;
+      })
+    );
+  };
+
+  // paramValue 수정하는 로직
+  const updateParamsData = (inputKey, value, targetApiName) => {
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        // 해당 node의 apiName이 targetApiName과 일치하는지 확인
+        if (node.data.apiName === targetApiName) {
+          const updatedParamsValue = new Map(node.data.paramValue);
+          // 기존의 paramValue가 inputKey를 포함하면 값만 수정, 포함하지 않으면 새로 추가
+          updatedParamsValue.set(inputKey, value);
+  
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              paramValue: updatedParamsValue,
             },
           };
         }
@@ -119,10 +144,12 @@ function Flow() {
         method: item.method,
         apiName: item.apiName,
         endpoint: item.endpoint,
-        pathVariable: item.pathVariable,  
+        pathVariable: item.pathVariable,
         parameter: item.parameter,
         pathValue: new Map(),   // pathVariable 입력한 값들이 들어갈 예정
+        paramValue: new Map(),
         updateNodeData,
+        updateParamsData,
       },
     };
 

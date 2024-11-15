@@ -29,6 +29,7 @@ export default function BlockFormat({ data }) {
     response,
     pathValue,
     updateNodeData,
+    updateParamsData,
   } = data;
   // console.log("blockformat", data);
 
@@ -141,6 +142,7 @@ export default function BlockFormat({ data }) {
         parameter={parameter}
         pathValue={pathValue}
         updateNodeData={updateNodeData}
+        updateParamsData={updateParamsData}
         />)
       }
       
