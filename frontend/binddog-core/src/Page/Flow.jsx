@@ -34,6 +34,7 @@ function Flow() {
   const theme = useTheme();
   const location = useLocation();
   const flowName = location.state?.flowName;
+  const flowDescription = "description";
   const { projectId, flowId } = useParams();
   console.log("Received flowName:", flowName);
 
@@ -268,6 +269,8 @@ function Flow() {
             <SaveButton
               projectId={projectId}
               flowId={flowId}
+              title={flowName}
+              description={flowDescription}
               nodes={nodes}
               edges={edges}
             />
