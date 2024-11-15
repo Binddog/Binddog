@@ -4,7 +4,14 @@ import SaveIcon from "@mui/icons-material/Save";
 
 import { modifyFlow } from "../../api/libraryFlow"; // modifyFlow 함수 import
 
-const SaveButton = ({ projectId, flowId, nodes, edges }) => {
+const SaveButton = ({
+  projectId,
+  flowId,
+  title,
+  description,
+  nodes,
+  edges,
+}) => {
   const theme = useTheme();
 
   // React Flow 데이터를 서버 요구 형식으로 변환
@@ -41,6 +48,8 @@ const SaveButton = ({ projectId, flowId, nodes, edges }) => {
     }));
 
     return {
+      title,
+      description,
       blocks,
       links,
     };
