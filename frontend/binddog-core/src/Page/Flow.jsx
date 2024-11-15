@@ -100,7 +100,6 @@ function Flow() {
       id: `edge-${link.fromBlockId}-${link.toBlockId}`, // Unique edge ID
       source: `${link.fromBlockId}`, // Source node ID
       target: `${link.toBlockId}`, // Target node ID
-      type: "smoothstep", // Optional edge type, bezier
     }));
 
   const reloadNode = (newNodes, newEdges) => {
