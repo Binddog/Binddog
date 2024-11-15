@@ -208,6 +208,7 @@ function Flow() {
           edges={edges}
           onNodesChange={handleNodesChange}
           onEdgesChange={onEdgesChange}
+          defaultEdgeOptions={{ type: "smoothstep" }}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
           style={{
