@@ -77,6 +77,21 @@ function Flow() {
         method: block.method,
         endpoint: block.endpoint,
         apiName: block.name,
+        header: block.header
+          ? new Map(Object.entries(block.header))
+          : new Map(), // Object -> Map 변환
+        parameter: block.parameter
+          ? new Map(Object.entries(block.parameter))
+          : new Map(), // Object -> Map 변환
+        pathVariable: block.pathVariable
+          ? new Map(Object.entries(block.pathVariable))
+          : new Map(), // Object -> Map 변환
+        request: block.request
+          ? new Map(Object.entries(block.request))
+          : new Map(), // Object -> Map 변환
+        response: block.response
+          ? new Map(Object.entries(block.response))
+          : new Map(), // Object -> Map 변환
       },
     }));
 
@@ -164,7 +179,6 @@ function Flow() {
         reloadNode(newNodes, newEdges);
       } catch (error) {
         console.error("Error fetching flow data:", error);
-        // 에러 발생 시에도 start-sign 노드 추가
       }
     };
 
@@ -221,7 +235,12 @@ function Flow() {
               addLog={addLog}
               restartLog={restartLog}
             />
-            <SaveButton projectId={projectId} flowId={flowId} nodes={nodes} edges={edges}/>
+            <SaveButton
+              projectId={projectId}
+              flowId={flowId}
+              nodes={nodes}
+              edges={edges}
+            />
           </Box>
           <Controls />
           <MiniMap />
