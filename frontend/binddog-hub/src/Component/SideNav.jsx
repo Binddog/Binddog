@@ -18,9 +18,6 @@ function SideNav({ li, title }) {
         gap: 3,
       }}
     >
-      <Typography component="div" sx={theme.typography}>
-        나중에 햄버거 버튼 들어갈 곳(안들어가도 되긴함)
-      </Typography>
       <Typography component="div" sx={theme.typography.h3}>
         유저의 허브
       </Typography>

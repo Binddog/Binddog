@@ -1,46 +1,15 @@
-import {React, useState} from "react";
-import { Typography, Box, IconButton, Menu, MenuItem, Skeleton, Modal } from "@mui/material";
+import { React, useState } from "react";
+import { Typography, Box, Skeleton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { useNavigate } from 'react-router-dom';
 
 function HubBlock({ inId, flowName }) {
   const theme = useTheme();
-  const navigate = useNavigate();
 
   // 이미지 로딩을 확인하기 위한 상태
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // 케밥 버튼 관련 로직
-  const [anchorEl, setAnchorEl] = useState(null);
-  const isKebabOpen = Boolean(anchorEl);
-
-  const handleKebabToggle = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-
-  const handleKebabClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleDelete = () => {
-    alert('삭제하기 클릭');
-    handleKebabClose();
-  };
-
-  // 해당 프로젝트 세부 플로우 리스트로 이동 로직
-  const moveProjectFlow = (id) => {
-    navigate(`/hubList/${id}`);
-  };
-
   return (
     <Box
-      onClick={(event) => {
-        // 케밥버튼이 아닌 경우에만 수정하기 실행 + 케밥 버튼 누른 후 리스트 밖에 눌러도 수정하기 막기 추가
-        if (!event.target.closest('button') && !event.target.closest('.MuiMenuItem-root') && !event.target.closest('.MuiMenu-root')) {
-          moveProjectFlow(inId);
-        }
-      }}
       sx={{
         width: "100%",
         maxWidth: "370px",
@@ -62,14 +31,15 @@ function HubBlock({ inId, flowName }) {
         }}
       >
         {!imageLoaded && (
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            height="100%"
-          />
+          <Skeleton variant="rectangular" width="100%" height="100%" />
         )}
         <img
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: imageLoaded ? 'block' : 'none' }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: imageLoaded ? "block" : "none",
+          }}
           src="https://picsum.photos/500/233?random=1"
           alt=""
           // 이미지 로드 완료 시 상태 업데이트
@@ -93,18 +63,6 @@ function HubBlock({ inId, flowName }) {
         >
           <Typography sx={theme.typography.sub}>이름: {flowName}</Typography>
         </Box>
-        <IconButton onClick={handleKebabToggle} sx={{color:theme.palette.common.grey}}>
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={isKebabOpen}
-          onClose={handleKebabClose}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <MenuItem onClick={handleDelete} sx={theme.typography.sub}>삭제하기</MenuItem>
-        </Menu>
       </Box>
     </Box>
   );
