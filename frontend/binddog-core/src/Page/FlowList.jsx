@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import SideNav from "../Component/SideNav";
 import FlowBlock from "../Component/FlowBlock";
+import Loading from "../Component/Loading";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { getAllFlow, createFlow } from "../api/libraryFlow";
 
@@ -24,17 +25,22 @@ function FlowList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [titleName, setTitleName] = useState("FLOW");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const fetchFlows = async () => {
+    setLoading(true);
+    try {
+      const flows = await getAllFlow(projectId);
+      setLi(Array.isArray(flows) ? flows : []);
+    } catch (error) {
+      console.error("플로우 리스트를 불러오는데 실패했습니다:", error);
+      setLi([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchFlows = async () => {
-      try {
-        const flows = await getAllFlow(projectId);
-        setLi(Array.isArray(flows) ? flows : []);
-      } catch (error) {
-        console.error("Failed to fetch flows:", error);
-        setLi([]);
-      }
-    };
     fetchFlows();
   }, [projectId]);
 
@@ -45,6 +51,10 @@ function FlowList() {
   const OpenModal = () => {
     setIsModalOpen(true);
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   const handleCreate = async () => {
     try {
@@ -102,25 +112,45 @@ function FlowList() {
           </Box>
         </Box>
 
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: { md: "repeat(2, 1fr)", xl: "repeat(3, 1fr)" },
-            gap: 5,
-            justifyItems: "center",
-            marginTop: "20px",
-          }}
-        >
-          {li.map((item) => (
-            <FlowBlock
-              key={item.flowId}
-              inId={item.flowId}
-              projectId={projectId}
-              flowName={item.title}
-              description={item.description}
-            />
-          ))}
-        </Box>
+        {li.length > 0 ? (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                md: "repeat(2, 1fr)",
+                xl: "repeat(3, 1fr)",
+              },
+              gap: 5,
+              justifyItems: "center",
+              marginTop: "20px",
+            }}
+          >
+            {li.map((item) => (
+              <FlowBlock
+                key={item.flowId}
+                inId={item.flowId}
+                projectId={projectId}
+                flowName={item.title}
+                description={item.description}
+                fetchFlows={fetchFlows}
+              />
+            ))}
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "200px",
+              marginTop: "20px",
+            }}
+          >
+            <Typography sx={theme.typography.h3}>
+              아직 플로우가 없습니다.
+            </Typography>
+          </Box>
+        )}
       </Box>
 
       <Modal
