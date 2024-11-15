@@ -4,10 +4,9 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "./styles/theme";
 import { Route, Routes } from "react-router-dom";
 import Home from "./Page/Home";
-import Docs from "./Page/Docs";
 import TopNav from "./Component/TopNav";
 import HubList from "./Page/HubList";
-import HubFlowList from './Page/HubFlowList';
+import HubFlowList from "./Page/HubFlowList";
 import Login from "./Page/Login";
 import SignUp from "./Page/SignUp";
 import Loading from "./Component/Loading";
@@ -20,21 +19,31 @@ function App() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    const storedEmail = localStorage.getItem("email");
+    const token = localStorage.getItem("accessToken");
+    if (token && storedEmail) {
+      setIsLogin(true);
+      setEmail(storedEmail);
+    } else {
+      setIsLogin(false);
+      setEmail("");
+    }
 
+    const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
   const handleLogin = (userEmail) => {
     setEmail(userEmail);
     setIsLogin(true);
+    localStorage.setItem("email", userEmail);
   };
 
   const handleLogout = () => {
     setEmail("");
     setIsLogin(false);
+    localStorage.removeItem("email");
+    localStorage.removeItem("accessToken");
     setSnackbarOpen(true);
   };
 
@@ -62,7 +71,6 @@ function App() {
         <TopNav isLogin={isLogin} handleLogout={handleLogout} email={email} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/docs" element={<Docs />} />
           <Route path="/hubList" element={<HubList />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/signUp" element={<SignUp />} />
