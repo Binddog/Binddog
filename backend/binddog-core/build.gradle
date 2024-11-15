@@ -1,9 +1,12 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     id 'java-library'
-    //메이븐 로컬 배포를 위한 플러그인
-    //id 'maven-publish'
+    id 'maven-publish'
     id 'org.springframework.boot' version '3.3.5' apply false
     id 'io.spring.dependency-management' version '1.1.6' apply false
+    id 'com.vanniktech.maven.publish' version '0.28.0'
+    id 'signing'
 }
 
 group = 'org.binddog'
@@ -19,6 +22,11 @@ repositories {
     mavenCentral()
 }
 
+signing {
+    useGpgCmd()
+    sign publishing.publications
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:3.3.5'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.5'
@@ -30,15 +38,36 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-//메이븐 로컬 배포를 위한 파일
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-//            groupId = 'org.binddog.core'
-//            artifactId = 'binddog'
-//            version = '0.0.1'
-//
-//            from components.java
-//        }
-//    }
-//}
+
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+
+    coordinates("org.binddog", "binddog", "0.0.1")
+
+    pom {
+        name = 'org.binddog'
+        description = 'Binddog library'
+        url = '<https://binddog.org>'
+
+        licenses {
+            license {
+                name = 'MIT License'
+                url = '<https://lab.ssafy.com/s11-final/S11P31A401/-/blob/master/LICENSE>'
+            }
+        }
+
+        developers {
+            developer {
+                id = 'wnso-kim'
+                name = 'wnso'
+                email = 'wnso.kim@gmail.com'
+            }
+        }
+
+        scm {
+            connection = 'scm:git:lab.ssafy.com/s11-final/S11P31A401.git'
+            developerConnection = 'scm:git:ssh://lab.ssafy.com/s11-final/S11P31A401.git'
+            url = '<https://lab.ssafy.com/s11-final/S11P31A401/-/tree/master>'
+        }
+    }
+}
