@@ -18,8 +18,7 @@ import RunButton from "./../Component/Buttons/RunButton";
 import SaveButton from "../Component/Buttons/SaveButton";
 import StartSign from "../Component/Buttons/StartSign";
 import { getFlow } from "../api/libraryFlow";
-import Divider from '@mui/material/Divider';
-
+import Divider from "@mui/material/Divider";
 
 const parsedBlocks = [
   {
@@ -50,7 +49,7 @@ function Flow() {
           const updatedPathValue = new Map(node.data.pathValue);
           // 기존의 pathValue가 inputKey를 포함하면 값만 수정, 포함하지 않으면 새로 추가
           updatedPathValue.set(inputKey, value);
-  
+
           return {
             ...node,
             data: {
@@ -64,8 +63,6 @@ function Flow() {
       })
     );
   };
-  
-  
 
   // Convert flowData to ReactFlow nodes and edges
   const convertToNodes = (blocks) =>
@@ -88,7 +85,7 @@ function Flow() {
       id: `edge-${link.fromBlockId}-${link.toBlockId}`, // Unique edge ID
       source: `${link.fromBlockId}`, // Source node ID
       target: `${link.toBlockId}`, // Target node ID
-      type: "bezier", // Optional edge type
+      type: "smoothstep", // Optional edge type, bezier
     }));
 
   const reloadNode = (newNodes, newEdges) => {
@@ -110,7 +107,6 @@ function Flow() {
   );
 
   function addNode(item) {
-    // console.log("addnode item",item);
     const newNode = {
       id: `${Date.now()}`,
       type: "customBlock",
@@ -119,9 +115,11 @@ function Flow() {
         method: item.method,
         apiName: item.apiName,
         endpoint: item.endpoint,
-        pathVariable: item.pathVariable,  
+        header: item.header,
         parameter: item.parameter,
-        pathValue: new Map(),   // pathVariable 입력한 값들이 들어갈 예정
+        pathVariable: item.pathVariable,
+        request: item.request,
+        response: item.response,
         updateNodeData,
       },
     };
@@ -217,9 +215,13 @@ function Flow() {
               zIndex: 100,
             }}
           >
-            <RunButton nodes={nodes} edges={edges}
-              addLog={addLog} restartLog={restartLog} />
-            <SaveButton projectId={projectId} flowId={flowId} />
+            <RunButton
+              nodes={nodes}
+              edges={edges}
+              addLog={addLog}
+              restartLog={restartLog}
+            />
+            <SaveButton projectId={projectId} flowId={flowId} nodes={nodes} edges={edges}/>
           </Box>
           <Controls />
           <MiniMap />
@@ -265,15 +267,17 @@ function Flow() {
                         paddingBottom: "20px",
                       }}
                     >
-                      <Typography
-                        key={index}
-                        sx={[theme.api]}
-                      >
+                      <Typography key={index} sx={[theme.api]}>
                         {JSON.stringify(item)}
                       </Typography>
                     </Box>
                     <Box>
-                      <Divider sx={{ borderBottomWidth: 2, bgcolor: theme.palette.common.lightgrey }} />
+                      <Divider
+                        sx={{
+                          borderBottomWidth: 2,
+                          bgcolor: theme.palette.common.lightgrey,
+                        }}
+                      />
                     </Box>
                   </Box>
                 ))}
