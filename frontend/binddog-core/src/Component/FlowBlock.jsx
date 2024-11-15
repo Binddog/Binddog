@@ -10,8 +10,9 @@ import {
 import { useTheme } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
+import { deleteFlow } from "../api/libraryFlow";
 
-function FlowBlock({ inId, flowName, projectId }) {
+function FlowBlock({ inId, flowName, projectId, fetchFlows }) {
   const theme = useTheme();
 
   const navigate = useNavigate();
@@ -36,9 +37,14 @@ function FlowBlock({ inId, flowName, projectId }) {
     handleKebabClose();
   };
 
-  const handleDelete = () => {
-    alert("삭제하기 클릭");
-    handleKebabClose();
+  const handleDelete = async () => {
+    try {
+      await deleteFlow(projectId, inId);
+      await fetchFlows();
+      handleKebabClose();
+    } catch (error) {
+      console.error("플로우 삭제 실패:", error);
+    }
   };
 
   return (
