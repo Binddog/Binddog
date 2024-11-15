@@ -20,10 +20,22 @@ const RunButton = ({nodes, edges, addLog, restartLog}) => {
       
       while(currentNode){
         console.log(`flow call endpoint: ${currentNode.data.endpoint}`);
+
+        const endpoint = currentNode.data.endpoint;
+        const pathValue = currentNode.data.pathValue;
+
+        // newEndpoint 초기화: endpoint에서 {key}를 pathValue의 값으로 대체합니다.
+        const newEndpoint = endpoint.replace(/{(\w+)}/g, (match, key) => {
+            // pathValue에 key가 존재하는 경우 해당 값을, 없으면 그대로 유지
+            return pathValue.get(key) || match;
+        });
+
+        console.log(newEndpoint);
       
         const result = await runFlow(
-          currentNode.data.endpoint, 
+          newEndpoint,
           currentNode.data.method,
+          currentNode.data.pathValue,
           // currentEdge.data.pathVariable,
           // currentEdge.data.parameter
         );
