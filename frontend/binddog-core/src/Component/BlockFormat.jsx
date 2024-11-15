@@ -1,9 +1,9 @@
-import {React, useState} from "react";
+import { React, useState } from "react";
 import { Card, Typography, Box, Button, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Handle, Position } from "@xyflow/react";
-import ConnectionBox from './ConnectionBox';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ConnectionBox from "./ConnectionBox";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 // ReactFlow 안에 생기는 블록 커스텀 포맷
 export default function BlockFormat({ data }) {
@@ -13,7 +13,7 @@ export default function BlockFormat({ data }) {
 
   const clickToggle = () => {
     setToggleParams(!toggleParams);
-  }
+  };
 
   const handleStyle1 = toggleParams ? { top: 45, left: 45 } : {};
   const handleStyle2 = toggleParams ? { top: 45, right: 45 } : {};
@@ -64,7 +64,7 @@ export default function BlockFormat({ data }) {
             sx={{
               ...theme.method,
               width: "110px",
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
             {method}
@@ -98,26 +98,32 @@ export default function BlockFormat({ data }) {
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
               }}
             >
               <Typography
                 sx={{
-                ...theme.endpoint, padding: "5px",
-                overflow: "hidden", textOverflow: "ellipsis",
-                whiteSpace: "nowrap", maxWidth: "150px",
+                  ...theme.endpoint,
+                  padding: "5px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  maxWidth: "150px",
                 }}
               >
                 {endpoint}
               </Typography>
-              <IconButton sx={{color: theme.palette.common.white, scale: "70%", }} onClick={clickToggle}>
-                <AddCircleOutlineIcon/>
+              <IconButton
+                sx={{ color: theme.palette.common.white, scale: "70%" }}
+                onClick={clickToggle}
+              >
+                <AddCircleOutlineIcon />
               </IconButton>
             </Box>
           </Box>
         </Box>
 
-        {/* 추가 속성 렌더링 */}
+        {/* 추가 속성 렌더링
         <Box>
           {header && (
             <Typography sx={theme.api}>
@@ -129,21 +135,20 @@ export default function BlockFormat({ data }) {
               Response: {JSON.stringify(response)}
             </Typography>
           )}
-        </Box>
+        </Box> */}
 
         <Handle type="source" position={Position.Right} style={handleStyle2} />
       </Card>
 
-      {toggleParams &&
-        (<ConnectionBox
-        apiName={apiName}
-        pathVariable={pathVariable}
-        parameter={parameter}
-        pathValue={pathValue}
-        updateNodeData={updateNodeData}
-        />)
-      }
-      
+      {toggleParams && (
+        <ConnectionBox
+          apiName={apiName}
+          pathVariable={pathVariable}
+          parameter={parameter}
+          pathValue={pathValue}
+          updateNodeData={updateNodeData}
+        />
+      )}
     </Box>
   );
 }
