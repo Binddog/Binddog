@@ -1,5 +1,6 @@
 // 유저 관련 api
 import Axios from "./index";
+import Cookies from "js-cookie";
 
 // 회원가입
 export const signUp = async (email, password) => {
@@ -10,6 +11,10 @@ export const signUp = async (email, password) => {
 // 로그인
 export const logIn = async (email, password) => {
   const response = await Axios.post("auths/login", { email, password });
+  const { accessToken } = response.data.data;
+  console.log("로그인 성공");
+  localStorage.setItem("accessToken", accessToken);
+  Cookies.set("refreshToken", response.data.data.refreshToken);
   return response.data;
 };
 
