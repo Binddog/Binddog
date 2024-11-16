@@ -22,6 +22,11 @@ public enum ErrorCode implements ResponseCode {
     // Project Error code
     PROJECT_INVALID(HttpStatus.BAD_REQUEST, "Invalid projectId"),
 
+    // Image Upload Error code
+    IMAGE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Image upload failed"),
+    BUCKET_INVALID(HttpStatus.BAD_REQUEST, "bucket invalid"),
+    IMAGE_GET_ERROR(HttpStatus.BAD_REQUEST, "image not found"),
+
     // Common Error Code
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "An internal server error occurred."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "Invalid request."),
