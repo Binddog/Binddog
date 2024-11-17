@@ -25,11 +25,17 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 server:
   port: ${HUB_PORT}
   servlet:
     context-path: /api
+  tomcat:
+    max-http-form-post-size: 100MB
 
 springdoc:
   api-docs:
@@ -39,3 +45,9 @@ springdoc:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
+
+minio:
+  endpoint: ${MINIO_ENDPOINT}      # MinIO 서버 엔드포인트
+  access-key: ${MINIO_ACCESS_KEY}                    # MinIO 액세스 키
+  secret-key: ${MINIO_SECRET_KEY}                 # MinIO 비밀 키
+  bucket-name: ${MINIO_BUCKET_NAME}                # 사용할 버킷 이름

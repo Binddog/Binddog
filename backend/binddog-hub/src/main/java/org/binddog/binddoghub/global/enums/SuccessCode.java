@@ -26,6 +26,8 @@ public enum SuccessCode implements ResponseCode {
     REGISTER_FLOW_SUCCESS(HttpStatus.OK, "Flow registration completed successfully."),
     DELETE_FLOW_SUCCESS(HttpStatus.NO_CONTENT, "Flow deletion completed successfully."),
 
+    // Image upload
+    IMAGE_UPLOAD_SUCCESS(HttpStatus.CREATED, "Image upload success"),
     // BASE API
     SUCCESS(HttpStatus.OK, "Retrieval completed successfully.");
 
