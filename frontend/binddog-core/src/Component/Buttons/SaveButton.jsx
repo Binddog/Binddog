@@ -40,6 +40,7 @@ const SaveButton = ({
           : {}, // Map<String, Object> -> Object 변환
         pathValue: node.data.pathValue ? Object.fromEntries(node.data.pathValue) : {},
         paramValue: node.data.paramValue ? Object.fromEntries(node.data.paramValue) : {},
+        headerValue: node.data.paramValue ? Object.fromEntries(node.data.headerValue) : {},
       }));
 
     const links = edges.map((edge) => ({
