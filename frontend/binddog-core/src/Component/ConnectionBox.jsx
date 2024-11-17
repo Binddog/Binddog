@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Checkbox, Select, MenuItem, TextField } from "@mui/material";
+import { Box, Typography, Checkbox, Select, MenuItem, TextField, IconButton } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteHeaderButton from "./Buttons/DeleteHeaderButton";
 
-const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue, updateNodeData, updateParamsData}) => {
+const ConnectionBox = ({
+  apiName,
+  header,
+  headerValue,
+  pathVariable,
+  parameter,
+  pathValue,
+  paramValue,
+  updateNodeData,
+  updateParamsData,
+  updateHeadersData,
+}) => {
   const theme = useTheme();
   const reqList = ["test"];
   const resList = ["res1"];
-  // console.log("connectionbox path", pathVariable);
 
   const [items, setItems] = useState([]);
   const [paramItems, setParamItems] = useState([]);
+  const [headerItems, setHeaderItems] = useState([]);
 
   // URI와 파라미터를 파싱하는 함수
 
@@ -36,9 +49,7 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
       usage: "Param",
     }));
     setParamItems(initialParamItems);
-
   }, []);
-
 
   useEffect(() => {
     // Map을 배열로 변환하여 초기 items를 설정
@@ -47,15 +58,14 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
       return {
         id: index + 1,
         deactivate: false,
-        input: key,  // Map의 key를 input으로 설정
+        input: key, // Map의 key를 input으로 설정
         type: value,
-        fromWhere: matchedPathValue,  // pathValue의 value를 fromWhere로 설정
+        fromWhere: matchedPathValue, // pathValue의 value를 fromWhere로 설정
         usage: "Param",
       };
     });
     setItems(initialItems);
   }, [pathVariable, pathValue]); // pathVariable 또는 pathValue가 변경될 때마다 실행
-
 
   useEffect(() => {
     // Map을 배열로 변환하여 초기 paramItems를 설정
@@ -64,23 +74,36 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
       return {
         id: index + 1,
         deactivate: false,
-        input: key,  // Map의 key를 input으로 설정
+        input: key, // Map의 key를 input으로 설정
         type: value,
-        fromWhere: matchedParamValue,  // paramValue value를 fromWhere로 설정
+        fromWhere: matchedParamValue, // paramValue value를 fromWhere로 설정
         usage: "Param",
       };
     });
     setParamItems(initialParamItems);
   }, [parameter, paramValue]); // parameter 또는 paramValue 변경될 때마다 실행
-  
-  
+
+  useEffect(() => {
+    // Map을 배열로 변환하여 초기 headerItems를 설정
+    console.log(header);
+    const initialHeaderItems = Array.from(header || []).map(([key, value], index) => {
+      const matchedHeaderValue = headerValue?.get(key) || "";
+      return {
+        id: index + 1,
+        deactivate: false,
+        input: key, // Map의 key를 input으로 설정
+        type: value,
+        fromWhere: matchedHeaderValue, // headerValue value를 fromWhere로 설정
+        usage: "Param",
+      };
+    });
+    setHeaderItems(initialHeaderItems);
+  }, [header, headerValue]); // header 또는 headerValue 변경될 때마다 실행
 
   // 입력 값 변경 시 즉시 items 업데이트
   const handleInputChange = (id, field, value) => {
     setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
-      )
+      prevItems.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
   };
 
@@ -94,13 +117,10 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
     updateNodeData(item.input, item.fromWhere, apiName);
   };
 
-
   // paramItems 입력 값 변경 시 즉시 items 업데이트
   const handleParamInputChange = (id, field, value) => {
     setParamItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
-      )
+      prevItems.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
   };
 
@@ -112,6 +132,49 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
       )
     );
     updateParamsData(item.input, item.fromWhere, apiName);
+  };
+
+  // headerItems 입력 값 변경 시 즉시 items 업데이트
+  const handleHeaderInputChange = (id, field, value) => {
+    setHeaderItems((prevItems) =>
+      prevItems.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
+  //포커스를 잃을 때 updateHeadersData 호출
+  const handleHeaderInputBlur = (item) => {
+    setHeaderItems((prevItems) =>
+      prevItems.map((prevItem) =>
+        prevItem.id === item.id ? { ...prevItem, fromWhere: item.fromWhere } : prevItem
+      )
+    );
+    updateHeadersData(item.input, item.fromWhere, apiName);
+  };
+
+  const addHeader = () => {
+    const key = prompt("key");
+    header.set(`${key}`, "string");
+
+    setHeaderItems((prevHeaderItems) => [
+      ...prevHeaderItems,
+      {
+        id: prevHeaderItems.length + 1,
+        deactivate: false,
+        input: `${key}`, // Default key
+        type: "string", // Default type
+        fromWhere: "", // Default value
+        usage: "Header",
+      },
+    ]);
+  };
+  const removeHeader = (item) => {
+    // headerItems에서 해당 아이템을 제거
+    setHeaderItems((prevHeaderItems) =>
+      prevHeaderItems.filter((headerItem) => headerItem.id !== item.id)
+    );
+
+    // header Map에서도 삭제
+    header.delete(item.input);
   };
 
   return (
@@ -145,7 +208,7 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
             color: theme.palette.common.black,
           }}
         >
-          Input
+          Header
         </Typography>
         <Typography
           sx={{
@@ -159,9 +222,142 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
             color: theme.palette.common.black,
           }}
         >
-          from where
+          Input
         </Typography>
       </Box>
+      <Box
+        sx={{
+          width: "100%",
+          height: "1px",
+          bgcolor: theme.palette.common.white,
+          marginTop: "5px",
+          marginBottom: "5px",
+        }}
+      ></Box>
+      {headerItems.map((item) => (
+        <Box
+          key={item.id}
+          sx={{
+            display: "flex",
+            gap: "10px",
+            width: "100%",
+            alignItems: "center",
+            margin: "3px 5px",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100px",
+              height: "30px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+            }}
+          >
+            <Typography
+              sx={{
+                ...theme.method,
+                color: theme.palette.common.black,
+              }}
+            >
+              {item.input}
+            </Typography>
+            <Typography
+              sx={{
+                ...theme.method,
+                fontSize: theme.fontSize.small,
+                color: theme.palette.common.grey,
+              }}
+            >
+              ({item.type})
+            </Typography>
+          </Box>
+          <TextField
+            value={item.fromWhere}
+            onChange={(e) => handleHeaderInputChange(item.id, "fromWhere", e.target.value)}
+            onBlur={() => handleHeaderInputBlur(item)}
+            sx={{
+              ...theme.api,
+              backgroundColor: "white",
+              borderRadius: "4px",
+              width: "160px",
+              height: "30px",
+              display: "flex",
+              alignItems: "center",
+            }}
+            InputProps={{
+              sx: {
+                width: "160px",
+                height: "30px",
+                fontSize: theme.api,
+              },
+            }}
+          ></TextField>
+          <DeleteHeaderButton
+            onClick={() => {
+              removeHeader(item);
+            }}
+          />
+        </Box>
+      ))}
+      <IconButton sx={{ color: theme.palette.common.white, scale: "70%" }} onClick={addHeader}>
+        <AddCircleOutlineIcon />
+      </IconButton>
+      <Box
+        sx={{
+          width: "100%",
+          height: "1px",
+          bgcolor: theme.palette.common.white,
+          marginTop: "5px",
+          marginBottom: "5px",
+        }}
+      ></Box>
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          sx={{
+            ...theme.method,
+            width: "100px",
+            textAlign: "center",
+            lineHeight: "30px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: theme.palette.common.black,
+          }}
+        >
+          PathVariable
+        </Typography>
+        <Typography
+          sx={{
+            ...theme.method,
+            width: "200px",
+            textAlign: "center",
+            lineHeight: "30px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: theme.palette.common.black,
+          }}
+        >
+          Input
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          width: "100%",
+          height: "1px",
+          bgcolor: theme.palette.common.white,
+          marginTop: "5px",
+          marginBottom: "5px",
+        }}
+      ></Box>
 
       {items.map((item) => (
         <Box
@@ -220,11 +416,10 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
               sx: {
                 width: "200px",
                 height: "30px",
-                fontSize: theme.api
+                fontSize: theme.api,
               },
             }}
-          >
-          </TextField>
+          ></TextField>
         </Box>
       ))}
 
@@ -236,8 +431,7 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
           marginTop: "5px",
           marginBottom: "5px",
         }}
-      >
-      </Box>
+      ></Box>
 
       <Box
         sx={{
@@ -272,7 +466,7 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
             color: theme.palette.common.black,
           }}
         >
-          from where
+          Input
         </Typography>
       </Box>
 
@@ -333,14 +527,12 @@ const ConnectionBox = ({apiName, pathVariable, parameter, pathValue, paramValue,
               sx: {
                 width: "200px",
                 height: "30px",
-                fontSize: theme.api
+                fontSize: theme.api,
               },
             }}
-          >
-          </TextField>
+          ></TextField>
         </Box>
       ))}
-
     </Box>
   );
 };
