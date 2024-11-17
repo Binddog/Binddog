@@ -28,6 +28,7 @@ public enum SuccessCode implements ResponseCode {
 
     // Image upload
     IMAGE_UPLOAD_SUCCESS(HttpStatus.CREATED, "Image upload success"),
+    IMAGE_GET_SUCCESS(HttpStatus.OK, "Image get success"),
     // BASE API
     SUCCESS(HttpStatus.OK, "Retrieval completed successfully.");
 
