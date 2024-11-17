@@ -2,6 +2,7 @@ package org.binddog.binddoghub.image.service.impl;
 
 import io.minio.*;
 import io.minio.http.Method;
+import lombok.RequiredArgsConstructor;
 import org.binddog.binddoghub.global.enums.ErrorCode;
 import org.binddog.binddoghub.global.enums.NoneResponse;
 import org.binddog.binddoghub.global.handler.AppException;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.util.Map;
 
 import static org.binddog.binddoghub.global.enums.ErrorCode.BUCKET_INVALID;
 import static org.binddog.binddoghub.global.enums.ErrorCode.IMAGE_GET_ERROR;
@@ -20,6 +23,7 @@ import static org.binddog.binddoghub.global.enums.NoneResponse.NONE;
 import static org.binddog.binddoghub.global.enums.SuccessCode.IMAGE_UPLOAD_SUCCESS;
 
 @Service
+@RequiredArgsConstructor
 public class MinioServiceImpl implements MinioService {
 
     private final MinioClient minioClient;
@@ -27,9 +31,8 @@ public class MinioServiceImpl implements MinioService {
     @Value("${minio.bucket-name}")
     private String bucketName;
 
-    public MinioServiceImpl(MinioClient minioClient) {
-        this.minioClient = minioClient;
-    }
+    @Value("${minio.presigned-url}")
+    private String presignedURL;
 
     @Override
     public SuccessResponse<NoneResponse> uploadFile(MultipartFile file, UploadImageRequest request) {
@@ -55,14 +58,29 @@ public class MinioServiceImpl implements MinioService {
         try {
             ensureBucketExists();
             String fileName = projectId + "-" + flowId + ".jpg" ;
-            return minioClient.getPresignedObjectUrl(
+            String presignedUrl = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                                              .bucket(bucketName)
                                              .object(fileName)
                                              .method(Method.GET)
-                                             .expiry(60 * 60 * 24 * 7)
+                                             .expiry(60 * 60 * 24 * 7) // 7일
+                                             .extraQueryParams(Map.of("response-content-type", "image/jpeg"))
                                              .build()
             );
+
+            // Presigned URL의 내부 도메인 부분을 외부 도메인으로 변경
+            URI uri = new URI(presignedUrl);
+            URI externalUri = new URI(
+                    uri.getScheme(), // "http"
+                    uri.getUserInfo(),
+                    presignedURL.replace("http://", ""), // 외부 접근 가능한 호스트
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    uri.getFragment()
+            );
+
+            return externalUri.toString();
         } catch (Exception e) {
             throw new AppException(IMAGE_GET_ERROR);
         }
