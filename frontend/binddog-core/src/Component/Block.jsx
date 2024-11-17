@@ -8,6 +8,7 @@ export default function Block({
   endpoint,
   id,
   addNode,
+  header,
   pathVariable,
   parameter,
   request,
@@ -19,6 +20,7 @@ export default function Block({
       apiName,
       method,
       endpoint,
+      header,
       pathVariable,
       parameter,
       request,
@@ -45,9 +47,7 @@ export default function Block({
           gap: 1,
         }}
       >
-        <Typography
-          sx={{ ...theme.method, width: "110px", textAlign: "center" }}
-        >
+        <Typography sx={{ ...theme.method, width: "110px", textAlign: "center" }}>
           {method}
         </Typography>
 
