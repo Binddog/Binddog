@@ -38,6 +38,8 @@ const SaveButton = ({
         response: node.data.response
           ? Object.fromEntries(node.data.response)
           : {}, // Map<String, Object> -> Object 변환
+        pathValue: node.data.pathValue ? Object.fromEntries(node.data.pathValue) : {},
+        paramValue: node.data.paramValue ? Object.fromEntries(node.data.paramValue) : {},
       }));
 
     const links = edges.map((edge) => ({
