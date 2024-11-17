@@ -51,3 +51,4 @@ minio:
   access-key: ${MINIO_ACCESS_KEY}                    # MinIO 액세스 키
   secret-key: ${MINIO_SECRET_KEY}                 # MinIO 비밀 키
   bucket-name: ${MINIO_BUCKET_NAME}                # 사용할 버킷 이름
+  presigned-url : ${MINIO_PRESIGNED_URL}
