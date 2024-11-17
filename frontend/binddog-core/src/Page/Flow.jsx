@@ -120,6 +120,12 @@ function Flow() {
         response: block.response
           ? new Map(Object.entries(block.response))
           : new Map(), // Object -> Map 변환
+        pathValue: block.pathValue
+          ? new Map(Object.entries(block.pathValue))
+          : new Map(),
+        paramValue: block.paramValue
+          ? new Map(Object.entries(block.paramValue))
+          : new Map(),
       },
     }));
 
