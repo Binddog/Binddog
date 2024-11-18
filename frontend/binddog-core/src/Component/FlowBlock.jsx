@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   Typography,
   Box,
@@ -11,14 +11,16 @@ import { useTheme } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import { deleteFlow } from "../api/libraryFlow";
+import { loadImage } from "../api/saveImg";
 
 function FlowBlock({ inId, flowName, projectId, fetchFlows }) {
   const theme = useTheme();
 
   const navigate = useNavigate();
 
-  // 이미지 로딩을 확인하기 위한 상태
+  // 이미지 로딩 상태 및 URL 저장
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
   // 케밥 버튼 관련 로직
   const [anchorEl, setAnchorEl] = useState(null);
@@ -46,6 +48,23 @@ function FlowBlock({ inId, flowName, projectId, fetchFlows }) {
       console.error("플로우 삭제 실패:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await loadImage(projectId, inId);
+        if (response?.data?.url) {
+          setImageUrl(response.data.url); // URL 설정
+        } else {
+          console.error("이미지 URL이 없습니다.");
+        }
+      } catch (error) {
+        console.error("이미지 로드 실패:", error);
+      }
+    };
+
+    fetchImage();
+  }, [projectId, inId]);
 
   return (
     <Box
@@ -89,9 +108,8 @@ function FlowBlock({ inId, flowName, projectId, fetchFlows }) {
             objectFit: "cover",
             display: imageLoaded ? "block" : "none",
           }}
-          src="https://picsum.photos/500/233?random=1"
-          alt=""
-          // 이미지 로드 완료 시 상태 업데이트
+          src={imageUrl}
+          alt="Flow Thumbnail"
           onLoad={() => setImageLoaded(true)}
         />
       </Box>
