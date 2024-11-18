@@ -10,16 +10,14 @@ const RunButton = ({ nodes, edges, addLog, restartLog }) => {
     // reset logs
     restartLog();
     let previousResult = {}; // 이전 API 호출 결과를 저장할 객체
-    console.log(previousResult)
-    if(edges && edges.length > 0){
-      console.log(edges)
+    if (edges && edges.length > 0) {
       let currentEdge = edges.find(edge => edge.source === '0');
       if (!currentEdge) {
         return;
       }
       let currentNode = nodes.find(node => node.id === currentEdge.target);
-      
-      while(currentNode){
+
+      while (currentNode) {
         console.log(`flow call endpoint: ${currentNode.data.endpoint}`);
 
         const endpoint = currentNode.data.endpoint;
@@ -47,10 +45,6 @@ const RunButton = ({ nodes, edges, addLog, restartLog }) => {
           return pathVariable || match;
         });
 
-
-        console.log(newEndpoint);
-
-        console.log(currentNode.data.paramValue);
         // Map을 일반 객체로 변환
         let paramObject = currentNode.data.paramValue;
         if (paramObject instanceof Map) {
@@ -85,9 +79,6 @@ const RunButton = ({ nodes, edges, addLog, restartLog }) => {
           headerObject = Object.fromEntries(headerObject); // Map -> Object 변환
         }
 
-        console.log(paramObject);
-        console.log(headerObject);
-
         const result = await runFlow(
           newEndpoint,
           currentNode.data.method,
@@ -95,7 +86,7 @@ const RunButton = ({ nodes, edges, addLog, restartLog }) => {
           headerObject
         );
 
-        addLog(result.response.data);
+        addLog({ success: result.success, response: result.response.data });
         if (!result.success) {
           break;
         }
