@@ -29,7 +29,10 @@ public record FlowSearchRes(
             Map<String, String> parameter,
             Map<String, String> pathVariable,
             Map<String, Object> request,
-            Map<String, Object> response
+            Map<String, Object> response,
+            Map<String, String> pathValue,
+            Map<String, String> paramValue,
+            Map<String, String> headerValue
     ) { }
 
     public record LinkResponse(
