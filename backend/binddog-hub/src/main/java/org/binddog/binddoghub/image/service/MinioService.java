@@ -8,5 +8,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface MinioService {
     SuccessResponse<NoneResponse> uploadFile(MultipartFile file, UploadImageReq request);
-    SuccessResponse<ImageUrlRes> getPresignedUrl(Long projectId, Long flowId);
+    SuccessResponse<ImageUrlRes> getPreSignedUrl(Long projectId, String flowId);
 }
