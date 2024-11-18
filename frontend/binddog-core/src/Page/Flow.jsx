@@ -130,6 +130,9 @@ function Flow() {
         pathValue: block.pathValue ? new Map(Object.entries(block.pathValue)) : new Map(),
         paramValue: block.paramValue ? new Map(Object.entries(block.paramValue)) : new Map(),
         headerValue: block.headerValue ? new Map(Object.entries(block.headerValue)) : new Map(),
+        updateNodeData,
+        updateParamsData,
+        updateHeadersData,
       },
     }));
 
