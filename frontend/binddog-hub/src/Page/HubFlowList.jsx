@@ -143,8 +143,8 @@ function HubFlowList() {
           >
             {li.map((item) => (
               <HubFlowBlock
-                key={item.id}
-                inId={item.id}
+                key={item.flowId}
+                inId={item.flowId}
                 flowName={item.title}
               />
             ))}
