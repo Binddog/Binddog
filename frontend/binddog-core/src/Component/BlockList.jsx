@@ -53,14 +53,8 @@ function parsingInnerObject(obj) {
  * @returns
  */
 function parseResponse(res) {
-  const schema = res["200"].content["*/*"].schema;
-  if (!schema["$ref"]) {
-    return;
-  }
-  let dtoName = schema["$ref"].replace(SCHEMA_PREFIX, "");
-  if (dtoName === null) {
-    return;
-  }
+  const dtoName = res?.["200"]?.content?.["*/*"]?.schema?.["$ref"]?.replace(SCHEMA_PREFIX, "");
+  if (!dtoName) return;
   return parsingInnerObject(schemaMap.get(dtoName));
 }
 
