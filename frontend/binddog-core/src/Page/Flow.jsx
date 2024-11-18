@@ -323,8 +323,15 @@ function Flow() {
                         paddingBottom: "20px",
                       }}
                     >
-                      <Typography key={index} sx={[theme.api]}>
-                        {JSON.stringify(item)}
+                      <Typography
+                        sx={[
+                          theme.api,
+                          {
+                            color: item.success ? "green" : "red", // 조건부 색상 설정
+                          },
+                        ]}
+                      >
+                        {JSON.stringify(item.response)}
                       </Typography>
                     </Box>
                     <Box>
