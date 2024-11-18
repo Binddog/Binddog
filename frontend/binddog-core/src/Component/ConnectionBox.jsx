@@ -165,6 +165,7 @@ const ConnectionBox = ({
 
   const addHeader = () => {
     const key = headerInput;
+    setHeaderInput("");
     header.set(`${key}`, "string");
 
     closeModal();
