@@ -1,9 +1,10 @@
-import { Button } from "@mui/material";
+import { Button, Snackbar, Alert } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import SaveIcon from "@mui/icons-material/Save";
 import html2canvas from "html2canvas";
 import { modifyFlow } from "../../api/libraryFlow"; // modifyFlow 함수 import
 import { saveImage } from "../../api/saveImg";
+import { useState } from "react";
 
 const SaveButton = ({
   projectId,
@@ -14,6 +15,13 @@ const SaveButton = ({
   edges,
 }) => {
   const theme = useTheme();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   // React Flow 데이터를 서버 요구 형식으로 변환
   const transformData = (nodes, edges) => {
@@ -39,9 +47,15 @@ const SaveButton = ({
         response: node.data.response
           ? Object.fromEntries(node.data.response)
           : {}, // Map<String, Object> -> Object 변환
-        pathValue: node.data.pathValue ? Object.fromEntries(node.data.pathValue) : {},
-        paramValue: node.data.paramValue ? Object.fromEntries(node.data.paramValue) : {},
-        headerValue: node.data.paramValue ? Object.fromEntries(node.data.headerValue) : {},
+        pathValue: node.data.pathValue
+          ? Object.fromEntries(node.data.pathValue)
+          : {},
+        paramValue: node.data.paramValue
+          ? Object.fromEntries(node.data.paramValue)
+          : {},
+        headerValue: node.data.paramValue
+          ? Object.fromEntries(node.data.headerValue)
+          : {},
       }));
 
     const links = edges.map((edge) => ({
@@ -88,16 +102,16 @@ const SaveButton = ({
             [
               JSON.stringify({
                 projectId,
-                flowId
-              })
+                flowId,
+              }),
             ],
-            { type: 'application/json' }
-          )
+            { type: "application/json" }
+          );
           const file = new File([blob], "example.png", { type: blob.type });
-          formData.append('uploadImageRequest', uploadImageRequest)
-          formData.append('file', file)
+          formData.append("uploadImageRequest", uploadImageRequest);
+          formData.append("file", file);
 
-          const response = saveImage(formData)
+          const response = saveImage(formData);
 
           if (response.ok) {
             console.log("Image uploaded successfully");
@@ -105,27 +119,47 @@ const SaveButton = ({
         }
       });
 
-      // 데이터 저장 요청
-      const response = await modifyFlow(projectId, flowId, requestBody);
-      alert("저장 완료");
+      await modifyFlow(projectId, flowId, requestBody);
+
+      setSnackbarMessage("저장 및 이미지 업로드 완료");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     } catch (error) {
-      alert("저장 실패");
+      setSnackbarMessage("저장 실패");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
       console.error("저장 실패:", error);
     }
   };
 
   return (
-    <Button
-      variant="contained"
-      sx={{
-        backgroundColor: theme.palette.button.add,
-        fontFamily: theme.button,
-        borderRadius: "20px",
-      }}
-      onClick={handleSave} // Save 기능 연결
-    >
-      <SaveIcon sx={{ marginRight: "6px", fontSize: 19 }} /> Save
-    </Button>
+    <>
+      <Button
+        variant="contained"
+        sx={{
+          backgroundColor: theme.palette.button.add,
+          fontFamily: theme.button,
+          borderRadius: "20px",
+        }}
+        onClick={handleSave} // Save 기능 연결
+      >
+        <SaveIcon sx={{ marginRight: "6px", fontSize: 19 }} /> Save
+      </Button>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 
