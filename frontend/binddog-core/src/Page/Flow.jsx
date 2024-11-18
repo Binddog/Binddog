@@ -41,11 +41,11 @@ function Flow() {
   const [logBox, setLogBox] = useState([]);
 
   // pathValue 수정하는 로직
-  const updateNodeData = (inputKey, value, targetApiName) => {
+  const updateNodeData = (inputKey, value, targetid) => {
     setNodes((prevNodes) =>
       prevNodes.map((node) => {
         // 해당 node의 apiName이 targetApiName과 일치하는지 확인
-        if (node.data.apiName === targetApiName) {
+        if (node.id === targetid) {
           const updatedPathValue = new Map(node.data.pathValue);
           // 기존의 pathValue가 inputKey를 포함하면 값만 수정, 포함하지 않으면 새로 추가
           updatedPathValue.set(inputKey, value);
@@ -65,11 +65,11 @@ function Flow() {
   };
 
   // paramValue 수정하는 로직
-  const updateParamsData = (inputKey, value, targetApiName) => {
+  const updateParamsData = (inputKey, value, targetid) => {
     setNodes((prevNodes) =>
       prevNodes.map((node) => {
         // 해당 node의 apiName이 targetApiName과 일치하는지 확인
-        if (node.data.apiName === targetApiName) {
+        if (node.id === targetid) {
           const updatedParamsValue = new Map(node.data.paramValue);
           // 기존의 paramValue가 inputKey를 포함하면 값만 수정, 포함하지 않으면 새로 추가
           updatedParamsValue.set(inputKey, value);
@@ -89,10 +89,10 @@ function Flow() {
   };
 
   // headerValue 수정하는 로직
-  const updateHeadersData = (key, value, targetApiName) => {
+  const updateHeadersData = (key, value, targetid) => {
     setNodes((prevNodes) =>
       prevNodes.map((node) => {
-        if (node.data.apiName === targetApiName) {
+        if (node.id === targetid) {
           const updatedHeadersValue = new Map(node.data.headerValue);
           updatedHeadersValue.set(key, value);
 
@@ -221,6 +221,8 @@ function Flow() {
 
     fetchFlowData();
   }, [projectId, flowId]);
+
+  console.log(nodes);
 
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>

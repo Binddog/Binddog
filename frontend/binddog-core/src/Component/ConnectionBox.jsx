@@ -6,7 +6,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteHeaderButton from "./Buttons/DeleteHeaderButton";
 
 const ConnectionBox = ({
-  apiName,
+  id,
   header,
   headerValue,
   pathVariable,
@@ -114,7 +114,7 @@ const ConnectionBox = ({
         prevItem.id === item.id ? { ...prevItem, fromWhere: item.fromWhere } : prevItem
       )
     );
-    updateNodeData(item.input, item.fromWhere, apiName);
+    updateNodeData(item.input, item.fromWhere, id);
   };
 
   // paramItems 입력 값 변경 시 즉시 items 업데이트
@@ -131,7 +131,7 @@ const ConnectionBox = ({
         prevItem.id === item.id ? { ...prevItem, fromWhere: item.fromWhere } : prevItem
       )
     );
-    updateParamsData(item.input, item.fromWhere, apiName);
+    updateParamsData(item.input, item.fromWhere, id);
   };
 
   // headerItems 입력 값 변경 시 즉시 items 업데이트
@@ -148,7 +148,7 @@ const ConnectionBox = ({
         prevItem.id === item.id ? { ...prevItem, fromWhere: item.fromWhere } : prevItem
       )
     );
-    updateHeadersData(item.input, item.fromWhere, apiName);
+    updateHeadersData(item.input, item.fromWhere, id);
   };
 
   // Header 입력받기 위한 모달 로직
