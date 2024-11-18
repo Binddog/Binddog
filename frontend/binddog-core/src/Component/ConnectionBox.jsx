@@ -7,6 +7,7 @@ import DeleteHeaderButton from "./Buttons/DeleteHeaderButton";
 
 const ConnectionBox = ({
   id,
+  apiName,
   header,
   headerValue,
   pathVariable,
