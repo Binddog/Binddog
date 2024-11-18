@@ -211,8 +211,6 @@ function Flow() {
       try {
         const response = await getFlow(projectId, flowId);
         const flowData = response.data; // Assuming `flowData` is under `data`
-        console.log(response.data)
-        console.log("flowData : " + flowData)
         const newNodes = convertToNodes(flowData.blocks || []);
         const newEdges = convertToEdges(flowData.links || []);
         reloadNode(newNodes, newEdges);
