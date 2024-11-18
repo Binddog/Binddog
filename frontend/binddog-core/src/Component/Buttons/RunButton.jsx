@@ -53,7 +53,7 @@ const RunButton = ({ nodes, edges, addLog, restartLog }) => {
           headerObject
         );
 
-        addLog(result.response);
+        addLog(result.response.data);
         if (!result.success) {
           break;
         }
