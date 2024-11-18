@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Checkbox, Select, MenuItem, TextField, IconButton } from "@mui/material";
+import { Box, Typography, Checkbox, Select, MenuItem, TextField, IconButton, Button, Modal } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import Divider from "@mui/material/Divider";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -151,9 +151,23 @@ const ConnectionBox = ({
     updateHeadersData(item.input, item.fromWhere, apiName);
   };
 
+  // Header 입력받기 위한 모달 로직
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [headerInput, setHeaderInput] = useState("");
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  }
+
   const addHeader = () => {
-    const key = prompt("key");
+    const key = headerInput;
     header.set(`${key}`, "string");
+
+    closeModal();
 
     setHeaderItems((prevHeaderItems) => [
       ...prevHeaderItems,
@@ -301,7 +315,7 @@ const ConnectionBox = ({
           />
         </Box>
       ))}
-      <IconButton sx={{ color: theme.palette.common.white, scale: "70%" }} onClick={addHeader}>
+      <IconButton sx={{ color: theme.palette.common.white, scale: "70%" }} onClick={openModal}>
         <AddCircleOutlineIcon />
       </IconButton>
       <Box
@@ -533,6 +547,106 @@ const ConnectionBox = ({
           ></TextField>
         </Box>
       ))}
+
+      <Modal
+        open={isModalOpen}
+        onClose={closeModal}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "500px",
+            height: "200px",
+            bgcolor: theme.palette.common.white,
+            borderRadius: "8px",
+            display: "flex",
+            flexDirection: "column",
+            padding: "20px 10px 20px",
+            justifyContent: "center",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              sx={[
+                theme.typography.h2,
+                {
+                  flexGrow: 4,
+                  display: "flex",
+                  justifyContent: "center",
+                },
+              ]}
+            >
+              Header 입력
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              padding: "15px 60px",
+              gap: 2,
+            }}
+          >
+            <TextField
+              label="Header key"
+              type="text"
+              variant="outlined"
+              placeholder="추가할 헤더를 입력해주세요"
+              onChange={(e) => setHeaderInput(e.target.value)}
+              InputProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontSize: theme.fontSize.medium,
+                  color: theme.palette.common.grey,
+                },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderRadius: "10px",
+                    borderColor: theme.palette.common.grey,
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: theme.palette.common.grey,
+                  },
+                },
+              }}
+            />
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={addHeader}
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: "20px",
+                padding: "10px",
+                minHeight: "40px",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.dark,
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                },
+              }}
+            >
+              생성하기
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Box>
   );
 };
