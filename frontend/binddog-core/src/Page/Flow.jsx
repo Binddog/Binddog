@@ -170,11 +170,11 @@ function Flow() {
         header: item.header,
         parameter: item.parameter,
         pathVariable: item.pathVariable,
-        pathValue: new Map(), // pathVariable 입력한 값들이 들어갈 예정
+        pathValue: item.pathValue, // pathVariable 입력한 값들이 들어갈 예정
         request: item.request,
         response: item.response,
-        paramValue: new Map(),
-        headerValue: new Map(),
+        paramValue: item.paramValue,
+        headerValue: item.headerValue,
         updateNodeData,
         updateParamsData,
         updateHeadersData,
