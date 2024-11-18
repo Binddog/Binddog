@@ -28,7 +28,7 @@ export const runFlow = async (endpoint, method = 'GET', paramObject, headerObjec
     } catch (err) {
         return {
             success: false,
-            response: err,
+            response: err.response,
         };
     }
 }
