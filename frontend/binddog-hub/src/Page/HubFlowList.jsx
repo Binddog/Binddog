@@ -146,6 +146,7 @@ function HubFlowList() {
                 key={item.flowId}
                 inId={item.flowId}
                 flowName={item.title}
+                projectId={id}
               />
             ))}
           </Box>
