@@ -213,7 +213,7 @@ function Projects() {
                 },
               ]}
             >
-              플로우 생성
+              프로젝트 생성
             </Typography>
             <IconButton
               onClick={handleCloseModal}
