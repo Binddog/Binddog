@@ -56,7 +56,7 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
-    public SuccessResponse<ImageUrlRes> getPresignedUrl(Long projectId, Long flowId) {
+    public SuccessResponse<ImageUrlRes> getPreSignedUrl(Long projectId, String flowId) {
         try {
             ensureBucketExists();
             String fileName = projectId + "-" + flowId + ".jpg";

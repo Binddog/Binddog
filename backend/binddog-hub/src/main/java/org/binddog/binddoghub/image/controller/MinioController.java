@@ -30,8 +30,8 @@ public class MinioController {
 
     // 이미지 조회
     @GetMapping("/{projectId}/{flowId}")
-    public ResponseEntity<Response<ImageUrlRes>> getImage(@PathVariable Long flowId, @PathVariable Long projectId) {
-            SuccessResponse<ImageUrlRes> response = minioService.getPresignedUrl(projectId, flowId);
+    public ResponseEntity<Response<ImageUrlRes>> getImage(@PathVariable String flowId, @PathVariable Long projectId) {
+            SuccessResponse<ImageUrlRes> response = minioService.getPreSignedUrl(projectId, flowId);
             return Response.success(response);
     }
 }
