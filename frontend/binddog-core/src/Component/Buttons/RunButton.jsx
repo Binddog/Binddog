@@ -56,6 +56,30 @@ const RunButton = ({ nodes, edges, addLog, restartLog }) => {
         if (paramObject instanceof Map) {
           paramObject = Object.fromEntries(paramObject); // Map -> Object 변환
         }
+
+        // **Parameter 동적 처리 추가**
+        if (paramObject) {
+          Object.keys(paramObject).forEach((key) => {
+            const value = paramObject[key];
+            if (typeof value === "string" && value.startsWith("map:")) {
+              // "map:" 경로 파싱
+              const dataPath = value.replace("map:", "").trim().split(".");
+              let resolvedValue = previousResult;
+              for (const segment of dataPath) {
+                if (resolvedValue && segment in resolvedValue) {
+                  resolvedValue = resolvedValue[segment];
+                } else {
+                  console.error(
+                      `Path "${dataPath.join(".")}" not found in result.`
+                  );
+                  resolvedValue = value; // 원래 문자열 반환
+                  break;
+                }
+              }
+              paramObject[key] = resolvedValue; // 변환된 값 설정
+            }
+          });
+        }
         let headerObject = currentNode.data.headerValue;
         if (headerObject instanceof Map) {
           headerObject = Object.fromEntries(headerObject); // Map -> Object 변환
