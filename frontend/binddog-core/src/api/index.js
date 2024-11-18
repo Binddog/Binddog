@@ -52,26 +52,28 @@ Axios.interceptors.response.use(
         const refreshToken = Cookies.get("refreshToken");
         const accessToken = localStorage.getItem("accessToken");
 
-        const { data } = await axios.post(
-          `${import.meta.env.VITE_SERVER_URL}/auths/refresh`,
-          { accessToken, refreshToken }
-        );
+        const { data } = await Axios.post("/auths/refresh", {
+          accessToken,
+          refreshToken,
+        });
 
+        // 토큰 저장
         localStorage.setItem("accessToken", data.data.accessToken);
         Cookies.set("refreshToken", data.data.refreshToken);
 
+        // 헤더 업데이트
         Axios.defaults.headers.Authorization = `Bearer ${data.data.accessToken}`;
-
         onRefreshed(data.data.accessToken);
 
         originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`;
 
         return Axios(originalRequest);
-      } catch {
+      } catch (err) {
         console.warn("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        alert("세션이 만료되었습니다. 다시 로그인해주세요.");
         localStorage.clear();
         Cookies.remove("refreshToken");
-        setTimeout(() => (window.location.href = "/"), 500);
+        window.location.href = "/login";
       } finally {
         isRefreshing = false;
       }
