@@ -1,8 +1,9 @@
 import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import SaveIcon from "@mui/icons-material/Save";
-
+import html2canvas from "html2canvas";
 import { modifyFlow } from "../../api/libraryFlow"; // modifyFlow 함수 import
+import { saveImage } from "../../api/saveImg";
 
 const SaveButton = ({
   projectId,
@@ -65,6 +66,46 @@ const SaveButton = ({
     console.log("requestBody: ", requestBody);
 
     try {
+      // ReactFlow 영역 캡처
+      const reactFlowElement = document.querySelector(".react-flow"); // ReactFlow의 루트 클래스 선택
+      if (!reactFlowElement) {
+        console.error("ReactFlow element not found.");
+        return;
+      }
+
+      const canvas = await html2canvas(reactFlowElement, {
+        scale: 2, // 캡처 이미지의 해상도 향상
+        useCORS: true, // CORS 이슈 방지
+      });
+
+      // 캡처된 이미지를 Blob으로 변환
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          // 이미지를 서버에 업로드하거나 로컬에 저장
+
+          const formData = new FormData();
+          const uploadImageRequest = new Blob(
+            [
+              JSON.stringify({
+                projectId,
+                flowId
+              })
+            ],
+            { type: 'application/json' }
+          )
+          const file = new File([blob], "example.png", { type: blob.type });
+          formData.append('uploadImageRequest', uploadImageRequest)
+          formData.append('file', file)
+
+          const response = saveImage(formData)
+
+          if (response.ok) {
+            console.log("Image uploaded successfully");
+          }
+        }
+      });
+
+      // 데이터 저장 요청
       const response = await modifyFlow(projectId, flowId, requestBody);
       alert("저장 완료");
     } catch (error) {
