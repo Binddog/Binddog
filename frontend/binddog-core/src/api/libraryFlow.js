@@ -5,7 +5,7 @@ import docsAxios from "./docsAxios";
 
 // 해당 프로젝트의 API 목록 조회
 export const getDocs = async () => {
-  const response = await docsAxios(`/api/v3/api-docs`);
+  const response = await docsAxios(`/v3/api-docs`);
   return response.data;
 };
 

@@ -9,26 +9,44 @@ const RunButton = ({ nodes, edges, addLog, restartLog }) => {
   const handleClick = async () => {
     // reset logs
     restartLog();
-
-    if (edges && edges.length > 0) {
+    let previousResult = {}; // 이전 API 호출 결과를 저장할 객체
+    console.log(previousResult)
+    if(edges && edges.length > 0){
       console.log(edges)
       let currentEdge = edges.find(edge => edge.source === '0');
       if (!currentEdge) {
         return;
       }
       let currentNode = nodes.find(node => node.id === currentEdge.target);
-
-      while (currentNode) {
+      
+      while(currentNode){
         console.log(`flow call endpoint: ${currentNode.data.endpoint}`);
 
         const endpoint = currentNode.data.endpoint;
         const pathValue = currentNode.data.pathValue;
 
-        // newEndpoint 초기화: endpoint에서 {key}를 pathValue의 값으로 대체합니다.
+        // newEndpoint 초기화: "map:" 조건에 따라 이전 결과에서 값을 동적으로 대체
         const newEndpoint = endpoint.replace(/{(\w+)}/g, (match, key) => {
-          // pathValue에 key가 존재하는 경우 해당 값을, 없으면 그대로 유지
-          return pathValue.get(key) || match;
+          const pathVariable = pathValue.get(key);
+          if (pathVariable && pathVariable.startsWith("map:")) {
+            // "map:"을 제거하고 경로를 파싱하여 값을 가져옴
+            const dataPath = pathVariable.replace("map:", "").trim().split(".");
+            let value = previousResult;
+            for (const segment of dataPath) {
+              if (value && segment in value) {
+                value = value[segment];
+              } else {
+                console.error(`Path "${dataPath.join(".")}" not found in result.`);
+                return pathVariable; // 매칭된 원래 값을 반환
+              }
+            }
+            return value; // 파싱한 값을 반환
+          }
+
+          // 기존 방식으로 pathValue의 값을 대체
+          return pathVariable || match;
         });
+
 
         console.log(newEndpoint);
 
@@ -56,6 +74,19 @@ const RunButton = ({ nodes, edges, addLog, restartLog }) => {
         addLog(result.response.data);
         if (!result.success) {
           break;
+        }
+
+        try {
+          if (typeof result.response === "string") {
+            previousResult = JSON.parse(result.response); // JSON 문자열 파싱
+          } else if (typeof result.response === "object") {
+            previousResult = result.response; // 이미 객체인 경우
+          } else {
+            throw new Error("Invalid JSON format");
+          }
+        } catch (e) {
+          console.error("Invalid JSON response:", result.response, e);
+          break; // 루프 종료
         }
 
         currentEdge = edges.find(edge => edge.source === currentNode.id);
