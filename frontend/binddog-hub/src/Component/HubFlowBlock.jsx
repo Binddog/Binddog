@@ -1,19 +1,14 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { Typography, Box, Skeleton, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { loadImage } from "../api/libraryFlow";
 
-function HubFlowBlock({ inId, flowName }) {
+function HubFlowBlock({ inId, flowName, projectId }) {
   const theme = useTheme();
 
-  // 이미지 로딩을 확인하기 위한 상태
+  // 이미지 로딩 상태 및 URL 저장
   const [imageLoaded, setImageLoaded] = useState(false);
-
-  // 케밥 버튼 관련 로직
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleKebabClose = () => {
-    setAnchorEl(null);
-  };
+  const [imageUrl, setImageUrl] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleModalClose = () => {
@@ -22,13 +17,32 @@ function HubFlowBlock({ inId, flowName }) {
 
   const openModal = () => {
     setIsModalOpen(true);
-    handleKebabClose();
   };
+
+  // 이미지 불러오기
+  console.log("projectId: ", projectId);
+  console.log("inId: ", inId);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await loadImage(projectId, inId);
+        if (response?.data?.url) {
+          setImageUrl(response.data.url); // URL 설정
+        } else {
+          console.error("이미지 URL이 없습니다.");
+        }
+      } catch (error) {
+        console.error("이미지 로드 실패:", error);
+      }
+    };
+
+    fetchImage();
+  }, [projectId, inId]);
 
   return (
     <Box
       onClick={(event) => {
-        // 케밥버튼이 아닌 경우에만 수정하기 실행 + 케밥 버튼 누른 후 리스트 밖에 눌러도 수정하기 막기 추가
         if (
           !event.target.closest("button") &&
           !event.target.closest(".MuiMenuItem-root") &&
@@ -55,6 +69,10 @@ function HubFlowBlock({ inId, flowName }) {
           borderRadius: "5px",
           overflow: "hidden",
           flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f0f0f0",
         }}
       >
         {!imageLoaded && (
@@ -62,14 +80,13 @@ function HubFlowBlock({ inId, flowName }) {
         )}
         <img
           style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
             display: imageLoaded ? "block" : "none",
           }}
-          src="https://picsum.photos/500/233?random=1"
-          alt=""
-          // 이미지 로드 완료 시 상태 업데이트
+          src={imageUrl}
+          alt={flowName}
           onLoad={() => setImageLoaded(true)}
         />
       </Box>
@@ -103,24 +120,46 @@ function HubFlowBlock({ inId, flowName }) {
       >
         <Box
           sx={{
-            width: "80%",
-            display: "flex",
-            justifyContent: "center",
+            width: { xs: "40%", sm: "40%", md: "40%" },
             bgcolor: "background.paper",
-            textAlign: "center",
             borderRadius: "8px",
             boxShadow: 24,
             padding: "10px",
             outline: "none",
-            gap: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <img
-            src="https://picsum.photos/500/233?random=1"
-            alt=""
-            style={{ width: "100%", borderRadius: "8px" }}
-          />
-          <Box>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+            }}
+          >
+            <img
+              src={imageUrl}
+              alt={flowName}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              width: "100%",
+              marginTop: "10px",
+            }}
+          >
             <Typography
               component="button"
               onClick={handleModalClose}
@@ -132,7 +171,7 @@ function HubFlowBlock({ inId, flowName }) {
                   padding: "10px",
                   borderRadius: "10px",
                   border: "none",
-                  bgcolor: "transparent", // 배경색 제거
+                  bgcolor: "transparent",
                   cursor: "pointer",
                   "&:hover": {
                     bgcolor: theme.palette.primary.dark,
