@@ -20,3 +20,11 @@ export const deleteFlow = async (projectId, flowId) => {
   });
   return response.data;
 };
+
+// 플로우 이미지 불러오기
+export const loadImage = async (projectId, flowId) => {
+  const response = await Axios(`images/${projectId}/${flowId}`, {
+    baseURL: process.env.REACT_APP_API_URL,
+  });
+  return response.data;
+};
