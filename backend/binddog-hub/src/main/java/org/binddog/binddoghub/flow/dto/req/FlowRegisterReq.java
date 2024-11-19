@@ -41,6 +41,9 @@ public class FlowRegisterReq {
         private Map<String, String> pathVariable;
         private Map<String, Object> request;
         private Map<String, Object> response;
+        private Map<String, String> pathValue;
+        private Map<String, String> paramValue;
+        private Map<String, String> headerValue;
     }
 
     @Getter
