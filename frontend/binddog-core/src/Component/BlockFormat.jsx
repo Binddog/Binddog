@@ -6,7 +6,7 @@ import ConnectionBox from "./ConnectionBox";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 // ReactFlow 안에 생기는 블록 커스텀 포맷
-export default function BlockFormat({ data }) {
+export default function BlockFormat({ id, data }) {
   const theme = useTheme();
 
   const [toggleParams, setToggleParams] = useState(false);
@@ -28,10 +28,11 @@ export default function BlockFormat({ data }) {
     pathVariable,
     response,
     pathValue,
+    headerValue,
     updateNodeData,
     updateParamsData,
+    updateHeadersData,
   } = data;
-  // console.log("blockformat", data);
 
   return (
     <Box
@@ -141,17 +142,20 @@ export default function BlockFormat({ data }) {
         <Handle type="source" position={Position.Right} style={handleStyle2} />
       </Card>
 
-      {toggleParams &&
-        (<ConnectionBox
-        apiName={apiName}
-        pathVariable={pathVariable}
-        parameter={parameter}
-        pathValue={pathValue}
-        updateNodeData={updateNodeData}
-        updateParamsData={updateParamsData}
-        />)
-      }
-      
+      {toggleParams && (
+        <ConnectionBox
+          id={id}
+          apiName={apiName}
+          header={header}
+          headerValue={headerValue}
+          pathVariable={pathVariable}
+          parameter={parameter}
+          pathValue={pathValue}
+          updateNodeData={updateNodeData}
+          updateParamsData={updateParamsData}
+          updateHeadersData={updateHeadersData}
+        />
+      )}
     </Box>
   );
 }

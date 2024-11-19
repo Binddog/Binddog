@@ -1,4 +1,3 @@
-import "./App.css";
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./styles/theme";
@@ -12,6 +11,8 @@ import TopNav from "./Component/TopNav";
 import Loading from "./Component/Loading";
 import PrivateRoute from "./PrivateRoute";
 import { Box, Snackbar, Alert } from "@mui/material";
+import { refresh } from "../src/api/user";
+import Cookies from "js-cookie";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -34,6 +35,27 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // 세션 확인 로직
+  useEffect(() => {
+    const checkSession = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = Cookies.get("refreshToken");
+
+      if (accessToken && refreshToken) {
+        try {
+          await refresh();
+        } catch (error) {
+          console.error("Session expired. Logging out...");
+          handleLogout();
+        }
+      }
+    };
+
+    const interval = setInterval(checkSession, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleLogin = (userEmail) => {
     setEmail(userEmail);
     setIsLogin(true);
@@ -43,8 +65,8 @@ function App() {
   const handleLogout = () => {
     setEmail("");
     setIsLogin(false);
-    localStorage.removeItem("email");
-    localStorage.removeItem("accessToken");
+    localStorage.clear();
+    Cookies.remove("refreshToken");
     setSnackbarOpen(true);
   };
 

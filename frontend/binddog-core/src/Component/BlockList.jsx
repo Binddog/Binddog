@@ -18,32 +18,32 @@ function initSchema(schemas) {
     const objMap = new Map();
     if (value.properties == null) return;
     Object.entries(value.properties || []).forEach(([properties, obj]) => {
-      var res = obj.type
-      if (res == null) { //ref인 경우
-        res = { type: obj['$ref'].replace(SCHEMA_PREFIX, "") };
+      var res = obj.type;
+      if (res == null) {
+        //ref인 경우
+        res = { type: obj["$ref"].replace(SCHEMA_PREFIX, "") };
       } else if (res === "array" && obj.items.hasOwnProperty("$ref")) {
         const dto = obj.items["$ref"].replace(SCHEMA_PREFIX, "");
         res = { type: res, object: dto };
       }
       objMap.set(properties, res);
-    })
-    schemaMap.set(key, objMap)
-  })
+    });
+    schemaMap.set(key, objMap);
+  });
 }
 
 function parsingInnerObject(obj) {
   const objMap = new Map();
-  if (obj == null) return
+  if (obj == null) return;
   obj.forEach((value, key) => {
     if (value.type === "array") {
-      objMap.set(key, [parsingInnerObject(schemaMap.get(value.object))])
-
+      objMap.set(key, [parsingInnerObject(schemaMap.get(value.object))]);
     } else if (schemaMap.get(value.type)) {
-      objMap.set(key, parsingInnerObject(schemaMap.get(value.type)))
+      objMap.set(key, parsingInnerObject(schemaMap.get(value.type)));
     } else {
       objMap.set(key, value);
     }
-  })
+  });
   return objMap;
 }
 
@@ -53,17 +53,17 @@ function parsingInnerObject(obj) {
  * @returns
  */
 function parseResponse(res) {
-  const schema = res["200"].content["*/*"].schema;
-  let dtoName = schema["$ref"].replace(SCHEMA_PREFIX, "");
-  if (dtoName === null) {
-    return;
-  }
+  const dtoName = res?.["200"]?.content?.["*/*"]?.schema?.["$ref"]?.replace(SCHEMA_PREFIX, "");
+  if (!dtoName) return;
   return parsingInnerObject(schemaMap.get(dtoName));
 }
 
 function parseRequest(req) {
   if (req["requestBody"] == null) return;
   const schema = req.requestBody.content[APPLICATION_JSON].schema;
+  if (!schema["$ref"]) {
+    return;
+  }
   let dtoName = schema["$ref"].replace(SCHEMA_PREFIX, "");
   if (dtoName === null) {
     return;
@@ -81,7 +81,7 @@ function parseParams(params) {
       pathVariables.set(param.name, param.schema.type);
     } else if (param.in === "query") {
       parameters.set(param.name, param.schema.type);
-    } else if (param.in == "header") {
+    } else if (param.in === "header") {
       headers.set(param.name, param.schema.type);
     }
   });
@@ -134,7 +134,6 @@ function BlockList({ name, addNode }) {
         const paths = docsData.paths;
 
         const temp = createBlockList(context, paths);
-        console.log(temp)
         setLi(temp || []);
       } catch (error) {
         console.error("문서 데이터를 가져오는 중 오류 발생:", error);
