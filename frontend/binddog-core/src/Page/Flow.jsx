@@ -36,18 +36,16 @@ function Flow() {
   const flowName = location.state?.flowName;
   const flowDescription = "description";
   const { projectId, flowId } = useParams();
-  console.log("Received flowName:", flowName);
-
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
   const [edges, setEdges, onEdgesChange] = useEdgesState(parsedLinks);
   const [logBox, setLogBox] = useState([]);
 
   // pathValue 수정하는 로직
-  const updateNodeData = (inputKey, value, targetApiName) => {
+  const updateNodeData = (inputKey, value, targetid) => {
     setNodes((prevNodes) =>
       prevNodes.map((node) => {
         // 해당 node의 apiName이 targetApiName과 일치하는지 확인
-        if (node.data.apiName === targetApiName) {
+        if (node.id === targetid) {
           const updatedPathValue = new Map(node.data.pathValue);
           // 기존의 pathValue가 inputKey를 포함하면 값만 수정, 포함하지 않으면 새로 추가
           updatedPathValue.set(inputKey, value);
@@ -67,15 +65,15 @@ function Flow() {
   };
 
   // paramValue 수정하는 로직
-  const updateParamsData = (inputKey, value, targetApiName) => {
+  const updateParamsData = (inputKey, value, targetid) => {
     setNodes((prevNodes) =>
       prevNodes.map((node) => {
         // 해당 node의 apiName이 targetApiName과 일치하는지 확인
-        if (node.data.apiName === targetApiName) {
+        if (node.id === targetid) {
           const updatedParamsValue = new Map(node.data.paramValue);
           // 기존의 paramValue가 inputKey를 포함하면 값만 수정, 포함하지 않으면 새로 추가
           updatedParamsValue.set(inputKey, value);
-  
+
           return {
             ...node,
             data: {
@@ -89,8 +87,27 @@ function Flow() {
       })
     );
   };
-  
-  
+
+  // headerValue 수정하는 로직
+  const updateHeadersData = (key, value, targetid) => {
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        if (node.id === targetid) {
+          const updatedHeadersValue = new Map(node.data.headerValue);
+          updatedHeadersValue.set(key, value);
+
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              headerValue: updatedHeadersValue,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  };
 
   // Convert flowData to ReactFlow nodes and edges
   const convertToNodes = (blocks) =>
@@ -105,21 +122,17 @@ function Flow() {
         method: block.method,
         endpoint: block.endpoint,
         apiName: block.name,
-        header: block.header
-          ? new Map(Object.entries(block.header))
-          : new Map(), // Object -> Map 변환
-        parameter: block.parameter
-          ? new Map(Object.entries(block.parameter))
-          : new Map(), // Object -> Map 변환
-        pathVariable: block.pathVariable
-          ? new Map(Object.entries(block.pathVariable))
-          : new Map(), // Object -> Map 변환
-        request: block.request
-          ? new Map(Object.entries(block.request))
-          : new Map(), // Object -> Map 변환
-        response: block.response
-          ? new Map(Object.entries(block.response))
-          : new Map(), // Object -> Map 변환
+        header: block.header ? new Map(Object.entries(block.header)) : new Map(), // Object -> Map 변환
+        parameter: block.parameter ? new Map(Object.entries(block.parameter)) : new Map(), // Object -> Map 변환
+        pathVariable: block.pathVariable ? new Map(Object.entries(block.pathVariable)) : new Map(), // Object -> Map 변환
+        request: block.request ? new Map(Object.entries(block.request)) : new Map(), // Object -> Map 변환
+        response: block.response ? new Map(Object.entries(block.response)) : new Map(), // Object -> Map 변환
+        pathValue: block.pathValue ? new Map(Object.entries(block.pathValue)) : new Map(),
+        paramValue: block.paramValue ? new Map(Object.entries(block.paramValue)) : new Map(),
+        headerValue: block.headerValue ? new Map(Object.entries(block.headerValue)) : new Map(),
+        updateNodeData,
+        updateParamsData,
+        updateHeadersData,
       },
     }));
 
@@ -143,10 +156,7 @@ function Flow() {
     setLogBox([]);
   };
 
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   function addNode(item) {
     const newNode = {
@@ -160,12 +170,14 @@ function Flow() {
         header: item.header,
         parameter: item.parameter,
         pathVariable: item.pathVariable,
-        pathValue: new Map(), // pathVariable 입력한 값들이 들어갈 예정
+        pathValue: item.pathValue, // pathVariable 입력한 값들이 들어갈 예정
         request: item.request,
         response: item.response,
-        paramValue: new Map(),
+        paramValue: item.paramValue,
+        headerValue: item.headerValue,
         updateNodeData,
         updateParamsData,
+        updateHeadersData,
       },
     };
 
@@ -177,10 +189,7 @@ function Flow() {
       // StartSign 노드의 삭제와 위치 변경 요청을 제외하고 처리
       const filteredChanges = changes.filter((change) => {
         // StartSign 노드의 삭제 및 위치 변경 무시
-        if (
-          change.id === "0" &&
-          (change.type === "remove" || change.type === "position")
-        ) {
+        if (change.id === "0" && (change.type === "remove" || change.type === "position")) {
           return false;
         }
         return true;
@@ -197,8 +206,6 @@ function Flow() {
     startSign: StartSign,
   };
 
-  console.log(nodes);
-
   useEffect(() => {
     const fetchFlowData = async () => {
       try {
@@ -214,6 +221,8 @@ function Flow() {
 
     fetchFlowData();
   }, [projectId, flowId]);
+
+  console.log(nodes);
 
   return (
     <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
@@ -260,12 +269,7 @@ function Flow() {
               zIndex: 100,
             }}
           >
-            <RunButton
-              nodes={nodes}
-              edges={edges}
-              addLog={addLog}
-              restartLog={restartLog}
-            />
+            <RunButton nodes={nodes} edges={edges} addLog={addLog} restartLog={restartLog} />
             <SaveButton
               projectId={projectId}
               flowId={flowId}
@@ -319,8 +323,15 @@ function Flow() {
                         paddingBottom: "20px",
                       }}
                     >
-                      <Typography key={index} sx={[theme.api]}>
-                        {JSON.stringify(item)}
+                      <Typography
+                        sx={[
+                          theme.api,
+                          {
+                            color: item.success ? "green" : "red", // 조건부 색상 설정
+                          },
+                        ]}
+                      >
+                        {JSON.stringify(item.response)}
                       </Typography>
                     </Box>
                     <Box>
