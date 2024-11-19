@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import BlockFormat from "../Component/BlockFormat";
+import JsonFormat from "../Component/JsonFormat"
 import {
   ReactFlow,
   MiniMap,
@@ -331,7 +332,7 @@ function Flow() {
                           },
                         ]}
                       >
-                        {JSON.stringify(item.response)}
+                        <JsonFormat response={item.response} />
                       </Typography>
                     </Box>
                     <Box>
