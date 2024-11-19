@@ -96,11 +96,21 @@ function createBlock(path, method, detail) {
   const parsedRequest = parseRequest(detail) || [];
   const parsedResponse = parseResponse(detail.responses);
 
+  let blockName = path;
+  if (detail.summary) {
+    blockName = detail.summary
+  }
+  if (detail.blockInfo) {
+    if (detail.blockInfo.blockName) {
+      blockName = detail.blockInfo.blockName
+    }
+  }
+
   return {
     key: idx,
     id: idx++,
     method: method.toUpperCase(),
-    apiName: detail.summary,
+    apiName: blockName,
     endpoint: path,
     // position: item.position,
     header: headers,
@@ -115,7 +125,7 @@ function createBlockList(context, docs) {
   const blockList = new Array();
   Object.entries(docs || []).forEach(([path, value]) => {
     Object.entries(value || []).forEach(([method, detail]) => {
-      blockList.push(createBlock(`${context}${path}`, method, detail));
+      blockList.push(createBlock(path, method, detail));
     });
   });
   return blockList;
