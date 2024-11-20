@@ -330,6 +330,7 @@ function Flow() {
                           theme.api,
                           {
                             color: item.success ? "green" : "red", // 조건부 색상 설정
+                            fontSize: theme.fontSize.medium,
                           },
                         ]}
                       >
