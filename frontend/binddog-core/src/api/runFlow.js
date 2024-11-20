@@ -13,7 +13,7 @@ export const runFlow = async (endpoint, method = 'GET', paramObject, headerObjec
                 response = await docsAxios.put(endpoint, requestBody, { headers: headerObject });
                 break;
             case 'DELETE':
-                response = await docsAxios.delete(endpoint, { data: paramObject, headers: headerObject });
+                response = await docsAxios.delete(endpoint, { params: paramObject, headers: headerObject });
                 break;
             case 'GET':
             default:
