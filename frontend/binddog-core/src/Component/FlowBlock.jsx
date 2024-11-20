@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteFlow } from "../api/libraryFlow";
 import { loadImage } from "../api/saveImg";
 
-function FlowBlock({ inId, flowName, projectId, fetchFlows }) {
+function FlowBlock({ inId, flowName, projectId, fetchFlows, projectName }) {
   const theme = useTheme();
 
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ function FlowBlock({ inId, flowName, projectId, fetchFlows }) {
   };
 
   const handleModify = () => {
-    navigate(`/projects/${projectId}/flows/${inId}`, { state: { flowName } });
+    navigate(`/projects/${projectId}/flows/${inId}`, { state: { flowName, projectName } });
     handleKebabClose();
   };
 
