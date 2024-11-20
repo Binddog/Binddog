@@ -85,7 +85,7 @@ function Home() {
             },
           ]}
         >
-          현재 권장 버전은 1.0.1 입니다.
+          현재 권장 버전은 1.0.3 입니다.
         </Typography>
       </Box>
       <Box
