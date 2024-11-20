@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Block from "./Block";
 import { getDocs } from "../api/libraryFlow";
+import { useNavigate } from "react-router-dom";
+
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const SCHEMA_PREFIX = "#/components/schemas/";
 const APPLICATION_JSON = "application/json";
@@ -121,9 +124,16 @@ function createBlockList(context, docs) {
   return blockList;
 }
 
-function BlockList({ name, addNode }) {
+function BlockList({ name, addNode, projectId, projectName }) {
   const theme = useTheme();
   const [li, setLi] = useState([]);
+  const navigate = useNavigate();
+
+  const backToFlowList = () => {
+    console.log(projectId);
+    navigate(`/projects/${projectId}`,{state: { projectName: projectName },});
+  };
+
   useEffect(() => {
     const fetchDocs = async () => {
       try {
@@ -151,35 +161,56 @@ function BlockList({ name, addNode }) {
         // bgcolor: "#F7F7F7",
         display: "flex",
         flexDirection: "column",
-        padding: "50px",
+        // padding: "50px",
+        margin: "50px",
         alignItems: "center",
         gap: 3,
       }}
     >
       <Box
         sx={{
+          width: "100%",
           display: "flex",
-          flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
-          gap: 1,
+          gap: 2,
         }}
       >
-        <Typography
+        <IconButton
           sx={{
-            fontSize: "14px",
+            color: theme.palette.common.grey,
+            width: "40px",
+            height: "40px",
+          }}
+          onClick={backToFlowList}
+        >
+          <ChevronLeftIcon/>
+        </IconButton>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 1,
           }}
         >
-          현재 플로우 이름
-        </Typography>
-        <Typography
-          sx={{
-            ...theme.typography.h3,
-            fontWeight: "bold",
-            bgcolor: theme.palette.primary.main,
-          }}
-        >
-          {name}
-        </Typography>
+          <Typography
+            sx={{
+              fontSize: "14px",
+            }}
+          >
+            현재 플로우 이름
+          </Typography>
+          <Typography
+            sx={{
+              ...theme.typography.h3,
+              fontWeight: "bold",
+              bgcolor: theme.palette.primary.main,
+            }}
+          >
+            {name}
+          </Typography>
+        </Box>
       </Box>
       {li.map((item) => (
         <Block

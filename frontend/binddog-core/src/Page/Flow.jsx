@@ -34,6 +34,7 @@ function Flow() {
   const theme = useTheme();
   const location = useLocation();
   const flowName = location.state?.flowName;
+  const projectName = location.state?.projectName;
   const flowDescription = "description";
   const { projectId, flowId } = useParams();
   const [nodes, setNodes, onNodesChange] = useNodesState(parsedBlocks);
@@ -233,7 +234,7 @@ function Flow() {
           borderRight: "1px solid lightgrey",
         }}
       >
-        <BlockList name={flowName} addNode={addNode} />
+        <BlockList name={flowName} addNode={addNode} projectId={projectId} projectName={projectName} />
       </Box>
       <Box
         sx={{
