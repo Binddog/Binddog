@@ -183,11 +183,12 @@ function BlockList({ name, addNode, projectId, projectName }) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          gap: 2,
+          // gap: 2,
         }}
       >
         <IconButton
           sx={{
+            flexGrow: 1,
             color: theme.palette.common.grey,
             width: "40px",
             height: "40px",
@@ -198,10 +199,12 @@ function BlockList({ name, addNode, projectId, projectName }) {
         </IconButton>
         <Box
           sx={{
+            flexGrow: 9,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             gap: 1,
+            paddingRight: "20px",
           }}
         >
           <Typography
@@ -216,6 +219,7 @@ function BlockList({ name, addNode, projectId, projectName }) {
               ...theme.typography.h3,
               fontWeight: "bold",
               bgcolor: theme.palette.primary.main,
+              textAlign: "center",
             }}
           >
             {name}
