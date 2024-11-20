@@ -5,9 +5,9 @@ import Cookies from "js-cookie";
 // 로그인
 export const logIn = async (email, password) => {
   const response = await Axios.post("auths/login", { email, password });
-  const { accessToken } = response.data.data;
+  const { accessToken, refreshToken } = response.data.data;
   localStorage.setItem("accessToken", accessToken);
-  Cookies.set("refreshToken", response.data.data.refreshToken);
+  Cookies.set("refreshToken", refreshToken);
   return response.data;
 };
 
@@ -25,5 +25,5 @@ export const refresh = async (accessToken, refreshToken) => {
     accessToken,
     refreshToken,
   });
-  return response.data;
+  return response.data.data;
 };

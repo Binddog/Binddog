@@ -43,7 +43,9 @@ function App() {
 
       if (accessToken && refreshToken) {
         try {
-          await refresh();
+          const response = await refresh(accessToken, refreshToken);
+          localStorage.setItem("accessToken", response.accessToken);
+          Cookies.set("refreshToken", response.refreshToken);
         } catch (error) {
           console.error("Session expired. Logging out...");
           handleLogout();
@@ -51,7 +53,7 @@ function App() {
       }
     };
 
-    const interval = setInterval(checkSession, 5 * 60 * 1000);
+    const interval = setInterval(checkSession, 59 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
