@@ -133,6 +133,7 @@ function FlowList() {
                 flowName={item.title}
                 description={item.description}
                 fetchFlows={fetchFlows}
+                projectName={projectName}
               />
             ))}
           </Box>
