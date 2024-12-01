@@ -152,7 +152,7 @@ release_job:
             ]
          }
        }' \
-       --request POST "https://lab.ssafy.com/api/v4/projects/821944/releases"
+       --request POST "https://lab.ssafy.com/api/v4/projects/${projectId}/releases"
   rules:
     - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push"'
   
